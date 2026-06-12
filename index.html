@@ -9,6 +9,7 @@
 <title>Bharat News AI — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
@@ -756,6 +757,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         </div>
         <div class="login-error" id="loginError"></div>
         <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
+        <div style="text-align:right;margin-top:-6px;">
+          <button onclick="doForgotPassword()" style="background:none;border:none;color:var(--accent5);font-size:12px;cursor:pointer;font-family:inherit;padding:0;">Forgot password?</button>
+        </div>
       </div>
       <div class="login-divider">or</div>
       <button class="login-demo-btn" onclick="demoLogin()">
@@ -790,7 +794,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     </div>
 
     <div class="login-footer">
-      🔒 Your data stays in your browser · No tracking · 100% free
+      🔒 Secured by Supabase · Data synced across devices · 100% free
     </div>
   </div>
 </div>
@@ -1043,6 +1047,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
             <div class="user-dropdown-name" id="dropdownName">Guest</div>
             <div class="user-dropdown-email" id="dropdownEmail">Not signed in</div>
           </div>
+          <div class="user-dropdown-item" id="syncStatusItem" style="color:var(--accent4);font-size:12px;">🟢 Synced with Supabase</div>
           <div class="user-dropdown-item" onclick="openPrefsModal();toggleUserDropdown()">⚙️ Preferences</div>
           <div class="user-dropdown-item" onclick="openAlertModal();toggleUserDropdown()">🔔 Keyword Alerts</div>
           <div class="user-dropdown-item" onclick="setView('bookmarks');toggleUserDropdown()">🔖 Saved Articles</div>
@@ -1184,7 +1189,7 @@ function isBreaking(article) {
   return breakingKws.some(k=>t.includes(k));
 }
 
-function savePref(key, val) {
+function _baseSavePref(key, val) {
   prefs[key] = val;
   localStorage.setItem('pa_prefs', JSON.stringify(prefs));
 }
@@ -1503,7 +1508,7 @@ function openAlertModal() {
 function closeAlertModal(e) {
   if (!e||e.target.id==='alertModalOverlay') document.getElementById('alertModalOverlay').classList.remove('open');
 }
-function addAlert() {
+function _baseAddAlert() {
   const inp = document.getElementById('alertKeywordInput');
   const kw = inp.value.trim();
   if (!kw||alertKws.includes(kw)) return;
@@ -1515,7 +1520,7 @@ function addAlert() {
   if(dot) dot.style.display='block';
   showToast(`🔔 Alert set for "${kw}"`);
 }
-function removeAlert(kw) {
+function _baseRemoveAlert(kw) {
   alertKws = alertKws.filter(k=>k!==kw);
   localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
   renderAlertsList();
@@ -1753,7 +1758,7 @@ async function shareAsImage(card) {
 // ══════════════════════════════════════════════════
 // READ STATE (Feature #4 complement)
 // ══════════════════════════════════════════════════
-function markRead(id) {
+function _baseMarkRead(id) {
   if (!readItems.includes(id)) {
     readItems.push(id);
     localStorage.setItem('pa_read', JSON.stringify(readItems.slice(-200)));
@@ -2213,12 +2218,12 @@ async function doResearch() {
 // ══════════════════════════════════════════════════
 // INTERACTIONS
 // ══════════════════════════════════════════════════
-function toggleLike(id) {
+function _baseToggleLike(id) {
   if(likes.includes(id)) likes=likes.filter(l=>l!==id); else likes.push(id);
   localStorage.setItem('pa_likes',JSON.stringify(likes));
   renderFeed();
 }
-function toggleBookmark(id) {
+function _baseToggleBookmark(id) {
   if(bookmarks.includes(id)) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
   localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
   // Desktop badge
@@ -2371,137 +2376,156 @@ document.addEventListener('keydown',e=>{
 
 
 // ══════════════════════════════════════════════════
-// AUTH SYSTEM (localStorage-based, no backend needed)
+// SUPABASE AUTH + DATA SYNC
 // ══════════════════════════════════════════════════
 
-const AUTH_KEY = 'bna_users';
-const SESSION_KEY = 'bna_session';
+const SUPABASE_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyOTQsImV4cCI6MjA5Njg1NDI5NH0.cMzCkgMLSU1cxTw6vXpd7I_E2chCgys3neBLqawhSCQ';
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem(AUTH_KEY) || '{}');
-}
-function saveUsers(users) {
-  localStorage.setItem(AUTH_KEY, JSON.stringify(users));
-}
-function getSession() {
-  return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-}
-function saveSession(user) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-}
-function clearSession() {
-  localStorage.removeItem(SESSION_KEY);
-}
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null;
 
-// Get initials from name or email
+// ── HELPERS ──────────────────────────────────────
 function getInitials(nameOrEmail) {
-  const parts = (nameOrEmail||'').split(/[\s@]+/).filter(Boolean);
+  const parts = (nameOrEmail || '').split(/[\s@]+/).filter(Boolean);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return (nameOrEmail||'?')[0].toUpperCase();
+  return (nameOrEmail || '?')[0].toUpperCase();
 }
 
-// ── SWITCH AUTH TAB ──
+function showAuthError(formType, msg) {
+  const el = document.getElementById(formType + 'Error');
+  if (el) el.textContent = msg;
+}
+
+function setAuthLoading(btnId, loading, text = '') {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.textContent = loading ? '...' : text;
+}
+
+// ── SWITCH TAB ────────────────────────────────────
 function switchAuthTab(tab) {
-  document.getElementById('loginForm').style.display   = tab==='login' ? 'block' : 'none';
-  document.getElementById('signupForm').style.display  = tab==='signup' ? 'block' : 'none';
-  document.getElementById('loginTabBtn').classList.toggle('active', tab==='login');
-  document.getElementById('signupTabBtn').classList.toggle('active', tab==='signup');
-  document.getElementById('loginError').textContent = '';
-  document.getElementById('signupError').textContent = '';
+  document.getElementById('loginForm').style.display   = tab === 'login'  ? 'block' : 'none';
+  document.getElementById('signupForm').style.display  = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('loginTabBtn').classList.toggle('active', tab === 'login');
+  document.getElementById('signupTabBtn').classList.toggle('active', tab === 'signup');
+  showAuthError('login', ''); showAuthError('signup', '');
 }
 
-// ── SIGN UP ──
-function doSignup() {
+// ── SIGN UP ───────────────────────────────────────
+async function doSignup() {
   const name  = document.getElementById('signupName').value.trim();
   const email = document.getElementById('signupEmail').value.trim().toLowerCase();
   const pw    = document.getElementById('signupPassword').value;
-  const errEl = document.getElementById('signupError');
 
-  // Validation
-  if (!name)  { errEl.textContent = 'Please enter your name.'; return; }
-  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; return; }
-  if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (!name)  return showAuthError('signup', 'Please enter your name.');
+  if (!email || !email.includes('@')) return showAuthError('signup', 'Please enter a valid email.');
+  if (pw.length < 6) return showAuthError('signup', 'Password must be at least 6 characters.');
 
-  const users = getUsers();
-  if (users[email]) { errEl.textContent = 'An account with this email already exists.'; return; }
+  setAuthLoading('signupBtn', true, 'Creating account...');
+  showAuthError('signup', '');
 
-  // Simple hash (XOR with key — not crypto, but obscures plain text in storage)
-  const hashed = btoa(pw.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(i%13+7))).join(''));
+  const { data, error } = await sb.auth.signUp({
+    email, password: pw,
+    options: { data: { name, avatar_initials: getInitials(name) } }
+  });
 
-  users[email] = { name, email, password: hashed, createdAt: new Date().toISOString() };
-  saveUsers(users);
+  setAuthLoading('signupBtn', false, 'Create Account →');
 
-  const user = { name, email, initials: getInitials(name) };
-  saveSession(user);
-  onLoginSuccess(user);
+  if (error) {
+    showAuthError('signup', error.message);
+    return;
+  }
+
+  if (data.user && !data.session) {
+    // Email confirmation required
+    showAuthError('signup', '');
+    document.getElementById('signupForm').innerHTML = `
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:48px;margin-bottom:12px;">📧</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Check your email</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;">
+          We sent a confirmation link to <strong>${email}</strong>.<br>
+          Click it to activate your account, then sign in.
+        </div>
+        <button class="login-demo-btn" style="margin-top:20px;" onclick="switchAuthTab('login')">← Back to Sign In</button>
+      </div>`;
+    return;
+  }
+
   showToast(`👋 Welcome to Bharat News AI, ${name.split(' ')[0]}!`);
 }
 
-// ── SIGN IN ──
-function doLogin() {
+// ── SIGN IN ───────────────────────────────────────
+async function doLogin() {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pw    = document.getElementById('loginPassword').value;
-  const errEl = document.getElementById('loginError');
-  const btn   = document.getElementById('loginBtn');
 
-  if (!email) { errEl.textContent = 'Please enter your email.'; return; }
-  if (!pw)    { errEl.textContent = 'Please enter your password.'; return; }
+  if (!email) return showAuthError('login', 'Please enter your email.');
+  if (!pw)    return showAuthError('login', 'Please enter your password.');
 
-  btn.disabled = true;
-  btn.textContent = 'Signing in...';
+  setAuthLoading('loginBtn', true, 'Signing in...');
+  showAuthError('login', '');
 
-  setTimeout(() => {
-    const users = getUsers();
-    const stored = users[email];
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
 
-    if (!stored) {
-      errEl.textContent = 'No account found with this email.';
-      btn.disabled = false; btn.textContent = 'Sign In →';
-      document.getElementById('loginEmail').classList.add('error');
-      return;
-    }
+  setAuthLoading('loginBtn', false, 'Sign In →');
 
-    // Verify password
-    const hashed = btoa(pw.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(i%13+7))).join(''));
-    if (hashed !== stored.password) {
-      errEl.textContent = 'Incorrect password. Please try again.';
-      btn.disabled = false; btn.textContent = 'Sign In →';
-      document.getElementById('loginPassword').classList.add('error');
-      return;
-    }
+  if (error) {
+    const msg = error.message.includes('Invalid') ? 'Incorrect email or password.' : error.message;
+    showAuthError('login', msg);
+    document.getElementById('loginPassword').classList.add('error');
+    return;
+  }
 
-    const user = { name: stored.name, email, initials: getInitials(stored.name) };
-    saveSession(user);
-    onLoginSuccess(user);
-    showToast(`👋 Welcome back, ${stored.name.split(' ')[0]}!`);
-  }, 400); // Small delay feels more real
+  showToast(`👋 Welcome back, ${data.user.user_metadata?.name?.split(' ')[0] || 'there'}!`);
 }
 
-// ── GUEST / DEMO LOGIN ──
+// ── GUEST LOGIN ───────────────────────────────────
 function demoLogin() {
-  const user = { name: 'Guest', email: '', initials: 'G', isGuest: true };
-  saveSession(user);
-  onLoginSuccess(user);
-  showToast('👋 Welcome! Browsing as Guest.');
+  currentUser = { id: 'guest', name: 'Guest', email: '', initials: 'G', isGuest: true };
+  onLoginSuccess(currentUser);
+  showToast('👋 Browsing as Guest — data saved locally only.');
 }
 
-// ── LOGOUT ──
-function doLogout() {
-  clearSession();
+// ── LOGOUT ───────────────────────────────────────
+async function doLogout() {
+  if (currentUser && !currentUser.isGuest) {
+    await sb.auth.signOut();
+  }
+  currentUser = null;
+  // Reset local state
+  bookmarks = []; likes = []; readItems = []; alertKws = [];
+  localStorage.removeItem('pa_bookmarks');
+  localStorage.removeItem('pa_likes');
+  localStorage.removeItem('pa_read');
+  localStorage.removeItem('pa_alerts');
   updateUserUI(null);
   document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginScreen').style.display = 'flex';
   toggleUserDropdown(false);
-  // Clear inputs
-  ['loginEmail','loginPassword','signupName','signupEmail','signupPassword'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.value = '';
-  });
-  document.getElementById('loginError').textContent = '';
-  document.getElementById('signupError').textContent = '';
+  // Reset inputs
+  ['loginEmail','loginPassword','signupName','signupEmail','signupPassword']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  showAuthError('login', ''); showAuthError('signup', '');
+  appLoaded = false;
 }
 
-// ── ON LOGIN SUCCESS ──
-let appLoaded = false;
+// ── FORGOT PASSWORD ───────────────────────────────
+async function doForgotPassword() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  if (!email) return showAuthError('login', 'Enter your email first, then click Forgot Password.');
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://kushagra486.github.io/bharat-news-ai/'
+  });
+  if (error) showAuthError('login', error.message);
+  else showToast('📧 Password reset email sent!');
+}
+
+// ── ON LOGIN SUCCESS ──────────────────────────────
 function onLoginSuccess(user) {
+  currentUser = user;
   updateUserUI(user);
   const screen = document.getElementById('loginScreen');
   screen.classList.add('hidden');
@@ -2509,106 +2533,244 @@ function onLoginSuccess(user) {
   if (!appLoaded) { appLoaded = true; _startApp(); }
 }
 
-async function _startApp() {
-  // Restore theme
-  const savedTheme = localStorage.getItem('pa_theme')||'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  const themeBtn = document.getElementById('themeBtn');
-  if(themeBtn) themeBtn.textContent = savedTheme==='dark'?'🌙':'☀️';
-  const mobIcon = document.getElementById('mobThemeIcon');
-  if(mobIcon) mobIcon.textContent = savedTheme==='dark'?'🌙':'☀️';
-
-  installPWA();
-  renderSectors();
-  renderStories();
-  renderRightPanel();
-  const bc = document.getElementById('bookmarkCount');
-  if(bc) bc.textContent = bookmarks.length||'0';
-  const mbc = document.getElementById('mobBookmarkBadge');
-  if(mbc && bookmarks.length>0){ mbc.textContent=bookmarks.length; mbc.style.display='block'; }
-  if (alertKws.length) {
-    const d1 = document.getElementById('notifDot'); if(d1) d1.style.display='block';
-    const d2 = document.getElementById('mobNotifDot'); if(d2) d2.style.display='block';
-  }
-
-  const initial = await fetchNews('All');
-  newsData = initial;
-  renderFeed();
-  updateLastFetchedBadge();
-  fetchAllSectors().then(()=>{ renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
-  generateDailyBriefing();
-
-  if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
-
-  setInterval(async()=>{
-    const r=await fetchNews(state.currentSector,true);
-    if(state.currentSector==='All') newsData=r;
-    renderFeed(); renderRightPanel(); updateLastFetchedBadge();
-    showToast('🔄 News refreshed');
-  }, 15*60*1000);
-}
-
-// ── UPDATE UI FOR LOGGED IN USER ──
+// ── UPDATE UI ─────────────────────────────────────
 function updateUserUI(user) {
   const avatar = document.getElementById('userAvatarBtn');
   const dName  = document.getElementById('dropdownName');
   const dEmail = document.getElementById('dropdownEmail');
-
   if (!user) {
     if(avatar) avatar.textContent = '?';
-    if(dName)  dName.textContent = 'Guest';
-    if(dEmail) dEmail.textContent = 'Not signed in';
+    if(dName)  dName.textContent  = 'Not signed in';
+    if(dEmail) dEmail.textContent = '';
     return;
   }
-
-  if(avatar) {
-    avatar.textContent = user.initials || getInitials(user.name||user.email||'?');
-  }
+  const initials = user.initials || getInitials(user.name || user.email || 'G');
+  if(avatar) avatar.textContent = initials;
   if(dName)  dName.textContent  = user.isGuest ? 'Guest User' : (user.name || 'User');
-  if(dEmail) dEmail.textContent = user.isGuest ? 'Browsing as guest' : user.email;
+  if(dEmail) dEmail.textContent = user.isGuest ? 'Browsing as guest' : (user.email || '');
 }
 
-// ── USER DROPDOWN TOGGLE ──
+// ── USER DROPDOWN ─────────────────────────────────
 function toggleUserDropdown(force) {
   const dd = document.getElementById('userDropdown');
   if (!dd) return;
-  const isOpen = dd.classList.contains('open');
-  const shouldOpen = force !== undefined ? force : !isOpen;
+  const shouldOpen = force !== undefined ? force : !dd.classList.contains('open');
   dd.classList.toggle('open', shouldOpen);
   if (shouldOpen) {
-    // Close on outside click
     setTimeout(() => {
-      document.addEventListener('click', function handler(e) {
+      document.addEventListener('click', function h(e) {
         if (!dd.contains(e.target) && e.target.id !== 'userAvatarBtn') {
           dd.classList.remove('open');
-          document.removeEventListener('click', handler);
+          document.removeEventListener('click', h);
         }
       });
     }, 0);
   }
 }
 
-// ── PASSWORD STRENGTH INDICATOR ──
+// ── PASSWORD STRENGTH ────────────────────────────
 function updatePwStrength(pw) {
   const bar = document.getElementById('pwStrength');
   if (!bar) return;
-  let strength = 0;
-  if (pw.length >= 6)  strength++;
-  if (pw.length >= 10) strength++;
-  if (/[A-Z]/.test(pw)) strength++;
-  if (/[0-9]/.test(pw)) strength++;
-  if (/[^A-Za-z0-9]/.test(pw)) strength++;
-  const colors = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981'];
-  const widths  = ['20%','40%','60%','80%','100%'];
-  bar.style.background = colors[strength-1] || '#2a2a2a';
-  bar.style.width      = widths[strength-1] || '0%';
+  let s = 0;
+  if (pw.length >= 6)  s++;
+  if (pw.length >= 10) s++;
+  if (/[A-Z]/.test(pw)) s++;
+  if (/[0-9]/.test(pw)) s++;
+  if (/[^A-Za-z0-9]/.test(pw)) s++;
+  bar.style.background = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981'][s-1] || '#2a2a2a';
+  bar.style.width = ['20%','40%','60%','80%','100%'][s-1] || '0%';
 }
 
-// ── CHECK SESSION ON LOAD ──
-function checkAuthSession() {
-  const session = getSession();
-  if (session) {
-    onLoginSuccess(session);
+// ══════════════════════════════════════════════════
+// SUPABASE DATA SYNC (bookmarks, likes, prefs, history)
+// ══════════════════════════════════════════════════
+
+async function syncUserDataFromSupabase() {
+  if (!currentUser || currentUser.isGuest) return;
+  const uid = currentUser.id;
+
+  try {
+    // Load bookmarks
+    const { data: bkData } = await sb.from('bookmarks').select('article_id, article_data').eq('user_id', uid);
+    if (bkData) {
+      bookmarks = bkData.map(b => b.article_id);
+      // Restore full article objects into cache
+      bkData.forEach(b => {
+        if (b.article_data) {
+          const s = b.article_data.sector || 'All';
+          if (!newsCache[s]) newsCache[s] = [];
+          if (!newsCache[s].find(c => c.id === b.article_id)) {
+            newsCache[s].push(b.article_data);
+          }
+        }
+      });
+    }
+
+    // Load likes
+    const { data: lkData } = await sb.from('likes').select('article_id').eq('user_id', uid);
+    if (lkData) likes = lkData.map(l => l.article_id);
+
+    // Load read history
+    const { data: rdData } = await sb.from('read_history').select('article_id').eq('user_id', uid);
+    if (rdData) readItems = rdData.map(r => r.article_id);
+
+    // Load prefs + alerts
+    const { data: prData } = await sb.from('user_prefs').select('prefs, alert_keywords').eq('user_id', uid).single();
+    if (prData) {
+      if (prData.prefs) prefs = { ...prefs, ...prData.prefs };
+      if (prData.alert_keywords) alertKws = prData.alert_keywords;
+    }
+
+    // Update local storage mirrors
+    localStorage.setItem('pa_bookmarks', JSON.stringify(bookmarks));
+    localStorage.setItem('pa_likes',     JSON.stringify(likes));
+    localStorage.setItem('pa_read',      JSON.stringify(readItems));
+    localStorage.setItem('pa_alerts',    JSON.stringify(alertKws));
+    localStorage.setItem('pa_prefs',     JSON.stringify(prefs));
+
+    // Update UI
+    const bc = document.getElementById('bookmarkCount');
+    if (bc) bc.textContent = bookmarks.length || '0';
+    const mbc = document.getElementById('mobBookmarkBadge');
+    if (mbc && bookmarks.length > 0) { mbc.textContent = bookmarks.length; mbc.style.display = 'block'; }
+    if (alertKws.length) {
+      const d1 = document.getElementById('notifDot'); if(d1) d1.style.display = 'block';
+      const d2 = document.getElementById('mobNotifDot'); if(d2) d2.style.display = 'block';
+    }
+
+    console.log('[Supabase] Synced:', { bookmarks: bookmarks.length, likes: likes.length, read: readItems.length });
+  } catch(e) {
+    console.error('[Supabase] Sync error:', e);
+  }
+}
+
+async function sbSaveBookmark(card) {
+  if (!currentUser || currentUser.isGuest) return;
+  await sb.from('bookmarks').upsert({
+    user_id: currentUser.id,
+    article_id: card.id,
+    article_data: card,
+  }, { onConflict: 'user_id,article_id' });
+}
+
+async function sbRemoveBookmark(articleId) {
+  if (!currentUser || currentUser.isGuest) return;
+  await sb.from('bookmarks').delete().eq('user_id', currentUser.id).eq('article_id', articleId);
+}
+
+async function sbSaveLike(articleId) {
+  if (!currentUser || currentUser.isGuest) return;
+  await sb.from('likes').upsert({ user_id: currentUser.id, article_id: articleId }, { onConflict: 'user_id,article_id' });
+}
+
+async function sbRemoveLike(articleId) {
+  if (!currentUser || currentUser.isGuest) return;
+  await sb.from('likes').delete().eq('user_id', currentUser.id).eq('article_id', articleId);
+}
+
+async function sbSaveReadItem(articleId) {
+  if (!currentUser || currentUser.isGuest) return;
+  await sb.from('read_history').upsert({ user_id: currentUser.id, article_id: articleId }, { onConflict: 'user_id,article_id' });
+}
+
+async function sbSavePrefs() {
+  if (!currentUser || currentUser.isGuest) {
+    localStorage.setItem('pa_prefs', JSON.stringify(prefs));
+    localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
+    return;
+  }
+  await sb.from('user_prefs').upsert({
+    user_id: currentUser.id,
+    prefs,
+    alert_keywords: alertKws,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'user_id' });
+}
+
+// ── PATCH toggleBookmark to also sync Supabase ────
+function toggleBookmark(id) {
+  const card = [...Object.values(newsCache).flat(), ...newsData].find(c => c.id === id);
+  const wasBookmarked = bookmarks.includes(id);
+  _baseToggleBookmark(id);
+  if (wasBookmarked) sbRemoveBookmark(id);
+  else if (card) sbSaveBookmark(card);
+}
+
+// ── PATCH toggleLike to also sync Supabase ────────
+function toggleLike(id) {
+  const wasLiked = likes.includes(id);
+  _baseToggleLike(id);
+  if (wasLiked) sbRemoveLike(id);
+  else sbSaveLike(id);
+}
+
+// ── PATCH markRead to also sync Supabase ─────────
+function markRead(id) {
+  _baseMarkRead(id);
+  sbSaveReadItem(id);
+}
+
+// ── PATCH savePref to also sync Supabase ─────────
+function savePref(key, val) {
+  _baseSavePref(key, val);
+  sbSavePrefs();
+}
+
+// ── PATCH addAlert to sync ────────────────────────
+function addAlert() {
+  _baseAddAlert();
+  sbSavePrefs();
+}
+
+// ── PATCH removeAlert to sync ─────────────────────
+function removeAlert(kw) {
+  _baseRemoveAlert(kw);
+  sbSavePrefs();
+}
+
+// ── SESSION LISTENER ──────────────────────────────
+sb.auth.onAuthStateChange(async (event, session) => {
+  console.log('[Supabase] Auth event:', event);
+
+  if (event === 'SIGNED_IN' && session?.user) {
+    const u = session.user;
+    const name = u.user_metadata?.name || u.email.split('@')[0];
+    currentUser = {
+      id: u.id,
+      name,
+      email: u.email,
+      initials: getInitials(name),
+      isGuest: false,
+    };
+    onLoginSuccess(currentUser);
+    // Sync data after login
+    await syncUserDataFromSupabase();
+    renderFeed();
+  }
+
+  if (event === 'SIGNED_OUT') {
+    currentUser = null;
+    updateUserUI(null);
+  }
+
+  if (event === 'PASSWORD_RECOVERY') {
+    showToast('🔑 Set your new password');
+  }
+});
+
+// ── CHECK EXISTING SESSION ────────────────────────
+async function checkAuthSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    const u = session.user;
+    const name = u.user_metadata?.name || u.email.split('@')[0];
+    currentUser = {
+      id: u.id, name, email: u.email,
+      initials: getInitials(name), isGuest: false,
+    };
+    onLoginSuccess(currentUser);
+    await syncUserDataFromSupabase();
     return true;
   }
   return false;
