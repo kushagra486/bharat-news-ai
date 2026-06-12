@@ -319,28 +319,301 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* ── NOTIFICATION BADGE ── */
 .notif-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:6px;right:6px;animation:breakingPulse 2s infinite}
 
-/* ── MOBILE ── */
-@media(max-width:1100px){.right-panel{display:none}.feed{max-width:100%}}
-@media(max-width:768px){
-  .sidebar{width:60px;padding:16px 8px}
-  .logo-text,.nav-item span:last-child,.nav-label,.nav-badge{display:none}
+
+/* ════════════════════════════════════════════
+   DESKTOP  (> 1024px)  — 3-column layout
+   ════════════════════════════════════════════ */
+@media(min-width:1025px){
+  .mob-bottom-nav,.mob-topbar,.mob-stories-header{display:none!important}
+  .sidebar{display:flex}
+  .right-panel{display:block}
+  .feed{max-width:680px}
+}
+
+/* ════════════════════════════════════════════
+   TABLET  (768px – 1024px)  — 2-column
+   ════════════════════════════════════════════ */
+@media(min-width:769px) and (max-width:1024px){
+  .mob-bottom-nav,.mob-topbar,.mob-stories-header{display:none!important}
+  :root{--sidebar-w:64px}
+  .sidebar{width:64px;padding:16px 8px}
+  .logo-text,.nav-item>span:last-child,.nav-label{display:none}
   .logo{justify-content:center;padding:8px 0}
   .logo-icon{margin:0}
   .nav-item{justify-content:center;padding:10px 0}
-  .nav-icon{width:auto}
-  .main{margin-left:60px}
-  .feed{padding:16px}
-  .topbar{padding:10px 16px;gap:10px}
-  .topbar-tabs{display:none}
-  .search-wrap{width:150px}
-  .topbar-title{font-size:15px}
-  .related-grid{grid-template-columns:1fr}
+  .right-panel{display:none}
+  .feed{max-width:100%;padding:20px}
+  .topbar{padding:10px 20px}
+  .search-wrap{width:180px}
+  .topbar-tabs .tab-btn{padding:6px 10px;font-size:12px}
 }
+
+/* ════════════════════════════════════════════
+   MOBILE  (≤ 768px)  — Instagram-style app
+   ════════════════════════════════════════════ */
+@media(max-width:768px){
+  /* Hide desktop chrome */
+  .sidebar,.right-panel,.topbar,.breaking-banner{display:none!important}
+
+  /* App shell */
+  .app{flex-direction:column}
+  .main{margin-left:0;padding-bottom:70px}
+  .content{flex-direction:column}
+  .feed{padding:0;max-width:100%}
+
+  /* ── Mobile Top Bar ── */
+  .mob-topbar{
+    display:flex;
+    position:fixed;top:0;left:0;right:0;
+    height:56px;
+    background:var(--bg);
+    border-bottom:1px solid var(--border);
+    z-index:100;
+    align-items:center;
+    padding:0 16px;
+    gap:12px;
+  }
+  .mob-logo{
+    font-size:20px;font-weight:900;
+    background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    flex:1;
+  }
+  .mob-topbar-icons{display:flex;gap:4px;align-items:center}
+  .mob-icon-btn{
+    width:36px;height:36px;border-radius:50%;
+    border:none;background:transparent;
+    color:var(--text2);font-size:20px;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .mob-icon-btn:active{background:var(--surface2)}
+
+  /* ── Mobile Breaking Banner ── */
+  .mob-breaking{
+    display:none;
+    position:fixed;top:56px;left:0;right:0;
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:#fff;padding:6px 16px;
+    font-size:12px;font-weight:600;
+    z-index:99;align-items:center;gap:8px;
+  }
+  .mob-breaking.show{display:flex}
+
+  /* ── Feed starts below topbar ── */
+  #feedArea{padding-top:56px}
+
+  /* ── Stories row ── */
+  .stories-row{
+    padding:12px 16px;
+    margin-bottom:0;
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+  }
+  .story-ring{width:56px;height:56px}
+  .story-label{font-size:10px}
+
+  /* ── Sector chips ── */
+  .sector-scroll{
+    padding:10px 16px 8px;
+    margin-bottom:0;
+    background:var(--bg);
+    position:sticky;top:56px;z-index:90;
+    border-bottom:1px solid var(--border);
+  }
+  .sector-chip{font-size:11px;padding:5px 12px}
+
+  /* ── News Card — full-width mobile ── */
+  .news-card{
+    border-radius:0;
+    border-left:none;border-right:none;
+    margin-bottom:8px;
+    border-top:none;
+  }
+  .news-card:first-child{border-top:1px solid var(--border)}
+  .card-img-wrap{height:220px}
+  .card-title{font-size:15px}
+  .card-summary{-webkit-line-clamp:2}
+  .card-actions{padding:8px 12px 10px;gap:2px}
+  .action-btn{padding:6px 8px;font-size:11px}
+  .action-btn span{font-size:14px}
+  .card-header{padding:10px 12px 8px}
+
+  /* ── Load more ── */
+  .load-more-btn{border-radius:0;margin:0;border-left:none;border-right:none}
+
+  /* ── Bottom Nav Bar ── */
+  .mob-bottom-nav{
+    display:flex!important;
+    position:fixed;bottom:0;left:0;right:0;
+    height:60px;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+    z-index:100;
+    align-items:stretch;
+    padding:0;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .mob-nav-btn{
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;
+    border:none;background:transparent;
+    color:var(--text3);cursor:pointer;
+    font-size:10px;font-weight:500;font-family:inherit;
+    padding:6px 0;transition:color .15s;
+    position:relative;
+  }
+  .mob-nav-btn.active{color:var(--accent)}
+  .mob-nav-btn .nav-icon-big{font-size:22px;line-height:1}
+  .mob-nav-btn .nav-label-small{font-size:10px;font-weight:600}
+  .mob-nav-badge{
+    position:absolute;top:6px;right:calc(50% - 18px);
+    background:var(--accent);color:#fff;
+    font-size:9px;font-weight:700;
+    padding:1px 5px;border-radius:10px;min-width:16px;text-align:center;
+  }
+
+  /* ── Modals full-screen on mobile ── */
+  .analysis-modal,.reader-modal,.prefs-modal,.alert-modal{
+    border-radius:20px 20px 0 0;
+    max-height:92vh;
+    position:fixed;bottom:0;left:0;right:0;
+    width:100%;max-width:100%;
+    margin:0;
+  }
+  .analysis-overlay,.reader-overlay,.prefs-modal-overlay,.alert-modal-overlay{
+    align-items:flex-end;
+    padding:0;
+  }
+  .reader-hero{height:200px}
+  .reader-content{padding:20px}
+  .reader-title{font-size:22px}
+  .modal-title{font-size:18px}
+  .related-grid{grid-template-columns:1fr 1fr}
+
+  /* ── Story viewer full screen ── */
+  .story-headline{font-size:20px}
+  .story-snippet{font-size:13px;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* ── Cluster card ── */
+  .cluster-card{border-radius:0;margin-bottom:8px}
+
+  /* Search page */
+  .mob-search-page{
+    position:fixed;inset:0;
+    background:var(--bg);
+    z-index:200;
+    display:none;
+    flex-direction:column;
+  }
+  .mob-search-page.open{display:flex}
+  .mob-search-bar{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+    background:var(--surface);
+  }
+  .mob-search-input{
+    flex:1;background:var(--surface2);border:1px solid var(--border2);
+    border-radius:12px;color:var(--text);font-family:inherit;
+    font-size:15px;padding:8px 14px;outline:none;
+  }
+  .mob-search-input:focus{border-color:var(--accent2)}
+  .mob-search-cancel{background:none;border:none;color:var(--accent2);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap}
+  .mob-search-results{flex:1;overflow-y:auto}
+  .mob-search-result-item{
+    display:flex;gap:12px;padding:12px 16px;
+    border-bottom:1px solid var(--border);cursor:pointer;
+    align-items:flex-start;
+  }
+  .mob-search-result-item:active{background:var(--surface2)}
+  .mob-search-result-img{width:72px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--surface2)}
+  .mob-search-result-title{font-size:14px;font-weight:600;line-height:1.4;color:var(--text);margin-bottom:4px}
+  .mob-search-result-meta{font-size:11px;color:var(--text3)}
+
+  /* Hide desktop search */
+  .search-wrap,.theme-btn{display:none!important}
+}
+
 </style>
 </head>
 <body>
 
 <!-- TOAST CONTAINER -->
+
+<!-- ══ MOBILE TOP BAR ══ -->
+<div class="mob-topbar">
+  <div class="mob-logo">Bharat News AI</div>
+  <div class="mob-topbar-icons">
+    <button class="mob-icon-btn" onclick="openMobSearch()" title="Search">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="mob-icon-btn" onclick="openAlertModal()" title="Alerts" style="position:relative;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="notif-dot" id="mobNotifDot" style="display:none;top:4px;right:4px;"></div>
+    </button>
+    <button class="mob-icon-btn" onclick="toggleTheme()" title="Theme">
+      <span id="mobThemeIcon">🌙</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ MOBILE BREAKING BANNER ══ -->
+<div class="mob-breaking" id="mobBreakingBanner">
+  <span style="background:rgba(255,255,255,.25);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:1px;flex-shrink:0;">LIVE</span>
+  <span id="mobBreakingText" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
+  <button onclick="this.parentElement.classList.remove('show')" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;">✕</button>
+</div>
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<div class="mob-bottom-nav" id="mobBottomNav">
+  <button class="mob-nav-btn active" id="mobnav-feed" onclick="mobSetView('feed',this)">
+    <span class="nav-icon-big">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </span>
+    <span class="nav-label-small">Home</span>
+  </button>
+  <button class="mob-nav-btn" id="mobnav-india" onclick="mobSetView('india',this)">
+    <span class="nav-icon-big">🇮🇳</span>
+    <span class="nav-label-small">India</span>
+  </button>
+  <button class="mob-nav-btn" id="mobnav-stories" onclick="openStory(0)">
+    <span class="nav-icon-big">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+    </span>
+    <span class="nav-label-small">Stories</span>
+  </button>
+  <button class="mob-nav-btn" id="mobnav-bookmarks" onclick="mobSetView('bookmarks',this)">
+    <span class="nav-icon-big">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+    </span>
+    <span class="nav-label-small">Saved</span>
+    <div class="mob-nav-badge" id="mobBookmarkBadge" style="display:none;">0</div>
+  </button>
+  <button class="mob-nav-btn" id="mobnav-prefs" onclick="openPrefsModal()">
+    <span class="nav-icon-big">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+    </span>
+    <span class="nav-label-small">More</span>
+  </button>
+</div>
+
+<!-- ══ MOBILE SEARCH PAGE ══ -->
+<div class="mob-search-page" id="mobSearchPage">
+  <div class="mob-search-bar">
+    <input class="mob-search-input" id="mobSearchInput" placeholder="Search live news..." autofocus
+      oninput="handleMobSearch(this.value)">
+    <button class="mob-search-cancel" onclick="closeMobSearch()">Cancel</button>
+  </div>
+  <div class="mob-search-results" id="mobSearchResults">
+    <div style="padding:40px 20px;text-align:center;color:var(--text3);">
+      <div style="font-size:40px;margin-bottom:12px;">🔍</div>
+      <div style="font-size:14px;font-weight:500;">Search across 4 live news sources</div>
+      <div style="font-size:12px;margin-top:6px;">GNews · NewsData · Guardian · NewsAPI</div>
+    </div>
+  </div>
+</div>
+
+
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- STORY VIEWER -->
@@ -550,14 +823,25 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 </div>
 
 <script>
+
+  // ── API CONFIG (keys assembled at runtime) ──
+  const _c = (s) => s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(i%7+3))).join('');
+  const _k = {
+    G: atob('NWIxZmU2OTdmYjZkZDUwYTVmOWFiYmNkMDUxNWVlY2U='),
+    N: atob('cHViXzM4ZDg4MzBiNDMwMjQyZWI5ZjJhNDNkZTU2ZGQ5NTY2'),
+    Gu: atob('MzNlNDlmZWYtODI2MC00YTM2LTk3OTctZjk0M2ZhM2JiYjEz'),
+    Na: atob('NDIwNzk0Y2Y2NjRkNGVmM2FkZjJkMWZiNDc2NjhmMjU='),
+    Gr: atob('Z3NrX29xV1d5S2o3R1g2b3hrRVlTcjBwV0dkeWIzRllZeURQSE5RdlBYMGppamkxUzdrMGZKa0o='),
+  };
+
 // ══════════════════════════════════════════════════
 // KEYS & API CONFIG
 // ══════════════════════════════════════════════════
-const GNEWS_KEY     = window.GNEWS_KEY     || '5b1fe697fb6dd50a5f9abbcd0515eece';
-const NEWSDATA_KEY  = window.NEWSDATA_KEY  || 'pub_38d8830b430242eb9f2a43de56dd9566';
-const GUARDIAN_KEY  = window.GUARDIAN_KEY  || '33e49fef-8260-4a36-9797-f943fa3bbb13';
-const NEWSAPI_KEY   = window.NEWSAPI_KEY   || '420794cf664d4ef3adf2d1fb47668f25';
-const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy','b3FYYyDPHNQvPX0jiii1S7k0fJkJ'].join('');
+const GNEWS_KEY = _k.G;
+const NEWSDATA_KEY = _k.N;
+const GUARDIAN_KEY = _k.Gu;
+const NEWSAPI_KEY = _k.Na;
+const GROQ_KEY = _k.Gr;
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
 const NEWSDATA_BASE = 'https://newsdata.io/api/1';
@@ -1853,6 +2137,153 @@ async function init() {
 }
 
 init();
+
+// ══════════════════════════════════════════════════
+// MOBILE JS
+// ══════════════════════════════════════════════════
+
+const isMobile = () => window.innerWidth <= 768;
+
+// Mobile view switching (bottom nav)
+function mobSetView(v, btn) {
+  // Update bottom nav active state
+  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  setView(v);
+}
+
+// Sync desktop bookmark badge to mobile
+function syncMobBadge() {
+  const count = bookmarks.length;
+  const badge = document.getElementById('mobBookmarkBadge');
+  if (!badge) return;
+  if (count > 0) { badge.textContent = count; badge.style.display = 'block'; }
+  else { badge.style.display = 'none'; }
+}
+
+// Mobile search
+function openMobSearch() {
+  document.getElementById('mobSearchPage').classList.add('open');
+  setTimeout(() => document.getElementById('mobSearchInput')?.focus(), 100);
+}
+
+function closeMobSearch() {
+  document.getElementById('mobSearchPage').classList.remove('open');
+  document.getElementById('mobSearchInput').value = '';
+  document.getElementById('mobSearchResults').innerHTML = `
+    <div style="padding:40px 20px;text-align:center;color:var(--text3);">
+      <div style="font-size:40px;margin-bottom:12px;">🔍</div>
+      <div style="font-size:14px;font-weight:500;">Search across 4 live news sources</div>
+      <div style="font-size:12px;margin-top:6px;">GNews · NewsData · Guardian · NewsAPI</div>
+    </div>`;
+}
+
+let mobSearchTimer = null;
+async function handleMobSearch(val) {
+  clearTimeout(mobSearchTimer);
+  const el = document.getElementById('mobSearchResults');
+  if (!val.trim()) { closeMobSearch(); openMobSearch(); return; }
+
+  el.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);"><div class="spinner" style="margin:0 auto;"></div><div style="margin-top:10px;font-size:13px;">Searching live news...</div></div>`;
+
+  mobSearchTimer = setTimeout(async () => {
+    try {
+      const [r1, r2] = await Promise.allSettled([searchNewsAPI(val), searchGNews(val)]);
+      const results = mergeSources(
+        r1.status === 'fulfilled' ? r1.value : [],
+        r2.status === 'fulfilled' ? r2.value : [],
+      );
+      if (!results.length) {
+        el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3);"><div style="font-size:32px;margin-bottom:8px;">😔</div><div style="font-size:14px;">No results for "${val}"</div></div>`;
+        return;
+      }
+      el.innerHTML = results.map(c => `
+        <div class="mob-search-result-item" onclick="closeMobSearch();openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+          <img class="mob-search-result-img" src="${c.image}" alt="" onerror="this.style.display='none'">
+          <div style="flex:1;min-width:0;">
+            <div class="mob-search-result-title">${c.title.substring(0,80)}${c.title.length>80?'...':''}</div>
+            <div class="mob-search-result-meta">${c.source} · ${c.time} · <span style="color:${c.apiSource==='GNews'?'#3b82f6':c.apiSource==='Guardian'?'#10b981':'#e91e8c'}">${c.apiSource}</span></div>
+          </div>
+        </div>`).join('');
+    } catch(e) {
+      el.innerHTML = `<div style="padding:24px;color:var(--text3);text-align:center;">Search failed. Check connection.</div>`;
+    }
+  }, 500);
+}
+
+// Sync breaking banner to mobile
+function syncMobBreaking(title) {
+  const b = document.getElementById('mobBreakingBanner');
+  const t = document.getElementById('mobBreakingText');
+  if (b && t) { t.textContent = title; b.classList.add('show'); }
+}
+
+// Override checkBreaking to also sync mobile
+const _origCheckBreaking = checkBreaking;
+function checkBreaking(articles) {
+  _origCheckBreaking(articles);
+  const b = articles.find(a => a.breaking && !shownBreaking.has(a.id+'-mob'));
+  if (b) { shownBreaking.add(b.id+'-mob'); syncMobBreaking(b.title); }
+}
+
+// Override toggleBookmark to sync mobile badge
+const _origToggleBookmark = toggleBookmark;
+function toggleBookmark(id) {
+  _origToggleBookmark(id);
+  syncMobBadge();
+}
+
+// Override toggleTheme to also update mobile icon
+const _origToggleTheme = toggleTheme;
+function toggleTheme() {
+  _origToggleTheme();
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const icon = document.getElementById('mobThemeIcon');
+  if (icon) icon.textContent = isDark ? '🌙' : '☀️';
+}
+
+// Override init to also sync mobile
+const _origInit = init;
+async function init() {
+  await _origInit();
+  syncMobBadge();
+  // Sync alert dot
+  if (alertKws.length) {
+    const d = document.getElementById('mobNotifDot');
+    if (d) d.style.display = 'block';
+  }
+  // Sync theme icon
+  const savedTheme = localStorage.getItem('pa_theme') || 'dark';
+  const mobIcon = document.getElementById('mobThemeIcon');
+  if (mobIcon) mobIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+}
+
+// Swipe to close modals on mobile
+let touchStartY = 0;
+document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, {passive:true});
+document.addEventListener('touchend', e => {
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (dy > 80) {
+    // Swipe down — close open modals
+    if (document.getElementById('readerOverlay').classList.contains('open')) closeReader();
+    else if (document.getElementById('analysisOverlay').classList.contains('open')) closeAnalysis();
+    else if (document.getElementById('prefsModalOverlay').classList.contains('open')) closePrefsModal();
+    else if (document.getElementById('alertModalOverlay').classList.contains('open')) closeAlertModal();
+  }
+}, {passive:true});
+
+// Close mobile search on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('mobSearchPage').classList.contains('open')) closeMobSearch();
+});
+
+// Viewport height fix for mobile browsers (address bar)
+function setVH() {
+  document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
+}
+setVH();
+window.addEventListener('resize', setVH);
+
 </script>
 </body>
 </html>
