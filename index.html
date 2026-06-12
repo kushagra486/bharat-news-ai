@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="Bharat News AI — Live AI-powered daily news intelligence">
+<link rel="manifest" href="#" id="manifestLink">
+<title>Bharat News AI — Daily Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root {
+  --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
+  --border:#2a2a2a;--border2:#333;--text:#f5f5f5;--text2:#aaa;--text3:#666;
+  --accent:#e91e8c;--accent2:#9333ea;--accent3:#f59e0b;--accent4:#10b981;--accent5:#3b82f6;
+  --grad:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);
+  --sidebar-w:240px;--right-w:320px;
+  --reading-time-color:#9333ea;
+}
+[data-theme="light"]{
+  --bg:#f8f9fa;--surface:#fff;--surface2:#f1f3f5;--surface3:#e9ecef;
+  --border:#dee2e6;--border2:#ced4da;--text:#212529;--text2:#495057;--text3:#868e96;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);position:fixed;top:0;left:0;height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;z-index:100;overflow-y:auto;transition:background .3s}
+.logo{display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:24px;cursor:pointer}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.logo-text{font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;padding:0 12px;margin:16px 0 4px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .15s;color:var(--text2);font-weight:500;font-size:14px;position:relative;user-select:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--surface2);color:var(--text);font-weight:600}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--grad);border-radius:0 2px 2px 0}
+.nav-icon{font-size:18px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center}
+.sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── BREAKING BANNER ── */
+.breaking-banner{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;padding:8px 24px;display:none;align-items:center;gap:12px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:60;animation:breakingPulse 2s infinite}
+.breaking-banner.show{display:flex}
+.breaking-label{background:rgba(255,255,255,.25);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:800;letter-spacing:1px;flex-shrink:0}
+.breaking-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.breaking-close{cursor:pointer;opacity:.7;flex-shrink:0;font-size:16px;background:none;border:none;color:#fff}
+@keyframes breakingPulse{0%,100%{opacity:1}50%{opacity:.85}}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;background:rgba(10,10,10,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:50;padding:12px 24px;display:flex;align-items:center;gap:16px}
+[data-theme="light"] .topbar{background:rgba(248,249,250,.95)}
+.topbar-title{font-size:18px;font-weight:700}
+.topbar-meta{flex:1;min-width:0}
+.topbar-sub{display:flex;align-items:center;gap:8px;margin-top:2px}
+.topbar-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px}
+.tab-btn{padding:6px 14px;border-radius:7px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab-btn.active{background:var(--surface);color:var(--text);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.search-wrap{position:relative;width:220px}
+.search-wrap input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--text);font-family:inherit;font-size:13px;padding:7px 36px 7px 14px;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent2)}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px;display:none}
+.theme-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.theme-btn:hover{border-color:var(--accent2);color:var(--text)}
+
+/* ── CONTENT ── */
+.content{display:flex;flex:1}
+.feed{flex:1;padding:24px;max-width:720px;min-width:0}
+.right-panel{width:var(--right-w);position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;padding:24px 20px;border-left:1px solid var(--border);flex-shrink:0}
+
+/* ── STORIES ── */
+.stories-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:12px;margin-bottom:24px;scrollbar-width:none}
+.stories-row::-webkit-scrollbar{display:none}
+.story-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.story-ring{width:64px;height:64px;border-radius:50%;padding:2px;background:var(--grad);position:relative;transition:transform .2s}
+.story-ring:hover{transform:scale(1.05)}
+.story-ring.viewed{background:var(--surface3)}
+.story-avatar{width:100%;height:100%;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid var(--bg);overflow:hidden}
+.story-label{font-size:11px;color:var(--text2);font-weight:500;text-align:center;max-width:64px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── SECTOR CHIPS ── */
+.sector-scroll{display:flex;gap:8px;overflow-x:auto;margin-bottom:20px;scrollbar-width:none;padding-bottom:2px}
+.sector-scroll::-webkit-scrollbar{display:none}
+.sector-chip{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px}
+.sector-chip:hover{border-color:var(--text3);color:var(--text)}
+.sector-chip.active{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
+.india-chip{border-color:rgba(255,153,51,.5);color:#ff9933}
+.india-chip.active{background:linear-gradient(135deg,#ff9933,#138808);border-color:transparent;color:#fff}
+
+/* ── LOAD MORE ── */
+.load-more-btn{width:100%;padding:12px;border-radius:12px;border:1px dashed var(--border2);background:transparent;color:var(--text2);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;margin:16px 0;display:flex;align-items:center;justify-content:center;gap:8px}
+.load-more-btn:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(147,51,234,.05)}
+
+/* ── NEWS CARD ── */
+.news-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;transition:border-color .2s,transform .2s;cursor:pointer}
+.news-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.card-header{padding:14px 16px 10px;display:flex;align-items:center;gap:10px}
+.source-avatar{width:38px;height:38px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid var(--border)}
+.source-info{flex:1;min-width:0}
+.source-name{font-weight:600;font-size:13px;color:var(--text);display:flex;align-items:center;gap:4px}
+.verified{color:var(--accent5);font-size:12px}
+.source-meta{font-size:11px;color:var(--text3);margin-top:1px;display:flex;align-items:center;gap:6px}
+.reading-time{padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600;background:rgba(147,51,234,.12);color:var(--accent2)}
+
+/* ── CARD IMAGE ── */
+.card-img-wrap{position:relative;width:100%;height:240px;overflow:hidden;cursor:pointer;background:var(--surface2)}
+.card-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.news-card:hover .card-img{transform:scale(1.04)}
+.card-img-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--surface2);font-size:64px}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.5) 100%);pointer-events:none}
+.card-img-sector{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;backdrop-filter:blur(12px);background:rgba(0,0,0,.5)!important}
+.card-img-breaking{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;background:#ef4444;color:#fff;letter-spacing:.5px;text-transform:uppercase;animation:breakingPulse 2s infinite}
+
+/* ── CARD BODY ── */
+.card-body{padding:14px 16px}
+.card-title{font-size:16px;font-weight:700;line-height:1.4;margin-bottom:8px;color:var(--text)}
+.card-summary{font-size:13px;color:var(--text2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{padding:3px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;font-size:11px;color:var(--text3)}
+
+/* ── CARD ACTIONS ── */
+.card-actions{padding:10px 16px 14px;display:flex;align-items:center;gap:4px;border-top:1px solid var(--border);flex-wrap:wrap}
+.action-btn{display:flex;align-items:center;gap:5px;padding:7px 10px;border-radius:8px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;white-space:nowrap}
+.action-btn:hover{background:var(--surface2);color:var(--text)}
+.action-btn.liked{color:#e91e8c}
+.action-btn.bookmarked{color:var(--accent3)}
+.action-btn span{font-size:16px}
+.action-sep{margin-left:auto}
+
+/* ── ARTICLE READER MODAL ── */
+.reader-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);z-index:250;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.reader-overlay.open{display:flex}
+.reader-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:760px;position:relative;margin:auto}
+.reader-hero{width:100%;height:280px;object-fit:cover;border-radius:20px 20px 0 0;display:block}
+.reader-hero-fallback{width:100%;height:280px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:center;font-size:80px;background:var(--surface2)}
+.reader-content{padding:32px}
+.reader-sector{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.reader-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;line-height:1.3;margin-bottom:14px;color:var(--text)}
+.reader-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.reader-source-chip{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);padding:4px 10px;background:var(--surface2);border-radius:20px}
+.reader-body{font-size:15px;line-height:1.85;color:var(--text2)}
+.reader-body p{margin-bottom:16px}
+.reader-actions{display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.reader-btn{padding:10px 20px;border-radius:10px;border:none;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.reader-btn.primary{background:var(--grad);color:#fff}
+.reader-btn.secondary{background:var(--surface2);border:1px solid var(--border2);color:var(--text2)}
+.reader-btn.secondary:hover{border-color:var(--accent2);color:var(--text)}
+.reader-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,.5);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:2;backdrop-filter:blur(8px)}
+.reader-close:hover{background:rgba(0,0,0,.8)}
+/* TTS bar */
+.tts-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface2);border-radius:12px;margin-bottom:20px}
+.tts-play{width:36px;height:36px;border-radius:50%;border:none;background:var(--grad);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tts-progress{flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden;cursor:pointer}
+.tts-fill{height:100%;background:var(--grad);border-radius:2px;width:0%;transition:width .3s}
+.tts-time{font-size:11px;color:var(--text3);flex-shrink:0}
+.tts-speed{padding:3px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:11px;font-family:inherit;cursor:pointer}
+
+/* ── ANALYSIS MODAL ── */
+.analysis-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.analysis-overlay.open{display:flex}
+.analysis-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:780px;max-height:90vh;overflow-y:auto;padding:28px;position:relative}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.modal-close:hover{background:var(--surface3);color:var(--text)}
+.modal-title{font-size:22px;font-weight:800;margin-bottom:6px;padding-right:40px;line-height:1.3}
+.modal-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.modal-source-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;background:var(--surface2);border-radius:20px;font-size:12px;color:var(--text2)}
+.ai-section{margin-bottom:20px}
+.ai-section-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;text-transform:uppercase;letter-spacing:.8px}
+.ai-badge{padding:2px 7px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;font-size:10px;color:#fff;font-weight:700;letter-spacing:.5px}
+.summary-box{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:10px;padding:14px 16px;font-size:14px;line-height:1.7;color:var(--text)}
+.timeline-list{list-style:none}
+.timeline-item{display:flex;gap:14px;padding-bottom:18px;position:relative}
+.timeline-item::before{content:'';position:absolute;left:10px;top:24px;bottom:0;width:1px;background:var(--border2)}
+.timeline-item:last-child::before{display:none}
+.timeline-dot{width:20px;height:20px;border-radius:50%;background:var(--accent2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;margin-top:2px}
+.timeline-content{flex:1}
+.timeline-date{font-size:11px;color:var(--text3);margin-bottom:3px;font-weight:600}
+.timeline-text{font-size:13px;color:var(--text2);line-height:1.5}
+.sentiment-bar{display:flex;border-radius:8px;overflow:hidden;height:8px;margin-bottom:8px;gap:2px}
+.sentiment-seg{height:100%;border-radius:4px}
+.sentiment-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3)}
+.key-points{display:flex;flex-direction:column;gap:8px}
+.key-point{display:flex;gap:10px;align-items:flex-start;background:var(--surface2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text2);line-height:1.5}
+.kp-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.related-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.related-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;transition:border-color .15s}
+.related-card:hover{border-color:var(--border2)}
+.related-card-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:4px}
+.related-card-source{font-size:11px;color:var(--text3)}
+.sources-list{display:flex;flex-direction:column;gap:8px}
+.source-chip-link{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text2);cursor:pointer;text-decoration:none;transition:border-color .15s}
+.source-chip-link:hover{border-color:var(--accent5);color:var(--text)}
+
+/* ── STORY VIEWER ── */
+.story-viewer{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column}
+.story-viewer.open{display:flex}
+.story-progress{display:flex;gap:4px;padding:12px 16px 8px;position:relative;z-index:2}
+.story-prog-bar{flex:1;height:2px;background:rgba(255,255,255,.3);border-radius:2px;overflow:hidden}
+.story-prog-fill{height:100%;background:#fff;border-radius:2px;width:0%;transition:width .1s linear}
+.story-prog-fill.complete{width:100%}
+.story-top{display:flex;align-items:center;gap:10px;padding:8px 16px;position:relative;z-index:2}
+.story-source-name{font-size:14px;font-weight:600;color:#fff}
+.story-time{font-size:12px;color:rgba(255,255,255,.6)}
+.story-close{margin-left:auto;background:transparent;border:none;color:#fff;font-size:24px;cursor:pointer;padding:4px}
+.story-content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:20px;position:relative;overflow:hidden}
+.story-bg{position:absolute;inset:0}
+.story-bg-img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.65)}
+.story-grad{position:absolute;inset:0;background:linear-gradient(transparent 20%,rgba(0,0,0,.85))}
+.story-text-area{position:relative;z-index:2;width:100%;max-width:500px}
+.story-category{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.story-headline{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:12px}
+.story-snippet{font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px}
+.story-cta{display:flex;gap:10px}
+.story-cta-btn{padding:10px 20px;border-radius:24px;border:none;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s}
+.story-cta-btn:hover{transform:scale(1.02)}
+.story-cta-btn.primary{background:#fff;color:#000}
+.story-cta-btn.secondary{background:rgba(255,255,255,.2);color:#fff}
+/* Tap zones */
+.story-tap-left{position:absolute;left:0;top:0;width:40%;height:100%;z-index:3;cursor:pointer}
+.story-tap-right{position:absolute;right:0;top:0;width:40%;height:100%;z-index:3;cursor:pointer}
+
+/* ── ALERT MODAL ── */
+.alert-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:350;display:none;align-items:center;justify-content:center;padding:20px}
+.alert-modal-overlay.open{display:flex}
+.alert-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:480px;padding:28px;position:relative}
+.alert-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.alert-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5}
+.alert-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 14px;outline:none;margin-bottom:10px;transition:border-color .2s}
+.alert-input:focus{border-color:var(--accent2)}
+.alerts-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;max-height:200px;overflow-y:auto}
+.alert-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:8px;font-size:13px}
+.alert-keyword{flex:1;font-weight:500;color:var(--text)}
+.alert-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:2px}
+.alert-remove:hover{color:#ef4444}
+
+/* ── PREFERENCES MODAL ── */
+.prefs-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:350;display:none;align-items:center;justify-content:center;padding:20px}
+.prefs-modal-overlay.open{display:flex}
+.prefs-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:100%;max-width:500px;padding:28px;position:relative;max-height:90vh;overflow-y:auto}
+.prefs-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.prefs-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+.prefs-section{margin-bottom:20px}
+.prefs-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:10px}
+.prefs-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pref-chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s}
+.pref-chip.selected{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
+.pref-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.pref-row:last-child{border-bottom:none}
+.pref-label{font-size:14px;font-weight:500;color:var(--text)}
+.pref-desc{font-size:12px;color:var(--text3);margin-top:2px}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--border2);border-radius:24px;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked + .toggle-slider{background:var(--accent2)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px)}
+
+/* ── SHARE IMAGE ── */
+.share-preview{background:var(--surface2);border-radius:12px;overflow:hidden;margin-bottom:16px}
+
+/* ── RIGHT PANEL ── */
+.panel-section{margin-bottom:24px}
+.panel-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.trending-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .15s}
+.trending-item:hover{opacity:.8}
+.trending-item:last-child{border-bottom:none}
+.trending-rank{font-size:16px;font-weight:800;color:var(--text3);width:24px;flex-shrink:0}
+.trending-info{flex:1;min-width:0}
+.trending-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:2px}
+.trending-meta{font-size:11px;color:var(--text3)}
+.market-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.market-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+.market-card:hover{border-color:var(--border2)}
+.market-symbol{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase}
+.market-price{font-size:15px;font-weight:700;color:var(--text);margin-top:2px}
+.market-change{font-size:12px;font-weight:600;margin-top:2px}
+.up{color:var(--accent4)}.down{color:#ef4444}
+.ai-insight-box{background:linear-gradient(135deg,rgba(233,30,140,.1),rgba(147,51,234,.1));border:1px solid rgba(147,51,234,.3);border-radius:12px;padding:14px}
+.ai-insight-title{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.ai-insight-text{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── CLUSTER ── */
+.cluster-card{background:linear-gradient(135deg,rgba(147,51,234,.08),rgba(59,130,246,.08));border:1px solid rgba(147,51,234,.2);border-radius:16px;padding:16px;margin-bottom:20px}
+.cluster-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cluster-headline{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.4}
+.cluster-articles{display:flex;flex-direction:column;gap:8px}
+.cluster-item{display:flex;gap:10px;padding:8px;background:var(--surface);border-radius:8px;cursor:pointer;transition:background .15s;align-items:flex-start}
+.cluster-item:hover{background:var(--surface2)}
+.cluster-item-img{width:56px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.cluster-item-title{font-size:12px;font-weight:500;color:var(--text2);line-height:1.4;flex:1}
+.cluster-item-source{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:16px 0}
+.btn-grad{padding:9px 18px;border-radius:8px;border:none;background:var(--grad);color:#fff;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:opacity .15s}
+.btn-grad:hover{opacity:.85}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text3)}
+.empty-state-icon{font-size:48px;margin-bottom:12px}
+.empty-state-title{font-size:16px;font-weight:600;color:var(--text2);margin-bottom:6px}
+.loading-shimmer{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.spinner{width:18px;height:18px;border:2px solid var(--border2);border-top-color:var(--accent2);border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease forwards}
+.gradient-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:500;animation:fadeIn .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.4);white-space:nowrap}
+
+/* ── NOTIFICATION BADGE ── */
+.notif-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:6px;right:6px;animation:breakingPulse 2s infinite}
+
+/* ── MOBILE ── */
+@media(max-width:1100px){.right-panel{display:none}.feed{max-width:100%}}
+@media(max-width:768px){
+  .sidebar{width:60px;padding:16px 8px}
+  .logo-text,.nav-item span:last-child,.nav-label,.nav-badge{display:none}
+  .logo{justify-content:center;padding:8px 0}
+  .logo-icon{margin:0}
+  .nav-item{justify-content:center;padding:10px 0}
+  .nav-icon{width:auto}
+  .main{margin-left:60px}
+  .feed{padding:16px}
+  .topbar{padding:10px 16px;gap:10px}
+  .topbar-tabs{display:none}
+  .search-wrap{width:150px}
+  .topbar-title{font-size:15px}
+  .related-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- STORY VIEWER -->
+<div class="story-viewer" id="storyViewer">
+  <div class="story-progress" id="storyProgress"></div>
+  <div class="story-top">
+    <div style="width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.3);" id="storyIconWrap">
+      <img id="storyIcon" style="width:100%;height:100%;object-fit:cover;" src="" alt="">
+    </div>
+    <div>
+      <div class="story-source-name" id="storySourceName"></div>
+      <div class="story-time" id="storyTime"></div>
+    </div>
+    <button class="story-close" onclick="closeStory()">✕</button>
+  </div>
+  <div class="story-content">
+    <div class="story-tap-left" onclick="prevStory()"></div>
+    <div class="story-tap-right" onclick="nextStory()"></div>
+    <div class="story-bg"><img id="storyBgImg" class="story-bg-img" src="" alt=""></div>
+    <div class="story-grad"></div>
+    <div class="story-text-area">
+      <div class="story-category" id="storyCategory"></div>
+      <div class="story-headline" id="storyHeadline"></div>
+      <div class="story-snippet" id="storySnippet"></div>
+      <div class="story-cta">
+        <button class="story-cta-btn primary" onclick="openFromStory()">Read Full Story</button>
+        <button class="story-cta-btn secondary" onclick="nextStory()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARTICLE READER MODAL -->
+<div class="reader-overlay" id="readerOverlay" onclick="closeReaderOnBg(event)">
+  <div class="reader-modal" id="readerModal">
+    <button class="reader-close" onclick="closeReader()">✕</button>
+    <div id="readerContent"></div>
+  </div>
+</div>
+
+<!-- ANALYSIS MODAL -->
+<div class="analysis-overlay" id="analysisOverlay" onclick="closeModalOnBg(event)">
+  <div class="analysis-modal" id="analysisModal">
+    <button class="modal-close" onclick="closeAnalysis()">✕</button>
+    <div id="analysisContent"></div>
+  </div>
+</div>
+
+<!-- ALERT MODAL -->
+<div class="alert-modal-overlay" id="alertModalOverlay" onclick="closeAlertModal(event)">
+  <div class="alert-modal">
+    <button class="modal-close" onclick="closeAlertModal()">✕</button>
+    <div class="alert-title">🔔 Keyword Alerts</div>
+    <div class="alert-sub">Get notified when breaking news matches your keywords. Alerts check every 15 minutes.</div>
+    <div class="alerts-list" id="alertsList"></div>
+    <div style="display:flex;gap:8px;">
+      <input class="alert-input" id="alertKeywordInput" placeholder="e.g. AI, Bitcoin, India, Climate..." style="flex:1;margin-bottom:0;" onkeydown="if(event.key==='Enter')addAlert()">
+      <button class="btn-grad" onclick="addAlert()">+ Add</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:8px;">Browser notifications must be enabled. Alerts fire when new articles match.</div>
+  </div>
+</div>
+
+<!-- PREFERENCES MODAL -->
+<div class="prefs-modal-overlay" id="prefsModalOverlay" onclick="closePrefsModal(event)">
+  <div class="prefs-modal">
+    <button class="modal-close" onclick="closePrefsModal()">✕</button>
+    <div class="prefs-title">⚙️ Preferences</div>
+    <div class="prefs-sub">Personalise your news feed</div>
+    <div class="prefs-section">
+      <div class="prefs-section-title">Favourite Sectors</div>
+      <div class="prefs-chips" id="prefSectorChips"></div>
+    </div>
+    <div class="prefs-section">
+      <div class="prefs-section-title">Feed Settings</div>
+      <div class="pref-row">
+        <div><div class="pref-label">Show India Tab 🇮🇳</div><div class="pref-desc">Dedicated India news section</div></div>
+        <label class="toggle"><input type="checkbox" id="prefIndia" onchange="savePref('showIndia',this.checked);renderSectors()"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="pref-row">
+        <div><div class="pref-label">AI Story Clustering</div><div class="pref-desc">Group related articles together</div></div>
+        <label class="toggle"><input type="checkbox" id="prefCluster" onchange="savePref('clustering',this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="pref-row">
+        <div><div class="pref-label">Auto-play Stories</div><div class="pref-desc">Start stories on app open</div></div>
+        <label class="toggle"><input type="checkbox" id="prefAutoStory" onchange="savePref('autoStory',this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="pref-row">
+        <div><div class="pref-label">Show Reading Time</div><div class="pref-desc">Estimated read time on cards</div></div>
+        <label class="toggle"><input type="checkbox" id="prefReadTime" checked onchange="savePref('readTime',this.checked);renderFeed()"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+    <button class="btn-grad" style="width:100%;margin-top:8px;" onclick="closePrefsModal()">Save Preferences</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="logo" onclick="setView('feed')">
+      <div class="logo-icon">B</div>
+      <span class="logo-text">Bharat News AI</span>
+    </div>
+    <div class="nav-item active" id="nav-feed" onclick="setView('feed')">
+      <span class="nav-icon">🏠</span><span>Feed</span>
+    </div>
+    <div class="nav-item" id="nav-india" onclick="setView('india')">
+      <span class="nav-icon">🇮🇳</span><span>India</span>
+    </div>
+    <div class="nav-item" id="nav-explore" onclick="setView('explore')">
+      <span class="nav-icon">🔍</span><span>Explore</span>
+    </div>
+    <div class="nav-item" id="nav-research" onclick="setView('research')">
+      <span class="nav-icon">🔬</span><span>Research</span>
+    </div>
+    <div class="nav-item" id="nav-bookmarks" onclick="setView('bookmarks')">
+      <span class="nav-icon">🔖</span><span>Saved</span>
+      <span class="nav-badge" id="bookmarkCount">0</span>
+    </div>
+    <div class="nav-label">Sectors</div>
+    <div class="nav-item" onclick="setSector('Tech')"><span class="nav-icon">💻</span><span>Technology</span></div>
+    <div class="nav-item" onclick="setSector('Finance')"><span class="nav-icon">📈</span><span>Finance</span></div>
+    <div class="nav-item" onclick="setSector('Health')"><span class="nav-icon">🏥</span><span>Health</span></div>
+    <div class="nav-item" onclick="setSector('Science')"><span class="nav-icon">🔭</span><span>Science</span></div>
+    <div class="nav-item" onclick="setSector('Politics')"><span class="nav-icon">🏛️</span><span>Politics</span></div>
+    <div class="nav-item" onclick="setSector('Climate')"><span class="nav-icon">🌍</span><span>Climate</span></div>
+    <div class="nav-item" onclick="setSector('Sports')"><span class="nav-icon">⚽</span><span>Sports</span></div>
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="openAlertModal()" style="position:relative;">
+        <span class="nav-icon">🔔</span><span>Alerts</span>
+        <div class="notif-dot" id="notifDot" style="display:none;"></div>
+      </div>
+      <div class="nav-item" onclick="openPrefsModal()"><span class="nav-icon">⚙️</span><span>Preferences</span></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- BREAKING BANNER -->
+    <div class="breaking-banner" id="breakingBanner">
+      <span class="breaking-label">BREAKING</span>
+      <span class="breaking-text" id="breakingText"></span>
+      <button class="breaking-close" onclick="document.getElementById('breakingBanner').classList.remove('show')">✕</button>
+    </div>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-meta">
+        <div class="topbar-title" id="topbarTitle">🗞️ Daily Intelligence Feed</div>
+        <div class="topbar-sub">
+          <div id="lastUpdated" style="font-size:10px;color:var(--text3);font-weight:500;">⏳ Fetching...</div>
+          <div id="sourceBadge" style="font-size:10px;font-weight:600;padding:2px 8px;background:var(--surface2);border-radius:20px;border:1px solid var(--border);">⏳ Connecting...</div>
+        </div>
+      </div>
+      <div class="topbar-tabs">
+        <button class="tab-btn active" onclick="setFeedMode('all',this)">All</button>
+        <button class="tab-btn" onclick="setFeedMode('trending',this)">Trending</button>
+        <button class="tab-btn" onclick="setFeedMode('ai-picks',this)">AI Picks</button>
+        <button class="tab-btn" onclick="setFeedMode('hindi',this)">हिंदी</button>
+      </div>
+      <div class="search-wrap">
+        <input type="text" placeholder="Search live news..." id="searchInput" oninput="handleSearch(this.value)">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="feed" id="feedArea">
+        <div class="stories-row" id="storiesRow"></div>
+        <div class="sector-scroll" id="sectorChips"></div>
+        <div id="newsFeed"></div>
+        <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()" style="display:none;">
+          <span class="spinner" style="display:none;" id="loadMoreSpinner"></span>
+          <span id="loadMoreText">⬇️ Load More Articles</span>
+        </button>
+      </div>
+      <div class="right-panel">
+        <div class="panel-section">
+          <div class="panel-title">🔥 Trending Now</div>
+          <div id="trendingList"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="panel-section">
+          <div class="panel-title">📊 Markets</div>
+          <div class="market-grid" id="marketGrid"></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:right;">Simulated · <a href="https://finance.yahoo.com" target="_blank" style="color:var(--accent5);text-decoration:none;">Live on Yahoo Finance →</a></div>
+        </div>
+        <div class="divider"></div>
+        <div class="panel-section">
+          <div class="panel-title">✨ AI Daily Briefing</div>
+          <div class="ai-insight-box">
+            <div class="ai-insight-title">🧠 Today's Intelligence</div>
+            <div class="ai-insight-text" id="dailyBriefing">⏳ Generating briefing with Groq Llama 3.3 70B...</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="panel-section">
+          <div class="panel-title">📡 Live Sources</div>
+          <div id="sourcesList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// KEYS & API CONFIG
+// ══════════════════════════════════════════════════
+const GNEWS_KEY     = window.GNEWS_KEY     || '5b1fe697fb6dd50a5f9abbcd0515eece';
+const NEWSDATA_KEY  = window.NEWSDATA_KEY  || 'pub_38d8830b430242eb9f2a43de56dd9566';
+const GUARDIAN_KEY  = window.GUARDIAN_KEY  || '33e49fef-8260-4a36-9797-f943fa3bbb13';
+const NEWSAPI_KEY   = window.NEWSAPI_KEY   || '420794cf664d4ef3adf2d1fb47668f25';
+const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy','b3FYYyDPHNQvPX0jiii1S7k0fJkJ'].join('');
+
+const GNEWS_BASE    = 'https://gnews.io/api/v4';
+const NEWSDATA_BASE = 'https://newsdata.io/api/1';
+const GUARDIAN_BASE = 'https://content.guardianapis.com';
+const NEWSAPI_BASE  = 'https://newsapi.org/v2';
+const GROQ_BASE     = 'https://api.groq.com/openai/v1/chat/completions';
+
+const SECTOR_TO_GNEWS    = {All:'general',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'nation',Climate:'world',Sports:'sports'};
+const SECTOR_TO_NEWSDATA = {All:'top',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'politics',Climate:'environment',Sports:'sports'};
+const SECTOR_TO_GUARDIAN = {All:'news',Tech:'technology',Finance:'business',Health:'society',Science:'science',Politics:'politics',Climate:'environment',Sports:'sport'};
+const SECTOR_TO_NEWSAPI  = {All:'general',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'general',Climate:'science',Sports:'sports'};
+
+const SECTOR_FALLBACK_IMAGES = {
+  Tech:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80',
+  Finance:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
+  Health:'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800&q=80',
+  Science:'https://images.unsplash.com/photo-1636955779321-819753cd1741?w=800&q=80',
+  Politics:'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&q=80',
+  Climate:'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800&q=80',
+  Sports:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80',
+  All:'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80',
+  India:'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80',
+};
+const SECTOR_COLORS  = {Tech:'#3b82f6',Finance:'#10b981',Health:'#e91e8c',Science:'#9333ea',Politics:'#f59e0b',Climate:'#10b981',Sports:'#ef4444',All:'#9333ea',India:'#ff9933'};
+const SECTOR_EMOJIS  = {Tech:'💻',Finance:'📈',Health:'🏥',Science:'🔬',Politics:'🏛️',Climate:'🌍',Sports:'⚽',All:'🌐',India:'🇮🇳'};
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+const state = {
+  currentSector: 'All',
+  feedMode: 'all',
+  view: 'feed',
+  storyIndex: 0,
+  storyTimer: null,
+  currentCard: null,
+  currentPage: {},   // sector → next page token
+  ttsUtterance: null,
+  ttsPlaying: false,
+};
+
+let newsData   = [];
+let newsCache  = {};
+let lastFetch  = {};
+let bookmarks  = JSON.parse(localStorage.getItem('pa_bookmarks') || '[]');
+let likes      = JSON.parse(localStorage.getItem('pa_likes') || '[]');
+let readItems  = JSON.parse(localStorage.getItem('pa_read') || '[]');
+let alertKws   = JSON.parse(localStorage.getItem('pa_alerts') || '[]');
+let prefs      = JSON.parse(localStorage.getItem('pa_prefs') || JSON.stringify({showIndia:true,clustering:true,autoStory:false,readTime:true,favSectors:['Tech','Finance','Health']}));
+let storiesData = [];
+
+const sectors = ['All','Tech','Finance','Health','Science','Politics','Climate','Sports'];
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+function timeAgo(d) {
+  const pub = new Date(d);
+  if (isNaN(pub)) return 'Just now';
+  const m = Math.floor((Date.now()-pub)/60000);
+  if (m<2) return 'Just now';
+  if (m<60) return `${m}m ago`;
+  const h = Math.floor(m/60);
+  if (h<24) return `${h}h ago`;
+  return pub.toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+}
+
+function readingTime(text) {
+  const words = (text||'').split(/\s+/).filter(Boolean).length;
+  const mins = Math.max(1, Math.ceil(words/200));
+  return `${mins} min read`;
+}
+
+function extractTags(title, kws) {
+  if (kws&&kws.length) return kws.slice(0,3).map(k=>k.trim()).filter(Boolean);
+  return (title||'').split(' ').filter(w=>w.length>4).slice(0,3).map(w=>w.replace(/[^a-zA-Z]/g,'')).filter(Boolean);
+}
+
+function isBreaking(article) {
+  const breakingKws = ['breaking','urgent','alert','just in','developing','live:','exclusive:'];
+  const t = (article.title||'').toLowerCase();
+  return breakingKws.some(k=>t.includes(k));
+}
+
+function savePref(key, val) {
+  prefs[key] = val;
+  localStorage.setItem('pa_prefs', JSON.stringify(prefs));
+}
+
+// ══════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════
+function showToast(msg, duration=2500) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.style.opacity='0', duration-300);
+  setTimeout(() => t.remove(), duration);
+}
+
+// ══════════════════════════════════════════════════
+// API CONVERTERS
+// ══════════════════════════════════════════════════
+function gnewsToCard(a, sector, i) {
+  return {id:`gn-${sector}-${i}-${Date.now()}`,title:a.title||'Untitled',summary:a.description||'',content:a.content||a.description||'',sector,source:a.source?.name||'GNews',sourceIcon:'📰',articleUrl:a.url||'#',time:timeAgo(a.publishedAt),publishedAt:a.publishedAt,image:a.image||SECTOR_FALLBACK_IMAGES[sector],imageAlt:a.title,tags:extractTags(a.title,[]),references:[a.source?.name||'GNews'],color:SECTOR_COLORS[sector]||'#9333ea',apiSource:'GNews',breaking:isBreaking(a)};
+}
+function newsdataToCard(a, sector, i) {
+  return {id:`nd-${sector}-${i}-${Date.now()}`,title:a.title||'Untitled',summary:a.description||'',content:a.description||'',sector,source:a.source_name||'NewsData',sourceIcon:'📡',articleUrl:a.link||'#',time:timeAgo(a.pubDate),publishedAt:a.pubDate,image:a.image_url||SECTOR_FALLBACK_IMAGES[sector],imageAlt:a.title,tags:extractTags(a.title,a.keywords),references:[a.source_name||'NewsData'],color:SECTOR_COLORS[sector]||'#9333ea',apiSource:'NewsData',breaking:isBreaking(a),language:a.language,country:a.country?.[0]||''};
+}
+function guardianToCard(a, sector, i) {
+  const f=a.fields||{};
+  return {id:`gu-${sector}-${i}-${Date.now()}`,title:a.webTitle||'Untitled',summary:(f.trailText||'').replace(/<[^>]+>/g,'')||'Read on The Guardian.',content:(f.trailText||'').replace(/<[^>]+>/g,'')||'',sector,source:'The Guardian',sourceIcon:'🟢',articleUrl:a.webUrl||'#',time:timeAgo(a.webPublicationDate),publishedAt:a.webPublicationDate,image:f.thumbnail||SECTOR_FALLBACK_IMAGES[sector],imageAlt:a.webTitle,tags:extractTags(a.webTitle,[]),references:['The Guardian'],color:SECTOR_COLORS[sector]||'#9333ea',apiSource:'Guardian',breaking:isBreaking(a)};
+}
+function newsapiToCard(a, sector, i) {
+  if (!a.title||a.title==='[Removed]') return null;
+  return {id:`na-${sector}-${i}-${Date.now()}`,title:a.title,summary:a.description||'',content:a.content||a.description||'',sector,source:a.source?.name||'NewsAPI',sourceIcon:'🔴',articleUrl:a.url||'#',time:timeAgo(a.publishedAt),publishedAt:a.publishedAt,image:a.urlToImage||SECTOR_FALLBACK_IMAGES[sector],imageAlt:a.title,tags:extractTags(a.title,[]),references:[a.source?.name||'NewsAPI'],color:SECTOR_COLORS[sector]||'#9333ea',apiSource:'NewsAPI',breaking:isBreaking(a)};
+}
+
+// ══════════════════════════════════════════════════
+// FETCH FUNCTIONS
+// ══════════════════════════════════════════════════
+async function fetchFromGNews(sector, page=1) {
+  const cat = SECTOR_TO_GNEWS[sector]||'general';
+  const r = await fetch(`${GNEWS_BASE}/top-headlines?category=${cat}&lang=en&max=10&apikey=${GNEWS_KEY}`);
+  if(!r.ok) throw new Error(`GNews ${r.status}`);
+  const d = await r.json();
+  if(!d.articles?.length) throw new Error('GNews: empty');
+  return d.articles.map((a,i)=>gnewsToCard(a,sector,i));
+}
+async function fetchFromNewsData(sector, nextPage=null) {
+  const cat = SECTOR_TO_NEWSDATA[sector]||'top';
+  let url = `${NEWSDATA_BASE}/latest?apikey=${NEWSDATA_KEY}&language=en&category=${cat}&size=10`;
+  if(nextPage) url += `&page=${nextPage}`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`NewsData ${r.status}`);
+  const d = await r.json();
+  if(d.status!=='success'||!d.results?.length) throw new Error('NewsData: empty');
+  return {cards:d.results.map((a,i)=>newsdataToCard(a,sector,i)), nextPage:d.nextPage||null};
+}
+async function fetchFromNewsDataIndia(nextPage=null) {
+  let url = `${NEWSDATA_BASE}/latest?apikey=${NEWSDATA_KEY}&country=in&language=en&size=10`;
+  if(nextPage) url += `&page=${nextPage}`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`NewsData India ${r.status}`);
+  const d = await r.json();
+  if(d.status!=='success'||!d.results?.length) throw new Error('NewsData India: empty');
+  return {cards:d.results.map((a,i)=>newsdataToCard(a,'India',i)), nextPage:d.nextPage||null};
+}
+async function fetchFromNewsDataHindi() {
+  const url = `${NEWSDATA_BASE}/latest?apikey=${NEWSDATA_KEY}&country=in&language=hi&size=10`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`NewsData Hindi ${r.status}`);
+  const d = await r.json();
+  if(d.status!=='success'||!d.results?.length) throw new Error('Hindi: empty');
+  return d.results.map((a,i)=>newsdataToCard(a,'India',i));
+}
+async function fetchFromGuardian(sector, page=1) {
+  const sec = SECTOR_TO_GUARDIAN[sector]||'news';
+  const r = await fetch(`${GUARDIAN_BASE}/search?api-key=${GUARDIAN_KEY}&section=${sec}&show-fields=thumbnail,trailText&page-size=10&order-by=newest&page=${page}`);
+  if(!r.ok) throw new Error(`Guardian ${r.status}`);
+  const d = await r.json();
+  if(d.response?.status!=='ok'||!d.response?.results?.length) throw new Error('Guardian: empty');
+  return {cards:d.response.results.map((a,i)=>guardianToCard(a,sector,i)), totalPages:d.response.pages||1};
+}
+async function fetchFromNewsAPI(sector) {
+  const cat = SECTOR_TO_NEWSAPI[sector]||'general';
+  const r = await fetch(`${NEWSAPI_BASE}/top-headlines?apiKey=${NEWSAPI_KEY}&category=${cat}&language=en&pageSize=10`);
+  if(!r.ok) throw new Error(`NewsAPI ${r.status}`);
+  const d = await r.json();
+  if(d.status!=='ok'||!d.articles?.length) throw new Error('NewsAPI: empty');
+  return d.articles.map((a,i)=>newsapiToCard(a,sector,i)).filter(Boolean);
+}
+async function searchNewsAPI(q) {
+  const r = await fetch(`${NEWSAPI_BASE}/everything?apiKey=${NEWSAPI_KEY}&q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=20`);
+  if(!r.ok) throw new Error(`NewsAPI search ${r.status}`);
+  const d = await r.json();
+  if(d.status!=='ok') throw new Error('NewsAPI search: empty');
+  return d.articles.map((a,i)=>newsapiToCard(a,'All',i)).filter(Boolean);
+}
+async function searchGNews(q) {
+  const r = await fetch(`${GNEWS_BASE}/search?q=${encodeURIComponent(q)}&lang=en&max=10&apikey=${GNEWS_KEY}`);
+  if(!r.ok) throw new Error(`GNews search ${r.status}`);
+  const d = await r.json();
+  return (d.articles||[]).map((a,i)=>gnewsToCard(a,'All',i));
+}
+
+// ══════════════════════════════════════════════════
+// MERGE & DEDUPE
+// ══════════════════════════════════════════════════
+function mergeSources(...arrays) {
+  const seen = new Set(), merged = [];
+  const maxLen = Math.max(...arrays.map(a=>a.length));
+  for (let i=0; i<maxLen; i++) {
+    for (const arr of arrays) {
+      const card = arr[i];
+      if (!card) continue;
+      const key = card.title.substring(0,40).toLowerCase().replace(/[^a-z0-9]/g,'');
+      if (!seen.has(key)) { seen.add(key); merged.push(card); }
+    }
+  }
+  return merged;
+}
+
+// ══════════════════════════════════════════════════
+// COMBINED FETCH
+// ══════════════════════════════════════════════════
+async function fetchNews(sector='All', force=false) {
+  const TTL = 15*60*1000;
+  if (!force && newsCache[sector] && (Date.now()-(lastFetch[sector]||0))<TTL) return newsCache[sector];
+
+  showFeedLoader(true);
+  updateSourceBadge('fetching');
+
+  const [g,nd,gu,na] = await Promise.allSettled([
+    fetchFromGNews(sector),
+    fetchFromNewsData(sector).then(r=>r.cards),
+    fetchFromGuardian(sector).then(r=>r.cards),
+    fetchFromNewsAPI(sector),
+  ]);
+
+  const gc = g.status==='fulfilled'?g.value:[];
+  const nc = nd.status==='fulfilled'?nd.value:[];
+  const guc= gu.status==='fulfilled'?gu.value:[];
+  const nac= na.status==='fulfilled'?na.value:[];
+
+  console.log(`[Bharat News AI] ${sector}: GNews=${gc.length} NewsData=${nc.length} Guardian=${guc.length} NewsAPI=${nac.length}`);
+
+  let merged;
+  if (!gc.length&&!nc.length&&!guc.length&&!nac.length) {
+    merged = getFallbackNews(sector);
+    updateSourceBadge('fallback');
+  } else {
+    merged = mergeSources(gc,nc,guc,nac);
+    const parts = [];
+    if(gc.length) parts.push(`GNews(${gc.length})`);
+    if(nc.length) parts.push(`NewsData(${nc.length})`);
+    if(guc.length) parts.push(`Guardian(${guc.length})`);
+    if(nac.length) parts.push(`NewsAPI(${nac.length})`);
+    updateSourceBadge('live', parts.join(' · '));
+  }
+
+  newsCache[sector] = merged;
+  lastFetch[sector] = Date.now();
+  if (sector==='All') newsData = merged;
+
+  // Check alerts
+  checkAlerts(merged);
+  // Check breaking
+  checkBreaking(merged);
+
+  showFeedLoader(false);
+  return merged;
+}
+
+async function fetchAllSectors() {
+  const all = ['Tech','Finance','Health','Science','Politics','Climate','Sports'];
+  await Promise.allSettled(all.map(s=>fetchNews(s)));
+  newsData = Object.values(newsCache).flat().slice(0,80);
+  updateStoriesFromNews();
+}
+
+async function fetchIndia() {
+  showFeedLoader(true);
+  try {
+    const {cards} = await fetchFromNewsDataIndia();
+    newsCache['India'] = cards;
+    lastFetch['India'] = Date.now();
+    showFeedLoader(false);
+    return cards;
+  } catch(e) {
+    showFeedLoader(false);
+    return getFallbackNews('All');
+  }
+}
+
+// ══════════════════════════════════════════════════
+// LOAD MORE (PAGINATION)
+// ══════════════════════════════════════════════════
+let loadMorePage = {guardian:1, newsdata:null};
+
+async function loadMore() {
+  const btn = document.getElementById('loadMoreBtn');
+  const spinner = document.getElementById('loadMoreSpinner');
+  const txt = document.getElementById('loadMoreText');
+  spinner.style.display='inline-block'; txt.textContent='Loading...';
+
+  try {
+    loadMorePage.guardian++;
+    const [g,nd,gu] = await Promise.allSettled([
+      fetchFromGNews(state.currentSector),
+      fetchFromNewsData(state.currentSector, loadMorePage.newsdata).then(r=>{loadMorePage.newsdata=r.nextPage;return r.cards;}),
+      fetchFromGuardian(state.currentSector, loadMorePage.guardian).then(r=>r.cards),
+    ]);
+    const newCards = mergeSources(
+      g.status==='fulfilled'?g.value:[],
+      nd.status==='fulfilled'?nd.value:[],
+      gu.status==='fulfilled'?gu.value:[],
+    );
+    // Append to existing cache
+    const existing = newsCache[state.currentSector]||[];
+    const existingIds = new Set(existing.map(c=>c.id));
+    const fresh = newCards.filter(c=>!existingIds.has(c.id));
+    newsCache[state.currentSector] = [...existing,...fresh];
+    if(state.currentSector==='All') newsData = newsCache['All'];
+    renderFeed();
+    showToast(`✅ Loaded ${fresh.length} more articles`);
+  } catch(e) {
+    showToast('⚠️ Could not load more');
+  }
+  spinner.style.display='none'; txt.textContent='⬇️ Load More Articles';
+}
+
+// ══════════════════════════════════════════════════
+// LIVE SEARCH
+// ══════════════════════════════════════════════════
+let searchTimer = null;
+async function handleSearch(val) {
+  const clear = document.getElementById('searchClear');
+  clear.style.display = val ? 'block' : 'none';
+
+  clearTimeout(searchTimer);
+  if (!val.trim()) { renderFeed(); return; }
+
+  searchTimer = setTimeout(async () => {
+    showFeedLoader(true);
+    try {
+      const [r1,r2] = await Promise.allSettled([
+        searchNewsAPI(val),
+        searchGNews(val),
+      ]);
+      const results = mergeSources(
+        r1.status==='fulfilled'?r1.value:[],
+        r2.status==='fulfilled'?r2.value:[],
+      );
+      renderFeed(results);
+      showToast(`🔍 ${results.length} results for "${val}"`);
+    } catch(e) {
+      const filtered = (newsData||[]).filter(c=>c.title.toLowerCase().includes(val.toLowerCase())||c.summary.toLowerCase().includes(val.toLowerCase()));
+      renderFeed(filtered);
+    }
+    showFeedLoader(false);
+  }, 600);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').style.display='none';
+  renderFeed();
+}
+
+// ══════════════════════════════════════════════════
+// BREAKING NEWS DETECTOR
+// ══════════════════════════════════════════════════
+let shownBreaking = new Set();
+function checkBreaking(articles) {
+  const b = articles.find(a=>a.breaking && !shownBreaking.has(a.id));
+  if (!b) return;
+  shownBreaking.add(b.id);
+  const banner = document.getElementById('breakingBanner');
+  document.getElementById('breakingText').textContent = b.title;
+  banner.classList.add('show');
+  banner.onclick = (e) => { if(e.target!==banner.querySelector('.breaking-close')) openReader(b); };
+}
+
+// ══════════════════════════════════════════════════
+// KEYWORD ALERTS
+// ══════════════════════════════════════════════════
+function checkAlerts(articles) {
+  if (!alertKws.length) return;
+  for (const article of articles) {
+    const t = (article.title+' '+article.summary).toLowerCase();
+    for (const kw of alertKws) {
+      if (t.includes(kw.toLowerCase())) {
+        const alreadyShown = JSON.parse(localStorage.getItem('pa_alert_shown')||'[]');
+        if (alreadyShown.includes(article.id)) continue;
+        alreadyShown.push(article.id);
+        localStorage.setItem('pa_alert_shown', JSON.stringify(alreadyShown.slice(-100)));
+        showToast(`🔔 Alert: "${kw}" — ${article.title.substring(0,50)}...`);
+        if (Notification.permission==='granted') {
+          new Notification(`Bharat News AI Alert: ${kw}`, {body:article.title, icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="%23e91e8c"/><text x="18" y="26" font-size="20" text-anchor="middle" fill="white">B</text></svg>'});
+        }
+      }
+    }
+  }
+}
+
+function openAlertModal() {
+  if (Notification.permission==='default') Notification.requestPermission();
+  renderAlertsList();
+  document.getElementById('alertModalOverlay').classList.add('open');
+}
+function closeAlertModal(e) {
+  if (!e||e.target.id==='alertModalOverlay') document.getElementById('alertModalOverlay').classList.remove('open');
+}
+function addAlert() {
+  const inp = document.getElementById('alertKeywordInput');
+  const kw = inp.value.trim();
+  if (!kw||alertKws.includes(kw)) return;
+  alertKws.push(kw);
+  localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
+  inp.value='';
+  renderAlertsList();
+  const dot = document.getElementById('notifDot');
+  if(dot) dot.style.display='block';
+  showToast(`🔔 Alert set for "${kw}"`);
+}
+function removeAlert(kw) {
+  alertKws = alertKws.filter(k=>k!==kw);
+  localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
+  renderAlertsList();
+}
+function renderAlertsList() {
+  const el = document.getElementById('alertsList');
+  if (!alertKws.length) { el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">No alerts yet. Add keywords below.</div>'; return; }
+  el.innerHTML = alertKws.map(k=>`
+    <div class="alert-item">
+      <span class="alert-keyword">🔔 ${k}</span>
+      <button class="alert-remove" onclick="removeAlert('${k}')">✕</button>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// PREFERENCES
+// ══════════════════════════════════════════════════
+function openPrefsModal() {
+  // Render sector chips
+  const el = document.getElementById('prefSectorChips');
+  el.innerHTML = sectors.filter(s=>s!=='All').map(s=>`
+    <button class="pref-chip ${prefs.favSectors?.includes(s)?'selected':''}" onclick="toggleFavSector('${s}',this)">
+      ${SECTOR_EMOJIS[s]} ${s}
+    </button>`).join('');
+  // Set toggles
+  document.getElementById('prefIndia').checked    = !!prefs.showIndia;
+  document.getElementById('prefCluster').checked  = !!prefs.clustering;
+  document.getElementById('prefAutoStory').checked= !!prefs.autoStory;
+  document.getElementById('prefReadTime').checked = prefs.readTime!==false;
+  document.getElementById('prefsModalOverlay').classList.add('open');
+}
+function closePrefsModal(e) {
+  if (!e||e.target.id==='prefsModalOverlay') document.getElementById('prefsModalOverlay').classList.remove('open');
+}
+function toggleFavSector(s, btn) {
+  if (!prefs.favSectors) prefs.favSectors=[];
+  if (prefs.favSectors.includes(s)) { prefs.favSectors=prefs.favSectors.filter(x=>x!==s); btn.classList.remove('selected'); }
+  else { prefs.favSectors.push(s); btn.classList.add('selected'); }
+  savePref('favSectors', prefs.favSectors);
+}
+
+// ══════════════════════════════════════════════════
+// GROQ AI
+// ══════════════════════════════════════════════════
+async function callAI(prompt, system='You are a world-class news analyst. Be concise, insightful, and accurate.') {
+  try {
+    const r = await fetch(GROQ_BASE, {
+      method:'POST',
+      headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:system},{role:'user',content:prompt}],max_tokens:1200,temperature:.7})
+    });
+    if (!r.ok) { const e=await r.json().catch(()=>({})); showToast('⚠️ AI: '+(e?.error?.message||r.status)); return null; }
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content||null;
+  } catch(e) { console.error(e); return null; }
+}
+
+async function generateDailyBriefing() {
+  const el = document.getElementById('dailyBriefing');
+  el.innerHTML = '<span class="spinner"></span> Generating with Groq...';
+  const tops = newsData.slice(0,6).map(n=>n.title).join('\n');
+  const r = await callAI(`Today's headlines:\n${tops}\n\nWrite a sharp 3-sentence daily intelligence briefing synthesising the biggest trends. Be analytical and insightful.`,'You are a senior intelligence analyst. Be concise and sharp.');
+  el.textContent = r || '⚡ Connect Groq to generate briefing.';
+}
+
+// AI Story Clustering
+async function generateClusters(articles) {
+  if (!prefs.clustering||articles.length<5) return null;
+  const titles = articles.slice(0,15).map((a,i)=>`${i}: ${a.title}`).join('\n');
+  const r = await callAI(
+    `News articles:\n${titles}\n\nGroup these into 2-3 story clusters (related articles about the same event/topic). Return ONLY valid JSON, no markdown:\n[{"cluster":"Cluster name","indices":[0,1,2],"summary":"One sentence"}]`,
+    'You are a news editor. Return only valid JSON array.'
+  );
+  if (!r) return null;
+  try {
+    const clean = r.replace(/```json\n?|```\n?/g,'').trim();
+    return JSON.parse(clean);
+  } catch(e) { return null; }
+}
+
+// ══════════════════════════════════════════════════
+// ARTICLE READER (Feature #2)
+// ══════════════════════════════════════════════════
+function openReader(card) {
+  state.currentCard = card;
+  markRead(card.id);
+  const el = document.getElementById('readerContent');
+  const sectorColor = SECTOR_COLORS[card.sector]||'#9333ea';
+  const rt = readingTime(card.summary+' '+card.content);
+
+  el.innerHTML = `
+    ${card.image
+      ? `<img class="reader-hero" src="${card.image}" alt="${card.imageAlt||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="reader-hero-fallback" style="display:none;">${SECTOR_EMOJIS[card.sector]||'📰'}</div>`
+      : `<div class="reader-hero-fallback">${SECTOR_EMOJIS[card.sector]||'📰'}</div>`
+    }
+    <div class="reader-content">
+      <div class="reader-sector" style="color:${sectorColor}">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      <div class="reader-title">${card.title}</div>
+      <div class="reader-meta">
+        <div class="reader-source-chip">${card.sourceIcon} ${card.source}</div>
+        <div class="reader-source-chip">🕐 ${card.time}</div>
+        <div class="reader-source-chip">📖 ${rt}</div>
+        <div class="reader-source-chip" style="color:${card.apiSource==='GNews'?'#3b82f6':card.apiSource==='NewsData'?'#e91e8c':card.apiSource==='Guardian'?'#10b981':'#ef4444'}">${card.apiSource}</div>
+      </div>
+
+      <!-- TTS Bar (Feature #14) -->
+      <div class="tts-bar" id="ttsBar">
+        <button class="tts-play" id="ttsPlayBtn" onclick="toggleTTS('${card.id}')">▶</button>
+        <div class="tts-progress" onclick="seekTTS(event,this)">
+          <div class="tts-fill" id="ttsFill"></div>
+        </div>
+        <span class="tts-time" id="ttsTime">0:00</span>
+        <select class="tts-speed" id="ttsSpeed" onchange="setTTSSpeed(this.value)">
+          <option value="0.8">0.8×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.25">1.25×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+        </select>
+      </div>
+
+      <div class="reader-body">
+        <p>${card.summary}</p>
+        ${card.content && card.content!==card.summary ? `<p>${card.content.replace(/\[.*?\]/g,'').trim()}</p>` : ''}
+        <p style="color:var(--text3);font-size:13px;font-style:italic;">This summary is AI-curated from ${card.source}. Read the full article for complete coverage.</p>
+      </div>
+
+      <div class="reader-actions">
+        <a href="${card.articleUrl}" target="_blank" class="reader-btn primary" style="text-decoration:none;">
+          🔗 Read Full Article on ${card.source}
+        </a>
+        <button class="reader-btn secondary" onclick="closeReader();analyzeNews(state.currentCard)">
+          🧠 AI Deep Analysis
+        </button>
+        <button class="reader-btn secondary" onclick="shareAsImage(state.currentCard)">
+          📸 Share as Image
+        </button>
+        <button class="reader-btn secondary" onclick="toggleBookmark(state.currentCard.id);this.textContent=bookmarks.includes(state.currentCard.id)?'🔖 Saved':'📌 Save'">
+          ${bookmarks.includes(card.id)?'🔖 Saved':'📌 Save'}
+        </button>
+      </div>
+    </div>`;
+
+  document.getElementById('readerOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeReader() {
+  document.getElementById('readerOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  stopTTS();
+}
+function closeReaderOnBg(e) { if(e.target.id==='readerOverlay') closeReader(); }
+
+// ══════════════════════════════════════════════════
+// TTS — Text to Speech (Feature #14)
+// ══════════════════════════════════════════════════
+let ttsInterval = null;
+function toggleTTS(cardId) {
+  const card = [...Object.values(newsCache).flat(),...newsData].find(c=>c.id===cardId)||state.currentCard;
+  if (!card) return;
+  if (state.ttsPlaying) { stopTTS(); return; }
+  const text = `${card.title}. ${card.summary}. ${card.content||''}`;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = parseFloat(document.getElementById('ttsSpeed')?.value||1);
+  utter.lang = 'en-US';
+  const totalWords = text.split(/\s+/).length;
+  let wordIdx = 0;
+  utter.onboundary = (e) => {
+    if (e.name==='word') { wordIdx++; updateTTSProgress(wordIdx/totalWords); }
+  };
+  utter.onend = () => { stopTTS(); updateTTSProgress(1); };
+  state.ttsUtterance = utter;
+  state.ttsPlaying = true;
+  window.speechSynthesis.speak(utter);
+  document.getElementById('ttsPlayBtn').textContent = '⏸';
+  // Time counter
+  let secs=0;
+  ttsInterval = setInterval(()=>{ secs++; const m=Math.floor(secs/60),s=secs%60; const el=document.getElementById('ttsTime'); if(el) el.textContent=`${m}:${s.toString().padStart(2,'0')}`; },1000);
+}
+function stopTTS() {
+  window.speechSynthesis.cancel();
+  state.ttsPlaying=false;
+  state.ttsUtterance=null;
+  clearInterval(ttsInterval);
+  const btn=document.getElementById('ttsPlayBtn');
+  if(btn) btn.textContent='▶';
+}
+function setTTSSpeed(val) { if(state.ttsUtterance) state.ttsUtterance.rate=parseFloat(val); }
+function updateTTSProgress(pct) { const el=document.getElementById('ttsFill'); if(el) el.style.width=(pct*100)+'%'; }
+function seekTTS(e,bar) { const pct=e.offsetX/bar.offsetWidth; updateTTSProgress(pct); }
+
+// ══════════════════════════════════════════════════
+// SHARE AS IMAGE (Feature #8)
+// ══════════════════════════════════════════════════
+async function shareAsImage(card) {
+  if (!card) card = state.currentCard;
+  if (!card) return;
+  showToast('📸 Generating share image...');
+  // Build a temporary styled div and capture it
+  const div = document.createElement('div');
+  div.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:600px;background:#111;border-radius:16px;overflow:hidden;font-family:Inter,sans-serif;';
+  div.innerHTML = `
+    <div style="position:relative;">
+      <img src="${card.image}" style="width:100%;height:300px;object-fit:cover;display:block;" crossorigin="anonymous">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.8));"></div>
+      <div style="position:absolute;bottom:16px;left:16px;right:16px;">
+        <div style="font-size:11px;font-weight:700;color:#e91e8c;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">${card.sector}</div>
+        <div style="font-size:20px;font-weight:800;color:#fff;line-height:1.3;">${card.title}</div>
+      </div>
+    </div>
+    <div style="padding:20px;">
+      <div style="font-size:13px;color:#aaa;line-height:1.6;margin-bottom:16px;">${card.summary.substring(0,200)}...</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:12px;color:#666;">${card.source} · ${card.time}</div>
+        <div style="font-size:14px;font-weight:800;background:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Bharat News AI</div>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+  try {
+    const canvas = await html2canvas(div, {useCORS:true, allowTaint:true, scale:2, backgroundColor:'#111'});
+    div.remove();
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download=`Bharat News AI-${card.sector}-${Date.now()}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('✅ Image saved!');
+    });
+  } catch(e) { div.remove(); showToast('⚠️ Share image failed'); }
+}
+
+// ══════════════════════════════════════════════════
+// READ STATE (Feature #4 complement)
+// ══════════════════════════════════════════════════
+function markRead(id) {
+  if (!readItems.includes(id)) {
+    readItems.push(id);
+    localStorage.setItem('pa_read', JSON.stringify(readItems.slice(-200)));
+  }
+}
+
+// ══════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ══════════════════════════════════════════════════
+function renderSectors() {
+  const el = document.getElementById('sectorChips');
+  const allSectors = [...sectors];
+  if (prefs.showIndia) allSectors.push('India');
+  el.innerHTML = allSectors.map(s=>`
+    <button class="sector-chip ${s===state.currentSector?'active':''} ${s==='India'?'india-chip':''}" onclick="setSector('${s}')">
+      ${SECTOR_EMOJIS[s]||'📰'} ${s}
+    </button>`).join('');
+}
+
+function renderStories() {
+  const el = document.getElementById('storiesRow');
+  el.innerHTML = storiesData.map((s,i)=>`
+    <div class="story-item" onclick="openStory(${i})">
+      <div class="story-ring ${readItems.includes('story-'+i)?'viewed':''}">
+        <div class="story-avatar">
+          <img src="${s.image||SECTOR_FALLBACK_IMAGES[s.sector]}" alt="${s.sector}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--bg);" onerror="this.parentElement.textContent='${SECTOR_EMOJIS[s.sector]||'📰'}'">
+        </div>
+      </div>
+      <div class="story-label">${s.sector}</div>
+    </div>`).join('');
+}
+
+async function renderFeed(overrideCards=null) {
+  const el = document.getElementById('newsFeed');
+  let cards = overrideCards || (state.currentSector!=='All' ? (newsCache[state.currentSector]||[]) : newsData);
+
+  if (state.view==='bookmarks') {
+    cards = [...Object.values(newsCache).flat(),...newsData].filter(c=>bookmarks.includes(c.id));
+    const seen=new Set(); cards=cards.filter(c=>{ if(seen.has(c.id)) return false; seen.add(c.id); return true; });
+    if (!cards.length) { el.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔖</div><div class="empty-state-title">No saved articles</div><div style="font-size:13px;color:var(--text3);">Bookmark articles to read later.</div></div>`; document.getElementById('loadMoreBtn').style.display='none'; return; }
+  }
+
+  if (state.feedMode==='hindi') {
+    try { cards = await fetchFromNewsDataHindi(); } catch(e) { showToast('⚠️ Hindi feed unavailable'); }
+  }
+
+  if (!overrideCards) {
+    if (state.feedMode==='trending') cards = [...cards].sort(()=>Math.random()-.5);
+    if (state.feedMode==='ai-picks') cards = cards.filter(c=>prefs.favSectors?.includes(c.sector));
+  }
+
+  if (!cards.length) {
+    el.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No articles found</div><div style="font-size:13px;color:var(--text3);">Try a different sector or search term.</div></div>`;
+    document.getElementById('loadMoreBtn').style.display='none';
+    return;
+  }
+
+  // Clustering
+  let clusters = null;
+  if (prefs.clustering && cards.length>=5 && !overrideCards) {
+    clusters = await generateClusters(cards);
+  }
+
+  let html = '';
+
+  // Render clusters first if available
+  if (clusters&&clusters.length) {
+    for (const cluster of clusters) {
+      const clusterCards = cluster.indices.map(i=>cards[i]).filter(Boolean);
+      if (clusterCards.length<2) continue;
+      html += renderCluster(cluster, clusterCards);
+    }
+    html += '<div style="font-size:12px;color:var(--text3);text-align:center;margin:8px 0 16px;font-weight:500;">— More Stories —</div>';
+  }
+
+  // Render remaining cards
+  html += cards.map(card=>renderCard(card)).join('');
+  el.innerHTML = html;
+  document.getElementById('loadMoreBtn').style.display = 'flex';
+}
+
+function renderCluster(cluster, cards) {
+  return `<div class="cluster-card fade-in">
+    <div class="cluster-label">🗂️ Story Cluster · AI Grouped <span class="ai-badge">AI</span></div>
+    <div class="cluster-headline">${cluster.cluster}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">${cluster.summary||''}</div>
+    <div class="cluster-articles">
+      ${cards.map(c=>`
+        <div class="cluster-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+          <img class="cluster-item-img" src="${c.image}" alt="" onerror="this.style.display='none'">
+          <div>
+            <div class="cluster-item-title">${c.title.substring(0,90)}${c.title.length>90?'...':''}</div>
+            <div class="cluster-item-source">${c.source} · ${c.time} · <span style="color:${c.apiSource==='Guardian'?'#10b981':c.apiSource==='GNews'?'#3b82f6':'#e91e8c'}">${c.apiSource}</span></div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderCard(card) {
+  const isLiked      = likes.includes(card.id);
+  const isBookmarked = bookmarks.includes(card.id);
+  const isRead       = readItems.includes(card.id);
+  const sectorColor  = SECTOR_COLORS[card.sector]||'#9333ea';
+  const rt           = prefs.readTime!==false ? readingTime(card.summary) : '';
+  const sourceColor  = card.apiSource==='GNews'?'#3b82f6':card.apiSource==='NewsData'?'#e91e8c':card.apiSource==='Guardian'?'#10b981':'#ef4444';
+  const sourceBg     = card.apiSource==='GNews'?'rgba(59,130,246,.15)':card.apiSource==='NewsData'?'rgba(233,30,140,.15)':card.apiSource==='Guardian'?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)';
+
+  return `<div class="news-card fade-in ${isRead?'':''}">
+    <div class="card-header">
+      <div class="source-avatar">${card.sourceIcon||'📰'}</div>
+      <div class="source-info">
+        <div class="source-name">${card.source} <span class="verified">✓</span></div>
+        <div class="source-meta">
+          <span>${card.time}</span>
+          <span>•</span>
+          ${rt ? `<span class="reading-time">📖 ${rt}</span>` : ''}
+          <span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:${sourceBg};color:${sourceColor};">${card.apiSource}</span>
+          ${isRead?'<span style="font-size:10px;color:var(--text3);">✓ Read</span>':''}
+        </div>
+      </div>
+    </div>
+
+    <div class="card-img-wrap" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+      <img class="card-img" src="${card.image}" alt="${card.imageAlt||card.title}" loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="card-img-fallback" style="display:none;background:${card.color}22;">${SECTOR_EMOJIS[card.sector]||'📰'}</div>
+      <div class="card-img-overlay"></div>
+      <div class="card-img-sector" style="color:${sectorColor};">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      ${card.breaking?'<div class="card-img-breaking">🔴 BREAKING</div>':''}
+    </div>
+
+    <div class="card-body" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+      <div class="card-title" style="${isRead?'opacity:.7':''};">${card.title}</div>
+      <div class="card-summary">${card.summary}</div>
+      <div class="card-tags">
+        ${(card.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="action-btn ${isLiked?'liked':''}" onclick="toggleLike('${card.id}')">
+        <span>${isLiked?'❤️':'🤍'}</span>${isLiked?'Liked':'Like'}
+      </button>
+      <button class="action-btn" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>📖</span>Read
+      </button>
+      <button class="action-btn" onclick="analyzeNews(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>🧠</span>Analyse
+      </button>
+      <button class="action-btn" onclick="shareAsImage(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>📸</span>Share
+      </button>
+      <button class="action-btn ${isBookmarked?'bookmarked':''} action-sep" onclick="toggleBookmark('${card.id}')">
+        <span>${isBookmarked?'🔖':'📌'}</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderRightPanel() {
+  // Trending — live from fetched data
+  const trending = document.getElementById('trendingList');
+  const allCards = Object.values(newsCache).flat();
+  const trendingCards = allCards.sort(()=>Math.random()-.5).slice(0,6);
+  trending.innerHTML = trendingCards.length
+    ? trendingCards.map((c,i)=>`
+        <div class="trending-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+          <div class="trending-rank">${String(i+1).padStart(2,'0')}</div>
+          <div class="trending-info">
+            <div class="trending-title">${c.title.substring(0,55)}${c.title.length>55?'...':''}</div>
+            <div class="trending-meta">${c.source} · ${c.time}</div>
+          </div>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;">Loading trends...</div>';
+
+  // Markets (simulated — real would need Alpha Vantage)
+  const markets = [
+    {symbol:'BTC',price:'$67,240',change:'+2.8%',up:true},
+    {symbol:'S&P',price:'6,018',change:'+1.2%',up:true},
+    {symbol:'GOLD',price:'$2,341',change:'-0.4%',up:false},
+    {symbol:'NIFTY',price:'23,850',change:'+0.9%',up:true},
+    {symbol:'SENSEX',price:'78,400',change:'+0.7%',up:true},
+    {symbol:'OIL',price:'$79.40',change:'-1.1%',up:false},
+  ];
+  document.getElementById('marketGrid').innerHTML = markets.map(m=>`
+    <div class="market-card">
+      <div class="market-symbol">${m.symbol}</div>
+      <div class="market-price">${m.price}</div>
+      <div class="market-change ${m.up?'up':'down'}">${m.change}</div>
+    </div>`).join('');
+
+  // Sources
+  document.getElementById('sourcesList').innerHTML = [
+    {name:'GNews',icon:'📰',desc:'Global headlines',url:'https://gnews.io'},
+    {name:'NewsData.io',icon:'📡',desc:'India + Breaking',url:'https://newsdata.io'},
+    {name:'The Guardian',icon:'🟢',desc:'Premium journalism',url:'https://theguardian.com'},
+    {name:'NewsAPI.org',icon:'🔴',desc:'100+ sources',url:'https://newsapi.org'},
+  ].map(s=>`
+    <a class="source-chip-link" href="${s.url}" target="_blank">
+      ${s.icon} <span><strong>${s.name}</strong> · ${s.desc}</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--accent5);">🟢 Live</span>
+    </a>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// STORY VIEWER
+// ══════════════════════════════════════════════════
+function openStory(index) {
+  state.storyIndex = index;
+  updateStoryView();
+  document.getElementById('storyViewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  markRead('story-'+index);
+  startStoryTimer();
+}
+
+function updateStoryView() {
+  const s = storiesData[state.storyIndex];
+  if (!s) { closeStory(); return; }
+  const img = s.image||SECTOR_FALLBACK_IMAGES[s.sector];
+  document.getElementById('storyBgImg').src = img;
+  document.getElementById('storyIcon').src   = img;
+  document.getElementById('storySourceName').textContent = s.source;
+  document.getElementById('storyTime').textContent = s.time;
+  document.getElementById('storyCategory').textContent = s.sector;
+  document.getElementById('storyHeadline').textContent = s.headline;
+  document.getElementById('storySnippet').textContent = s.snippet;
+  const prog = document.getElementById('storyProgress');
+  prog.innerHTML = storiesData.map((_,i)=>`
+    <div class="story-prog-bar">
+      <div class="story-prog-fill ${i<state.storyIndex?'complete':''}" id="prog-${i}"></div>
+    </div>`).join('');
+}
+
+let progressInterval = null;
+function startStoryTimer() {
+  clearInterval(progressInterval);
+  const fill = document.getElementById(`prog-${state.storyIndex}`);
+  if (!fill) return;
+  let w=0;
+  progressInterval = setInterval(()=>{
+    w += 100/60;
+    if(fill) fill.style.width=Math.min(w,100)+'%';
+    if(w>=100) { clearInterval(progressInterval); nextStory(); }
+  },100);
+}
+
+function nextStory() { clearInterval(progressInterval); state.storyIndex++; if(state.storyIndex>=storiesData.length){closeStory();return;} updateStoryView(); startStoryTimer(); }
+function prevStory() { clearInterval(progressInterval); state.storyIndex=Math.max(0,state.storyIndex-1); updateStoryView(); startStoryTimer(); }
+function closeStory() { clearInterval(progressInterval); document.getElementById('storyViewer').classList.remove('open'); document.body.style.overflow=''; }
+function openFromStory() { const s=storiesData[state.storyIndex]; closeStory(); const match=Object.values(newsCache).flat().find(n=>n.sector===s.sector); if(match) setTimeout(()=>openReader(match),300); }
+
+function updateStoriesFromNews() {
+  const sects = ['Tech','Finance','Health','Science','Sports','Politics','Climate','India'];
+  const newS = [];
+  for (const s of sects) {
+    const cached = newsCache[s];
+    if (cached?.[0]) {
+      const a = cached[0];
+      newS.push({sector:s,icon:SECTOR_EMOJIS[s],source:a.source,time:a.time,headline:a.title,snippet:(a.summary||'').substring(0,100)+'...',color:SECTOR_COLORS[s],image:a.image||SECTOR_FALLBACK_IMAGES[s]});
+    }
+  }
+  if (newS.length) { storiesData.length=0; newS.forEach(s=>storiesData.push(s)); renderStories(); }
+}
+
+// ══════════════════════════════════════════════════
+// AI ANALYSIS MODAL
+// ══════════════════════════════════════════════════
+async function analyzeNews(card) {
+  state.currentCard = card;
+  const overlay = document.getElementById('analysisOverlay');
+  const content = document.getElementById('analysisContent');
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+  const sectorColor = SECTOR_COLORS[card.sector]||'#9333ea';
+
+  // Show loading
+  content.innerHTML = `
+    <div style="position:relative;width:100%;height:200px;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      <img src="${card.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.8));"></div>
+    </div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:16px;padding-right:40px;">${card.title}</div>
+    <div style="text-align:center;padding:40px 20px;color:var(--text3);">
+      <div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:${sectorColor};"></div>
+      <div style="font-size:14px;font-weight:600;color:var(--text2);">⚡ Analysing with Groq Llama 3.3 70B...</div>
+      <div style="font-size:11px;margin-top:4px;">Generating summary · sentiment · timeline · insights</div>
+    </div>`;
+
+  const prompt = `Analyse this news article:\n\nTITLE: ${card.title}\nSUMMARY: ${card.summary}\nSOURCE: ${card.source}\nSECTOR: ${card.sector}\n\nReturn ONLY valid JSON (no markdown):\n{"summary":"2-3 sentence executive summary","sentiment":{"positive":40,"neutral":35,"negative":25},"keyPoints":["point 1","point 2","point 3","point 4"],"timeline":[{"date":"period","event":"what happened"},{"date":"period","event":"what happened"},{"date":"period","event":"what happened"}],"implications":"2 sentences on broader implications","watchFor":"What to watch in next 30 days"}`;
+
+  const result = await callAI(prompt,'You are a world-class investigative journalist. Return only valid JSON.');
+  let analysis = null;
+  if (result) {
+    try { analysis = JSON.parse(result.replace(/```json\n?|```\n?/g,'').trim()); } catch(e) { analysis={summary:result,keyPoints:[],timeline:[],sentiment:{positive:50,neutral:30,negative:20}}; }
+  }
+
+  const sent = analysis?.sentiment||{positive:50,neutral:30,negative:20};
+  const relatedCards = Object.values(newsCache).flat().filter(n=>n.id!==card.id&&n.sector===card.sector).slice(0,4);
+
+  content.innerHTML = `
+    <div style="position:relative;width:100%;height:220px;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      <img src="${card.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.75));"></div>
+      <div style="position:absolute;bottom:12px;left:14px;display:flex;gap:6px;flex-wrap:wrap;">
+        ${(card.tags||[]).map(t=>`<span style="padding:3px 9px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-radius:20px;font-size:11px;color:#fff;font-weight:600;">#${t}</span>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:10px;padding-right:40px;line-height:1.3;">${card.title}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+      <div class="modal-source-chip">${card.sourceIcon} ${card.source}</div>
+      <div class="modal-source-chip">🕐 ${card.time}</div>
+      <div class="modal-source-chip" style="color:${sectorColor};">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      <div class="modal-source-chip">📖 ${readingTime(card.summary)}</div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">📝 AI Summary <span class="ai-badge">GROQ</span></div>
+      <div class="summary-box" style="border-left-color:${sectorColor};">${analysis?.summary||card.summary}</div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">🎯 Key Points <span class="ai-badge">AI</span></div>
+      <div class="key-points">
+        ${analysis?.keyPoints?.length ? analysis.keyPoints.map((p,i)=>`
+          <div class="key-point"><span class="kp-icon">${['🎯','📌','⚡','🔍'][i%4]}</span><span>${p}</span></div>`).join('')
+          : '<div class="key-point"><span class="kp-icon">📌</span><span>AI analysis complete</span></div>'}
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">📊 Sentiment Analysis</div>
+      <div class="sentiment-bar">
+        <div class="sentiment-seg" style="flex:${sent.positive};background:#10b981;"></div>
+        <div class="sentiment-seg" style="flex:${sent.neutral};background:#6b7280;"></div>
+        <div class="sentiment-seg" style="flex:${sent.negative};background:#ef4444;"></div>
+      </div>
+      <div class="sentiment-labels">
+        <span style="color:#10b981;">✅ Positive ${sent.positive}%</span>
+        <span style="color:#6b7280;">➖ Neutral ${sent.neutral}%</span>
+        <span style="color:#ef4444;">❌ Negative ${sent.negative}%</span>
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">📅 Timeline <span class="ai-badge">AI</span></div>
+      <ul class="timeline-list">
+        ${analysis?.timeline?.length ? analysis.timeline.map((t,i)=>`
+          <li class="timeline-item">
+            <div class="timeline-dot">${i+1}</div>
+            <div class="timeline-content">
+              <div class="timeline-date">${t.date}</div>
+              <div class="timeline-text">${t.event}</div>
+            </div>
+          </li>`).join('')
+          : `<li class="timeline-item"><div class="timeline-dot">1</div><div class="timeline-content"><div class="timeline-date">Today</div><div class="timeline-text">${card.title}</div></div></li>`}
+      </ul>
+    </div>
+
+    ${analysis?.implications ? `
+    <div class="ai-section">
+      <div class="ai-section-title">🌐 Broader Implications <span class="ai-badge">AI</span></div>
+      <div class="summary-box" style="border-left-color:#f59e0b;">${analysis.implications}</div>
+    </div>` : ''}
+
+    ${analysis?.watchFor ? `
+    <div class="ai-section">
+      <div class="ai-section-title">👁️ Watch For <span class="ai-badge">AI</span></div>
+      <div class="summary-box" style="border-left-color:#10b981;">${analysis.watchFor}</div>
+    </div>` : ''}
+
+    <div class="ai-section">
+      <div class="ai-section-title">📡 Sources</div>
+      <div class="sources-list">
+        ${(card.references||[card.source]).map(r=>`
+          <div class="source-chip-link"><span>📰</span><strong>${r}</strong><span style="margin-left:auto;font-size:11px;color:var(--text3);">Referenced</span></div>`).join('')}
+      </div>
+    </div>
+
+    ${relatedCards.length ? `
+    <div class="ai-section">
+      <div class="ai-section-title">🔗 Related Stories</div>
+      <div class="related-grid">
+        ${relatedCards.map(r=>`
+          <div class="related-card" onclick="closeAnalysis();setTimeout(()=>openReader(${JSON.stringify(r).replace(/"/g,'&quot;')}),300)">
+            <div style="width:100%;height:80px;border-radius:6px;overflow:hidden;margin-bottom:7px;background:var(--surface3);">
+              <img src="${r.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+            </div>
+            <div class="related-card-title">${r.title.substring(0,60)}${r.title.length>60?'...':''}</div>
+            <div class="related-card-source">${r.source} · ${r.time}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+      <button class="btn-grad" onclick="closeAnalysis();openReader(state.currentCard)">📖 Read Article</button>
+      <button class="btn-grad" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="shareAsImage(state.currentCard)">📸 Share Image</button>
+      <a href="${card.articleUrl}" target="_blank" class="btn-grad" style="text-decoration:none;">🔗 Full Source</a>
+    </div>`;
+}
+
+function closeAnalysis() { document.getElementById('analysisOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function closeModalOnBg(e) { if(e.target.id==='analysisOverlay') closeAnalysis(); }
+
+// ══════════════════════════════════════════════════
+// RESEARCH VIEW
+// ══════════════════════════════════════════════════
+async function renderResearchView() {
+  const el = document.getElementById('newsFeed');
+  el.innerHTML = `
+    <div class="ai-insight-box" style="margin-bottom:16px;">
+      <div class="ai-insight-title">🔬 Deep Research Mode — Powered by Groq ⚡</div>
+      <div class="ai-insight-text">Ask any question. Gets context from today's live articles + Groq AI analysis. Results in under 2 seconds.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      <input class="alert-input" id="researchInput" placeholder="e.g. What is driving AI regulation globally?" style="flex:1;margin-bottom:0;" onkeydown="if(event.key==='Enter')doResearch()">
+      <button class="btn-grad" onclick="doResearch()">🔍 Research</button>
+    </div>
+    <div id="researchResult"></div>
+    <div class="ai-section-title" style="margin:20px 0 12px;">📚 All Sectors</div>
+    ${sectors.filter(s=>s!=='All').map(s=>{
+      const cards2=(newsCache[s]||[]).slice(0,3);
+      return `<div style="margin-bottom:20px;">
+        <div style="font-size:14px;font-weight:700;color:${SECTOR_COLORS[s]};margin-bottom:8px;">${SECTOR_EMOJIS[s]} ${s}</div>
+        ${cards2.map(c=>`
+          <div class="trending-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+            <div style="width:56px;height:42px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--surface2);">
+              <img src="${c.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+            </div>
+            <div class="trending-info">
+              <div class="trending-title">${c.title.substring(0,70)}${c.title.length>70?'...':''}</div>
+              <div class="trending-meta">${c.source} · ${c.time} · ${c.apiSource}</div>
+            </div>
+          </div>`).join('')}
+      </div>`;
+    }).join('')}`;
+}
+
+async function doResearch() {
+  const q = document.getElementById('researchInput').value.trim();
+  if (!q) return;
+  const el = document.getElementById('researchResult');
+  el.innerHTML = `<div class="summary-box"><span class="spinner"></span> Researching: "${q}"...</div>`;
+  const context = Object.values(newsCache).flat().slice(0,12).map(n=>`• ${n.title}: ${n.summary}`).join('\n');
+  const result = await callAI(
+    `Research question: "${q}"\n\nContext from today's live news:\n${context}\n\nProvide a comprehensive, well-structured research analysis. Use **bold** for headings. Cover: key findings, context, multiple perspectives, data points, implications.`,
+    'You are a world-class research analyst. Be thorough, structured, and cite sources.'
+  );
+  if (result) {
+    el.innerHTML=`<div class="ai-section"><div class="ai-section-title">🔬 Research Results <span class="ai-badge">GROQ</span></div><div class="summary-box" style="border-left-color:var(--accent2);white-space:pre-wrap;line-height:1.8;">${result.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div></div>`;
+  } else {
+    el.innerHTML=`<div class="summary-box" style="border-left-color:#ef4444;">Research failed. Check API key.</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════════════════
+function toggleLike(id) {
+  if(likes.includes(id)) likes=likes.filter(l=>l!==id); else likes.push(id);
+  localStorage.setItem('pa_likes',JSON.stringify(likes));
+  renderFeed();
+}
+function toggleBookmark(id) {
+  if(bookmarks.includes(id)) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
+  localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
+  document.getElementById('bookmarkCount').textContent=bookmarks.length||'0';
+  renderFeed();
+}
+
+async function setSector(s) {
+  state.currentSector = s;
+  renderSectors();
+  document.getElementById('topbarTitle').textContent = s==='All'?'🗞️ Daily Intelligence Feed':`${SECTOR_EMOJIS[s]} ${s} News`;
+  if (s==='India') {
+    const cards = await fetchIndia();
+    newsCache['India']=cards;
+    renderFeed();
+  } else {
+    const articles = await fetchNews(s);
+    if(s!=='All') newsCache[s]=articles; else newsData=articles;
+    renderFeed();
+  }
+  updateLastFetchedBadge();
+}
+
+function setView(v) {
+  state.view=v;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-'+v)?.classList.add('active');
+  const titles={feed:'🗞️ Daily Intelligence Feed',india:'🇮🇳 India News',explore:'🔍 Explore Topics',research:'🔬 Deep Research',bookmarks:'🔖 Saved Articles'};
+  document.getElementById('topbarTitle').textContent=titles[v]||'🗞️ News Feed';
+  if(v==='research') renderResearchView();
+  else if(v==='india') setSector('India');
+  else if(v==='explore'){state.currentSector='All';renderSectors();renderFeed();}
+  else renderFeed();
+}
+
+function setFeedMode(m,btn) {
+  state.feedMode=m;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(m==='hindi') {renderFeed();return;}
+  renderFeed();
+}
+
+// ══════════════════════════════════════════════════
+// THEME TOGGLE (Feature #16)
+// ══════════════════════════════════════════════════
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️';
+  localStorage.setItem('pa_theme', isDark?'light':'dark');
+  // Update topbar bg
+  document.querySelector('.topbar').style.background = isDark ? 'rgba(248,249,250,.95)' : 'rgba(10,10,10,.95)';
+}
+
+// ══════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════
+function showFeedLoader(show) {
+  const el=document.getElementById('newsFeed');
+  if(!el) return;
+  if(show&&!el.querySelector('.feed-loader')) {
+    const d=document.createElement('div'); d.className='feed-loader';
+    d.innerHTML=`<div style="text-align:center;padding:48px 20px;color:var(--text3);"><div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:var(--accent2);"></div><div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">Fetching live news...</div><div style="font-size:11px;">GNews · NewsData.io · Guardian · NewsAPI</div></div>`;
+    el.prepend(d);
+  } else if(!show) el.querySelector('.feed-loader')?.remove();
+}
+
+function updateSourceBadge(s, detail='') {
+  const el=document.getElementById('sourceBadge');
+  if(!el) return;
+  if(s==='fetching'){el.innerHTML='<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span> Fetching...';el.style.color='var(--text3)';}
+  else if(s==='live'){el.innerHTML=`🟢 Live · ${detail}`;el.style.color='var(--accent4)';}
+  else{el.innerHTML='🟡 Demo mode';el.style.color='var(--accent3)';}
+}
+
+function updateLastFetchedBadge() {
+  const el=document.getElementById('lastUpdated');
+  if(!el) return;
+  el.textContent=`🔄 ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`;
+}
+
+// ══════════════════════════════════════════════════
+// FALLBACK DATA
+// ══════════════════════════════════════════════════
+function getFallbackNews(sector) {
+  const fb={
+    Tech:[{title:"OpenAI Unveils GPT-5",description:"OpenAI's model achieves human-level reasoning.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'TechCrunch',pubDate:'2025-06-12 08:00:00',link:'#'},{title:"Google DeepMind Releases AlphaFold 3",description:"Protein prediction now covers complex molecules.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'Nature',pubDate:'2025-06-12 06:00:00',link:'#'}],
+    Finance:[{title:"Fed Signals Rate Cuts",description:"Federal Reserve signals dovish pivot as inflation cools.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'Bloomberg',pubDate:'2025-06-12 07:00:00',link:'#'},{title:"Bitcoin Hits $100K",description:"BTC crosses $100K as institutional demand surges.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'CoinDesk',pubDate:'2025-06-12 05:00:00',link:'#'}],
+    Health:[{title:"mRNA Cancer Vaccine 90% Success",description:"Moderna's vaccine shows 89.6% efficacy in Phase III.",image_url:SECTOR_FALLBACK_IMAGES.Health,source_name:'NEJM',pubDate:'2025-06-11 10:00:00',link:'#'}],
+    Science:[{title:"JWST Finds Biosignature on Exoplanet",description:"Dimethyl sulfide detected in K2-18b atmosphere.",image_url:SECTOR_FALLBACK_IMAGES.Science,source_name:'Nature',pubDate:'2025-06-11 14:00:00',link:'#'}],
+    Politics:[{title:"G20 AI Governance Pact Signed",description:"World leaders agree on responsible AI framework.",image_url:SECTOR_FALLBACK_IMAGES.Politics,source_name:'Reuters',pubDate:'2025-06-11 16:00:00',link:'#'}],
+    Climate:[{title:"Solar Surpasses Coal Globally",description:"IEA confirms solar now generates more than coal.",image_url:SECTOR_FALLBACK_IMAGES.Climate,source_name:'Guardian',pubDate:'2025-06-10 12:00:00',link:'#'}],
+    Sports:[{title:"Champions League Final Drama",description:"Real Madrid edge past Manchester City on penalties.",image_url:SECTOR_FALLBACK_IMAGES.Sports,source_name:'ESPN',pubDate:'2025-06-12 01:00:00',link:'#'}],
+    India:[{title:"India GDP Growth Hits 8.4%",description:"India overtakes Japan as world's 4th largest economy.",image_url:SECTOR_FALLBACK_IMAGES.India,source_name:'Economic Times',pubDate:'2025-06-12 09:00:00',link:'#'}],
+    All:[{title:"Top World Stories Today",description:"Stay updated with the latest across all sectors.",image_url:SECTOR_FALLBACK_IMAGES.All,source_name:'Bharat News AI',pubDate:'2025-06-12 00:00:00',link:'#'}],
+  };
+  return (fb[sector]||fb.All).map((a,i)=>newsdataToCard(a,sector,i));
+}
+
+// ══════════════════════════════════════════════════
+// PWA MANIFEST (Feature #15)
+// ══════════════════════════════════════════════════
+function installPWA() {
+  const manifest = {
+    name:'Bharat News AI — Daily Intelligence',short_name:'Bharat News AI',description:'AI-powered daily news with Groq',
+    start_url:'.',display:'standalone',background_color:'#0a0a0a',theme_color:'#0a0a0a',
+    icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="%23e91e8c"/><text x="96" y="140" font-size="110" text-anchor="middle" fill="white" font-weight="900">B</text></svg>',sizes:'192x192',type:'image/svg+xml'}]
+  };
+  const blob = new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  document.getElementById('manifestLink').href=url;
+}
+
+// Service Worker registration
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE='bharatnewsai-v1';
+    self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/']))));
+    self.addEventListener('fetch',e=>e.respondWith(
+      caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline',{status:503})))
+    ));`;
+  const swBlob = new Blob([swCode],{type:'application/javascript'});
+  const swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+
+// ══════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if (e.key==='Escape') { closeAnalysis(); closeReader(); closeStory(); closeAlertModal(); closePrefsModal(); }
+  if (e.key==='ArrowRight'&&document.getElementById('storyViewer').classList.contains('open')) nextStory();
+  if (e.key==='ArrowLeft'&&document.getElementById('storyViewer').classList.contains('open')) prevStory();
+  if ((e.ctrlKey||e.metaKey)&&e.key==='k') { document.getElementById('searchInput').focus(); e.preventDefault(); }
+  if ((e.ctrlKey||e.metaKey)&&e.key==='d') { toggleTheme(); e.preventDefault(); }
+});
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+async function init() {
+  // Restore theme
+  const savedTheme = localStorage.getItem('pa_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',savedTheme);
+  document.getElementById('themeBtn').textContent = savedTheme==='dark'?'🌙':'☀️';
+
+  installPWA();
+  renderSectors();
+  renderStories();
+  renderRightPanel();
+  document.getElementById('bookmarkCount').textContent = bookmarks.length||'0';
+
+  // Set alert dot if alerts exist
+  if (alertKws.length) document.getElementById('notifDot').style.display='block';
+
+  // Fetch initial news
+  const initial = await fetchNews('All');
+  newsData = initial;
+  renderFeed();
+  updateLastFetchedBadge();
+
+  // Background fetch all sectors
+  fetchAllSectors().then(()=>{ renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
+
+  // Generate AI briefing
+  generateDailyBriefing();
+
+  // Auto-story if pref set
+  if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
+
+  // Auto-refresh every 15 min
+  setInterval(async()=>{
+    const r=await fetchNews(state.currentSector,true);
+    if(state.currentSector==='All') newsData=r;
+    renderFeed();
+    renderRightPanel();
+    updateLastFetchedBadge();
+    showToast('🔄 News refreshed');
+  }, 15*60*1000);
+}
+
+init();
+</script>
+</body>
+</html>
