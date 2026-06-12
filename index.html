@@ -534,11 +534,267 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   .search-wrap,.theme-btn{display:none!important}
 }
 
+
+/* ── LOGIN ── */
+.login-screen {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  transition: opacity .4s;
+}
+.login-screen.hidden { opacity: 0; pointer-events: none; }
+
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  width: 100%; max-width: 420px;
+  padding: 40px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,30,140,.15), transparent 70%);
+  pointer-events: none;
+}
+.login-card::after {
+  content: '';
+  position: absolute; bottom: -60px; left: -60px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(147,51,234,.12), transparent 70%);
+  pointer-events: none;
+}
+
+.login-logo {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px;
+}
+.login-logo-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: var(--grad);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 900; color: #fff;
+}
+.login-logo-text {
+  font-size: 22px; font-weight: 900;
+  background: var(--grad);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.login-tagline {
+  font-size: 13px; color: var(--text3);
+  margin-bottom: 32px; line-height: 1.5;
+}
+
+.login-tabs {
+  display: flex; gap: 4px;
+  background: var(--surface2);
+  border-radius: 10px; padding: 4px;
+  margin-bottom: 24px;
+}
+.login-tab {
+  flex: 1; padding: 8px;
+  border-radius: 7px; border: none;
+  background: transparent; color: var(--text2);
+  font-size: 14px; font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: all .15s;
+}
+.login-tab.active {
+  background: var(--surface); color: var(--text);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+
+.login-form { display: flex; flex-direction: column; gap: 14px; }
+
+.login-field { display: flex; flex-direction: column; gap: 6px; }
+.login-label {
+  font-size: 12px; font-weight: 600; color: var(--text2);
+  text-transform: uppercase; letter-spacing: .8px;
+}
+.login-input {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  color: var(--text); font-family: inherit; font-size: 15px;
+  padding: 12px 16px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.login-input:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(147,51,234,.12);
+}
+.login-input.error { border-color: #ef4444; }
+
+.login-error {
+  font-size: 12px; color: #ef4444; font-weight: 500;
+  min-height: 16px; text-align: center;
+}
+
+.login-btn {
+  width: 100%; padding: 14px;
+  border-radius: 12px; border: none;
+  background: var(--grad); color: #fff;
+  font-size: 15px; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: opacity .15s, transform .15s;
+  margin-top: 4px;
+}
+.login-btn:hover { opacity: .9; transform: translateY(-1px); }
+.login-btn:active { transform: translateY(0); }
+.login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+.login-divider {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text3); font-size: 12px; margin: 4px 0;
+}
+.login-divider::before, .login-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.login-demo-btn {
+  width: 100%; padding: 12px;
+  border-radius: 12px; border: 1px solid var(--border2);
+  background: var(--surface2); color: var(--text2);
+  font-size: 14px; font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.login-demo-btn:hover { border-color: var(--accent2); color: var(--text); }
+
+.login-footer {
+  font-size: 11px; color: var(--text3);
+  text-align: center; margin-top: 20px; line-height: 1.6;
+}
+
+/* User avatar in topbar */
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--grad);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff;
+  cursor: pointer; flex-shrink: 0;
+  border: 2px solid var(--border2);
+  transition: border-color .15s;
+}
+.user-avatar:hover { border-color: var(--accent2); }
+
+/* User dropdown */
+.user-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 8px;
+  width: 220px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  z-index: 200;
+  display: none;
+}
+.user-dropdown.open { display: block; animation: fadeIn .2s ease; }
+.user-dropdown-header {
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.user-dropdown-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.user-dropdown-email { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.user-dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: background .15s;
+}
+.user-dropdown-item:hover { background: var(--surface2); color: var(--text); }
+.user-dropdown-item.danger { color: #ef4444; }
+.user-dropdown-item.danger:hover { background: rgba(239,68,68,.1); }
+
+/* Password strength */
+.pw-strength { height: 3px; border-radius: 2px; margin-top: 6px; transition: all .3s; }
+
+@media(max-width:768px){
+  .login-card { padding: 32px 24px; border-radius: 20px; }
+  .login-logo-text { font-size: 18px; }
+}
+
 </style>
 </head>
 <body>
 
 <!-- TOAST CONTAINER -->
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">B</div>
+      <div class="login-logo-text">Bharat News AI</div>
+    </div>
+    <div class="login-tagline">AI-powered daily intelligence · 4 live sources · Groq Llama 3.3</div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" id="loginTabBtn" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="login-tab" id="signupTabBtn" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+
+    <!-- SIGN IN FORM -->
+    <div id="loginForm">
+      <div class="login-form">
+        <div class="login-field">
+          <label class="login-label">Email</label>
+          <input class="login-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="login-field">
+          <label class="login-label">Password</label>
+          <input class="login-input" id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
+      </div>
+      <div class="login-divider">or</div>
+      <button class="login-demo-btn" onclick="demoLogin()">
+        ⚡ Continue as Guest (No account needed)
+      </button>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div id="signupForm" style="display:none;">
+      <div class="login-form">
+        <div class="login-field">
+          <label class="login-label">Full Name</label>
+          <input class="login-input" id="signupName" type="text" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="login-field">
+          <label class="login-label">Email</label>
+          <input class="login-input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="login-field">
+          <label class="login-label">Password</label>
+          <input class="login-input" id="signupPassword" type="password" placeholder="Min 6 characters"
+            oninput="updatePwStrength(this.value)" autocomplete="new-password">
+          <div class="pw-strength" id="pwStrength"></div>
+        </div>
+        <div class="login-error" id="signupError"></div>
+        <button class="login-btn" id="signupBtn" onclick="doSignup()">Create Account →</button>
+      </div>
+      <div class="login-divider">or</div>
+      <button class="login-demo-btn" onclick="demoLogin()">
+        ⚡ Continue as Guest
+      </button>
+    </div>
+
+    <div class="login-footer">
+      🔒 Your data stays in your browser · No tracking · 100% free
+    </div>
+  </div>
+</div>
+
 
 <!-- ══ MOBILE TOP BAR ══ -->
 <div class="mob-topbar">
@@ -780,6 +1036,19 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
       </div>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
+      <div style="position:relative;">
+        <div class="user-avatar" id="userAvatarBtn" onclick="toggleUserDropdown()" title="Account">?</div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="user-dropdown-header">
+            <div class="user-dropdown-name" id="dropdownName">Guest</div>
+            <div class="user-dropdown-email" id="dropdownEmail">Not signed in</div>
+          </div>
+          <div class="user-dropdown-item" onclick="openPrefsModal();toggleUserDropdown()">⚙️ Preferences</div>
+          <div class="user-dropdown-item" onclick="openAlertModal();toggleUserDropdown()">🔔 Keyword Alerts</div>
+          <div class="user-dropdown-item" onclick="setView('bookmarks');toggleUserDropdown()">🔖 Saved Articles</div>
+          <div class="user-dropdown-item danger" onclick="doLogout()">🚪 Sign Out</div>
+        </div>
+      </div>
     </div>
 
     <!-- CONTENT -->
@@ -823,25 +1092,14 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 </div>
 
 <script>
-
-  // ── API CONFIG (keys assembled at runtime) ──
-  const _c = (s) => s.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(i%7+3))).join('');
-  const _k = {
-    G: atob('NWIxZmU2OTdmYjZkZDUwYTVmOWFiYmNkMDUxNWVlY2U='),
-    N: atob('cHViXzM4ZDg4MzBiNDMwMjQyZWI5ZjJhNDNkZTU2ZGQ5NTY2'),
-    Gu: atob('MzNlNDlmZWYtODI2MC00YTM2LTk3OTctZjk0M2ZhM2JiYjEz'),
-    Na: atob('NDIwNzk0Y2Y2NjRkNGVmM2FkZjJkMWZiNDc2NjhmMjU='),
-    Gr: atob('Z3NrX29xV1d5S2o3R1g2b3hrRVlTcjBwV0dkeWIzRllZeURQSE5RdlBYMGppamkxUzdrMGZKa0o='),
-  };
-
 // ══════════════════════════════════════════════════
 // KEYS & API CONFIG
 // ══════════════════════════════════════════════════
-const GNEWS_KEY = _k.G;
-const NEWSDATA_KEY = _k.N;
-const GUARDIAN_KEY = _k.Gu;
-const NEWSAPI_KEY = _k.Na;
-const GROQ_KEY = _k.Gr;
+const GNEWS_KEY     = '5b1fe697fb6dd50a5f9abbcd0515eece';
+const NEWSDATA_KEY  = 'pub_38d8830b430242eb9f2a43de56dd9566';
+const GUARDIAN_KEY  = '33e49fef-8260-4a36-9797-f943fa3bbb13';
+const NEWSAPI_KEY   = '420794cf664d4ef3adf2d1fb47668f25';
+const GROQ_KEY      = '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';
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
 const NEWSDATA_BASE = 'https://newsdata.io/api/1';
@@ -1202,10 +1460,17 @@ function checkBreaking(articles) {
   const b = articles.find(a=>a.breaking && !shownBreaking.has(a.id));
   if (!b) return;
   shownBreaking.add(b.id);
+  // Desktop banner
   const banner = document.getElementById('breakingBanner');
-  document.getElementById('breakingText').textContent = b.title;
-  banner.classList.add('show');
-  banner.onclick = (e) => { if(e.target!==banner.querySelector('.breaking-close')) openReader(b); };
+  if (banner) {
+    document.getElementById('breakingText').textContent = b.title;
+    banner.classList.add('show');
+    banner.onclick = (e) => { if(e.target!==banner.querySelector('.breaking-close')) openReader(b); };
+  }
+  // Mobile banner
+  const mobBanner = document.getElementById('mobBreakingBanner');
+  const mobText   = document.getElementById('mobBreakingText');
+  if (mobBanner && mobText) { mobText.textContent = b.title; mobBanner.classList.add('show'); }
 }
 
 // ══════════════════════════════════════════════════
@@ -1956,7 +2221,12 @@ function toggleLike(id) {
 function toggleBookmark(id) {
   if(bookmarks.includes(id)) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
   localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
-  document.getElementById('bookmarkCount').textContent=bookmarks.length||'0';
+  // Desktop badge
+  const bc = document.getElementById('bookmarkCount');
+  if(bc) bc.textContent=bookmarks.length||'0';
+  // Mobile badge
+  const mbc = document.getElementById('mobBookmarkBadge');
+  if(mbc){ if(bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}else{mbc.style.display='none';} }
   renderFeed();
 }
 
@@ -2000,13 +2270,20 @@ function setFeedMode(m,btn) {
 // THEME TOGGLE (Feature #16)
 // ══════════════════════════════════════════════════
 function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme')==='dark';
-  html.setAttribute('data-theme', isDark?'light':'dark');
-  document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️';
-  localStorage.setItem('pa_theme', isDark?'light':'dark');
-  // Update topbar bg
-  document.querySelector('.topbar').style.background = isDark ? 'rgba(248,249,250,.95)' : 'rgba(10,10,10,.95)';
+  const htmlEl = document.documentElement;
+  const isDark = htmlEl.getAttribute('data-theme')==='dark';
+  const newTheme = isDark?'light':'dark';
+  htmlEl.setAttribute('data-theme', newTheme);
+  localStorage.setItem('pa_theme', newTheme);
+  // Desktop button
+  const btn = document.getElementById('themeBtn');
+  if(btn) btn.textContent = isDark?'🌙':'☀️';
+  // Mobile icon
+  const mobIcon = document.getElementById('mobThemeIcon');
+  if(mobIcon) mobIcon.textContent = isDark?'🌙':'☀️';
+  // Desktop topbar bg
+  const tb = document.querySelector('.topbar');
+  if(tb) tb.style.background = isDark?'rgba(248,249,250,.95)':'rgba(10,10,10,.95)';
 }
 
 // ══════════════════════════════════════════════════
@@ -2092,10 +2369,269 @@ document.addEventListener('keydown',e=>{
   if ((e.ctrlKey||e.metaKey)&&e.key==='d') { toggleTheme(); e.preventDefault(); }
 });
 
+
+// ══════════════════════════════════════════════════
+// AUTH SYSTEM (localStorage-based, no backend needed)
+// ══════════════════════════════════════════════════
+
+const AUTH_KEY = 'bna_users';
+const SESSION_KEY = 'bna_session';
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem(AUTH_KEY) || '{}');
+}
+function saveUsers(users) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify(users));
+}
+function getSession() {
+  return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+}
+function saveSession(user) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+}
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
+
+// Get initials from name or email
+function getInitials(nameOrEmail) {
+  const parts = (nameOrEmail||'').split(/[\s@]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return (nameOrEmail||'?')[0].toUpperCase();
+}
+
+// ── SWITCH AUTH TAB ──
+function switchAuthTab(tab) {
+  document.getElementById('loginForm').style.display   = tab==='login' ? 'block' : 'none';
+  document.getElementById('signupForm').style.display  = tab==='signup' ? 'block' : 'none';
+  document.getElementById('loginTabBtn').classList.toggle('active', tab==='login');
+  document.getElementById('signupTabBtn').classList.toggle('active', tab==='signup');
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('signupError').textContent = '';
+}
+
+// ── SIGN UP ──
+function doSignup() {
+  const name  = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('signupPassword').value;
+  const errEl = document.getElementById('signupError');
+
+  // Validation
+  if (!name)  { errEl.textContent = 'Please enter your name.'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; return; }
+  if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+
+  const users = getUsers();
+  if (users[email]) { errEl.textContent = 'An account with this email already exists.'; return; }
+
+  // Simple hash (XOR with key — not crypto, but obscures plain text in storage)
+  const hashed = btoa(pw.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(i%13+7))).join(''));
+
+  users[email] = { name, email, password: hashed, createdAt: new Date().toISOString() };
+  saveUsers(users);
+
+  const user = { name, email, initials: getInitials(name) };
+  saveSession(user);
+  onLoginSuccess(user);
+  showToast(`👋 Welcome to Bharat News AI, ${name.split(' ')[0]}!`);
+}
+
+// ── SIGN IN ──
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
+
+  if (!email) { errEl.textContent = 'Please enter your email.'; return; }
+  if (!pw)    { errEl.textContent = 'Please enter your password.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  setTimeout(() => {
+    const users = getUsers();
+    const stored = users[email];
+
+    if (!stored) {
+      errEl.textContent = 'No account found with this email.';
+      btn.disabled = false; btn.textContent = 'Sign In →';
+      document.getElementById('loginEmail').classList.add('error');
+      return;
+    }
+
+    // Verify password
+    const hashed = btoa(pw.split('').map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(i%13+7))).join(''));
+    if (hashed !== stored.password) {
+      errEl.textContent = 'Incorrect password. Please try again.';
+      btn.disabled = false; btn.textContent = 'Sign In →';
+      document.getElementById('loginPassword').classList.add('error');
+      return;
+    }
+
+    const user = { name: stored.name, email, initials: getInitials(stored.name) };
+    saveSession(user);
+    onLoginSuccess(user);
+    showToast(`👋 Welcome back, ${stored.name.split(' ')[0]}!`);
+  }, 400); // Small delay feels more real
+}
+
+// ── GUEST / DEMO LOGIN ──
+function demoLogin() {
+  const user = { name: 'Guest', email: '', initials: 'G', isGuest: true };
+  saveSession(user);
+  onLoginSuccess(user);
+  showToast('👋 Welcome! Browsing as Guest.');
+}
+
+// ── LOGOUT ──
+function doLogout() {
+  clearSession();
+  updateUserUI(null);
+  document.getElementById('loginScreen').classList.remove('hidden');
+  toggleUserDropdown(false);
+  // Clear inputs
+  ['loginEmail','loginPassword','signupName','signupEmail','signupPassword'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('signupError').textContent = '';
+}
+
+// ── ON LOGIN SUCCESS ──
+let appLoaded = false;
+function onLoginSuccess(user) {
+  updateUserUI(user);
+  const screen = document.getElementById('loginScreen');
+  screen.classList.add('hidden');
+  setTimeout(() => { screen.style.display = 'none'; }, 400);
+  if (!appLoaded) { appLoaded = true; _startApp(); }
+}
+
+async function _startApp() {
+  // Restore theme
+  const savedTheme = localStorage.getItem('pa_theme')||'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const themeBtn = document.getElementById('themeBtn');
+  if(themeBtn) themeBtn.textContent = savedTheme==='dark'?'🌙':'☀️';
+  const mobIcon = document.getElementById('mobThemeIcon');
+  if(mobIcon) mobIcon.textContent = savedTheme==='dark'?'🌙':'☀️';
+
+  installPWA();
+  renderSectors();
+  renderStories();
+  renderRightPanel();
+  const bc = document.getElementById('bookmarkCount');
+  if(bc) bc.textContent = bookmarks.length||'0';
+  const mbc = document.getElementById('mobBookmarkBadge');
+  if(mbc && bookmarks.length>0){ mbc.textContent=bookmarks.length; mbc.style.display='block'; }
+  if (alertKws.length) {
+    const d1 = document.getElementById('notifDot'); if(d1) d1.style.display='block';
+    const d2 = document.getElementById('mobNotifDot'); if(d2) d2.style.display='block';
+  }
+
+  const initial = await fetchNews('All');
+  newsData = initial;
+  renderFeed();
+  updateLastFetchedBadge();
+  fetchAllSectors().then(()=>{ renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
+  generateDailyBriefing();
+
+  if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
+
+  setInterval(async()=>{
+    const r=await fetchNews(state.currentSector,true);
+    if(state.currentSector==='All') newsData=r;
+    renderFeed(); renderRightPanel(); updateLastFetchedBadge();
+    showToast('🔄 News refreshed');
+  }, 15*60*1000);
+}
+
+// ── UPDATE UI FOR LOGGED IN USER ──
+function updateUserUI(user) {
+  const avatar = document.getElementById('userAvatarBtn');
+  const dName  = document.getElementById('dropdownName');
+  const dEmail = document.getElementById('dropdownEmail');
+
+  if (!user) {
+    if(avatar) avatar.textContent = '?';
+    if(dName)  dName.textContent = 'Guest';
+    if(dEmail) dEmail.textContent = 'Not signed in';
+    return;
+  }
+
+  if(avatar) {
+    avatar.textContent = user.initials || getInitials(user.name||user.email||'?');
+  }
+  if(dName)  dName.textContent  = user.isGuest ? 'Guest User' : (user.name || 'User');
+  if(dEmail) dEmail.textContent = user.isGuest ? 'Browsing as guest' : user.email;
+}
+
+// ── USER DROPDOWN TOGGLE ──
+function toggleUserDropdown(force) {
+  const dd = document.getElementById('userDropdown');
+  if (!dd) return;
+  const isOpen = dd.classList.contains('open');
+  const shouldOpen = force !== undefined ? force : !isOpen;
+  dd.classList.toggle('open', shouldOpen);
+  if (shouldOpen) {
+    // Close on outside click
+    setTimeout(() => {
+      document.addEventListener('click', function handler(e) {
+        if (!dd.contains(e.target) && e.target.id !== 'userAvatarBtn') {
+          dd.classList.remove('open');
+          document.removeEventListener('click', handler);
+        }
+      });
+    }, 0);
+  }
+}
+
+// ── PASSWORD STRENGTH INDICATOR ──
+function updatePwStrength(pw) {
+  const bar = document.getElementById('pwStrength');
+  if (!bar) return;
+  let strength = 0;
+  if (pw.length >= 6)  strength++;
+  if (pw.length >= 10) strength++;
+  if (/[A-Z]/.test(pw)) strength++;
+  if (/[0-9]/.test(pw)) strength++;
+  if (/[^A-Za-z0-9]/.test(pw)) strength++;
+  const colors = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981'];
+  const widths  = ['20%','40%','60%','80%','100%'];
+  bar.style.background = colors[strength-1] || '#2a2a2a';
+  bar.style.width      = widths[strength-1] || '0%';
+}
+
+// ── CHECK SESSION ON LOAD ──
+function checkAuthSession() {
+  const session = getSession();
+  if (session) {
+    onLoginSuccess(session);
+    return true;
+  }
+  return false;
+}
+
+// Input error clear on type
+['loginEmail','loginPassword','signupEmail','signupPassword'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => el.classList.remove('error'));
+});
+
+
 // ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 async function init() {
+  // Check auth before loading app
+  const hasSession = checkAuthSession();
+  if (!hasSession) {
+    // Show login screen, defer app load until after login
+    return;
+  }
+
   // Restore theme
   const savedTheme = localStorage.getItem('pa_theme')||'dark';
   document.documentElement.setAttribute('data-theme',savedTheme);
@@ -2121,6 +2657,15 @@ async function init() {
 
   // Generate AI briefing
   generateDailyBriefing();
+
+  // Sync mobile badges
+  const mbc = document.getElementById('mobBookmarkBadge');
+  if(mbc && bookmarks.length>0){ mbc.textContent=bookmarks.length; mbc.style.display='block'; }
+  const mobNotif = document.getElementById('mobNotifDot');
+  if(mobNotif && alertKws.length) mobNotif.style.display='block';
+  const mobTheme = document.getElementById('mobThemeIcon');
+  const savedThemeVal = localStorage.getItem('pa_theme')||'dark';
+  if(mobTheme) mobTheme.textContent = savedThemeVal==='dark'?'🌙':'☀️';
 
   // Auto-story if pref set
   if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
@@ -2218,45 +2763,13 @@ function syncMobBreaking(title) {
   if (b && t) { t.textContent = title; b.classList.add('show'); }
 }
 
-// Override checkBreaking to also sync mobile
-const _origCheckBreaking = checkBreaking;
-function checkBreaking(articles) {
-  _origCheckBreaking(articles);
-  const b = articles.find(a => a.breaking && !shownBreaking.has(a.id+'-mob'));
-  if (b) { shownBreaking.add(b.id+'-mob'); syncMobBreaking(b.title); }
-}
 
-// Override toggleBookmark to sync mobile badge
-const _origToggleBookmark = toggleBookmark;
-function toggleBookmark(id) {
-  _origToggleBookmark(id);
-  syncMobBadge();
-}
 
-// Override toggleTheme to also update mobile icon
-const _origToggleTheme = toggleTheme;
-function toggleTheme() {
-  _origToggleTheme();
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const icon = document.getElementById('mobThemeIcon');
-  if (icon) icon.textContent = isDark ? '🌙' : '☀️';
-}
 
-// Override init to also sync mobile
-const _origInit = init;
-async function init() {
-  await _origInit();
-  syncMobBadge();
-  // Sync alert dot
-  if (alertKws.length) {
-    const d = document.getElementById('mobNotifDot');
-    if (d) d.style.display = 'block';
-  }
-  // Sync theme icon
-  const savedTheme = localStorage.getItem('pa_theme') || 'dark';
-  const mobIcon = document.getElementById('mobThemeIcon');
-  if (mobIcon) mobIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-}
+
+
+
+
 
 // Swipe to close modals on mobile
 let touchStartY = 0;
