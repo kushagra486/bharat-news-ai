@@ -2626,63 +2626,315 @@ document.addEventListener('keydown',e=>{
 
 
 // ══════════════════════════════════════════════════
+// SUPABASE CLIENT
+// ══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyOTQsImV4cCI6MjA5Njg1NDI5NH0.cMzCkgMLSU1cxTw6vXpd7I_E2chCgys3neBLqawhSCQ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let appLoaded   = false;
+
+// ══════════════════════════════════════════════════
+// AUTH HELPERS
+// ══════════════════════════════════════════════════
+function getInitials(s) {
+  const parts = (s||'').split(/[\s@]+/).filter(Boolean);
+  return parts.length >= 2
+    ? (parts[0][0]+parts[1][0]).toUpperCase()
+    : (s||'?')[0].toUpperCase();
+}
+
+function setLoginError(form, msg) {
+  const el = document.getElementById(form+'Error');
+  if (el) el.textContent = msg;
+}
+
+function setLoginBtn(id, disabled, text) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.disabled = disabled;
+  if (text) btn.textContent = text;
+}
+
+// ── SHOW / HIDE LOGIN SCREEN ─────────────────────
+function showLogin() {
+  const el = document.getElementById('loginScreen');
+  if (el) { el.style.display = 'flex'; el.classList.remove('hidden'); }
+}
+function hideLogin() {
+  const el = document.getElementById('loginScreen');
+  if (el) { el.classList.add('hidden'); setTimeout(()=>{ el.style.display='none'; }, 350); }
+}
+
+// ── SWITCH TAB ────────────────────────────────────
+function switchAuthTab(tab) {
+  document.getElementById('loginForm').style.display  = tab==='login'  ? 'block' : 'none';
+  document.getElementById('signupForm').style.display = tab==='signup' ? 'block' : 'none';
+  document.getElementById('loginTabBtn').classList.toggle('active',  tab==='login');
+  document.getElementById('signupTabBtn').classList.toggle('active', tab==='signup');
+  setLoginError('login',''); setLoginError('signup','');
+}
+
+// ── SIGN UP ───────────────────────────────────────
+async function doSignup() {
+  const name  = (document.getElementById('signupName')?.value||'').trim();
+  const email = (document.getElementById('signupEmail')?.value||'').trim().toLowerCase();
+  const pw    = (document.getElementById('signupPassword')?.value||'');
+
+  if (!name)  return setLoginError('signup','Please enter your name.');
+  if (!email || !email.includes('@')) return setLoginError('signup','Please enter a valid email.');
+  if (pw.length < 6) return setLoginError('signup','Password must be at least 6 characters.');
+
+  setLoginBtn('signupBtn', true, 'Creating account...');
+  setLoginError('signup','');
+
+  try {
+    const { data, error } = await sb.auth.signUp({
+      email, password: pw,
+      options: { data: { name, avatar_initials: getInitials(name) } }
+    });
+    if (error) throw error;
+
+    if (data.user && !data.session) {
+      // Email confirmation needed
+      document.getElementById('signupForm').innerHTML = `
+        <div style="text-align:center;padding:20px 0;">
+          <div style="font-size:48px;margin-bottom:12px;">📧</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Check your email!</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6;">
+            Confirmation sent to <strong>${email}</strong>.<br>Click the link to activate, then sign in.
+          </div>
+          <button class="login-demo-btn" style="margin-top:20px;" onclick="switchAuthTab('login')">← Back to Sign In</button>
+        </div>`;
+      return;
+    }
+    // Auto-confirmed — onAuthStateChange SIGNED_IN will fire
+  } catch(e) {
+    setLoginError('signup', e.message || 'Sign up failed');
+    setLoginBtn('signupBtn', false, 'Create Account →');
+  }
+}
+
+// ── SIGN IN ───────────────────────────────────────
+async function doLogin() {
+  const email = (document.getElementById('loginEmail')?.value||'').trim().toLowerCase();
+  const pw    = (document.getElementById('loginPassword')?.value||'');
+
+  if (!email) return setLoginError('login','Please enter your email.');
+  if (!pw)    return setLoginError('login','Please enter your password.');
+
+  setLoginBtn('loginBtn', true, 'Signing in...');
+  setLoginError('login','');
+
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error) throw error;
+    // Success — onAuthStateChange SIGNED_IN fires → onAuthSuccess()
+  } catch(e) {
+    const msg = (e.message||'').toLowerCase().includes('invalid')
+      ? 'Incorrect email or password.' : (e.message||'Sign in failed');
+    setLoginError('login', msg);
+    setLoginBtn('loginBtn', false, 'Sign In →');
+  }
+}
+
+// ── GUEST LOGIN ───────────────────────────────────
+function demoLogin() {
+  localStorage.setItem('bna_guest', '1');
+  currentUser = { id:'guest', name:'Guest', email:'', initials:'G', isGuest:true };
+  onAuthSuccess();
+  showToast("👋 Welcome! Browsing as Guest.");
+}
+
+// ── FORGOT PASSWORD ───────────────────────────────
+async function doForgotPassword() {
+  const email = (document.getElementById('loginEmail')?.value||'').trim();
+  if (!email) return setLoginError('login','Enter your email first.');
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://kushagra486.github.io/bharat-news-ai/'
+  });
+  if (error) setLoginError('login', error.message);
+  else showToast('📧 Password reset email sent!');
+}
+
+// ── LOGOUT ───────────────────────────────────────
+async function doLogout() {
+  if (currentUser && !currentUser.isGuest) await sb.auth.signOut();
+  currentUser = null;
+  appLoaded   = false;
+  bookmarks=[]; likes=[]; readItems=[]; alertKws=[];
+  ['pa_bookmarks','pa_likes','pa_read','pa_alerts','bna_guest'].forEach(k=>localStorage.removeItem(k));
+  updateUserUI(null);
+  toggleUserDropdown(false);
+  showLogin();
+}
+
+// ── PASSWORD STRENGTH ─────────────────────────────
+function updatePwStrength(pw) {
+  const bar = document.getElementById('pwStrength');
+  if (!bar) return;
+  let s=0;
+  if(pw.length>=6)s++; if(pw.length>=10)s++;
+  if(/[A-Z]/.test(pw))s++; if(/[0-9]/.test(pw))s++;
+  if(/[^A-Za-z0-9]/.test(pw))s++;
+  bar.style.width  = ['20%','40%','60%','80%','100%'][s-1]||'0%';
+  bar.style.background = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981'][s-1]||'#2a2a2a';
+}
+
+// ── ON AUTH SUCCESS ───────────────────────────────
+function onAuthSuccess() {
+  hideLogin();
+  updateUserUI(currentUser);
+  if (!appLoaded) { appLoaded = true; _startApp(); }
+}
+
+// ── UPDATE USER UI ────────────────────────────────
+function updateUserUI(user) {
+  const av = document.getElementById('userAvatarBtn');
+  const dn = document.getElementById('dropdownName');
+  const de = document.getElementById('dropdownEmail');
+  if (!user) {
+    if(av) av.textContent='?';
+    if(dn) dn.textContent='Not signed in';
+    if(de) de.textContent='';
+    return;
+  }
+  const initials = user.initials || getInitials(user.name||user.email||'?');
+  if(av) av.textContent = initials;
+  if(dn) dn.textContent = user.isGuest ? 'Guest User' : (user.name||'User');
+  if(de) de.textContent = user.isGuest ? 'Browsing as guest' : (user.email||'');
+}
+
+// ── USER DROPDOWN ─────────────────────────────────
+function toggleUserDropdown(force) {
+  const dd = document.getElementById('userDropdown');
+  if (!dd) return;
+  const open = force !== undefined ? force : !dd.classList.contains('open');
+  dd.classList.toggle('open', open);
+  if (open) {
+    setTimeout(()=>{
+      document.addEventListener('click', function h(e){
+        if(!dd.contains(e.target) && e.target.id!=='userAvatarBtn'){
+          dd.classList.remove('open');
+          document.removeEventListener('click',h);
+        }
+      });
+    },0);
+  }
+}
+
+// ── SUPABASE AUTH STATE LISTENER ─────────────────
+sb.auth.onAuthStateChange(async (event, session) => {
+  console.log('[Auth]', event);
+  if (event === 'SIGNED_IN' && session?.user) {
+    const u    = session.user;
+    const name = u.user_metadata?.name || u.email.split('@')[0];
+    currentUser = { id:u.id, name, email:u.email, initials:getInitials(name), isGuest:false };
+    onAuthSuccess();
+    try { await syncUserDataFromSupabase(); renderFeed(); } catch(e){}
+  }
+  if (event === 'SIGNED_OUT') {
+    currentUser = null; updateUserUI(null);
+  }
+});
+
+// ── SUPABASE DATA SYNC ────────────────────────────
+async function syncUserDataFromSupabase() {
+  if (!currentUser || currentUser.isGuest) return;
+  const uid = currentUser.id;
+  try {
+    const [bk, lk, rd, pr] = await Promise.all([
+      sb.from('bookmarks').select('article_id,article_data').eq('user_id',uid),
+      sb.from('likes').select('article_id').eq('user_id',uid),
+      sb.from('read_history').select('article_id').eq('user_id',uid),
+      sb.from('user_prefs').select('prefs,alert_keywords').eq('user_id',uid).single(),
+    ]);
+    if (bk.data) { bookmarks = bk.data.map(b=>b.article_id); bk.data.forEach(b=>{ if(b.article_data){ const s=b.article_data.sector||'All'; if(!newsCache[s])newsCache[s]=[]; if(!newsCache[s].find(c=>c.id===b.article_id)) newsCache[s].push(b.article_data); } }); }
+    if (lk.data) likes    = lk.data.map(l=>l.article_id);
+    if (rd.data) readItems = rd.data.map(r=>r.article_id);
+    if (pr.data) { if(pr.data.prefs) prefs={...prefs,...pr.data.prefs}; if(pr.data.alert_keywords) alertKws=pr.data.alert_keywords; }
+    ['pa_bookmarks','pa_likes','pa_read','pa_alerts'].forEach((k,i)=>localStorage.setItem(k, JSON.stringify([bookmarks,likes,readItems,alertKws][i])));
+    const bc=document.getElementById('bookmarkCount'); if(bc) bc.textContent=bookmarks.length||'0';
+    const mbc=document.getElementById('mobBookmarkBadge'); if(mbc&&bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}
+  } catch(e) { console.warn('[Sync]',e.message); }
+}
+
+async function sbSaveBookmark(card) { if(!currentUser||currentUser.isGuest)return; try{await sb.from('bookmarks').upsert({user_id:currentUser.id,article_id:card.id,article_data:card},{onConflict:'user_id,article_id'});}catch(e){} }
+async function sbRemoveBookmark(id) { if(!currentUser||currentUser.isGuest)return; try{await sb.from('bookmarks').delete().eq('user_id',currentUser.id).eq('article_id',id);}catch(e){} }
+async function sbSaveLike(id)       { if(!currentUser||currentUser.isGuest)return; try{await sb.from('likes').upsert({user_id:currentUser.id,article_id:id},{onConflict:'user_id,article_id'});}catch(e){} }
+async function sbRemoveLike(id)     { if(!currentUser||currentUser.isGuest)return; try{await sb.from('likes').delete().eq('user_id',currentUser.id).eq('article_id',id);}catch(e){} }
+async function sbSaveRead(id)       { if(!currentUser||currentUser.isGuest)return; try{await sb.from('read_history').upsert({user_id:currentUser.id,article_id:id},{onConflict:'user_id,article_id'});}catch(e){} }
+async function sbSavePrefs()        { if(!currentUser||currentUser.isGuest){localStorage.setItem('pa_prefs',JSON.stringify(prefs));localStorage.setItem('pa_alerts',JSON.stringify(alertKws));return;} try{await sb.from('user_prefs').upsert({user_id:currentUser.id,prefs,alert_keywords:alertKws,updated_at:new Date().toISOString()},{onConflict:'user_id'});}catch(e){} }
+
+// ── PATCHED INTERACTIONS (sync to Supabase) ───────
+function toggleBookmark(id) {
+  const card = [...Object.values(newsCache).flat(),...newsData].find(c=>c.id===id);
+  const was  = bookmarks.includes(id);
+  if(was) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
+  localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
+  const bc=document.getElementById('bookmarkCount'); if(bc) bc.textContent=bookmarks.length||'0';
+  const mbc=document.getElementById('mobBookmarkBadge'); if(mbc){if(bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}else mbc.style.display='none';}
+  if(was) sbRemoveBookmark(id); else if(card) sbSaveBookmark(card);
+  renderFeed();
+}
+function toggleLike(id) {
+  const was=likes.includes(id);
+  if(was) likes=likes.filter(l=>l!==id); else likes.push(id);
+  localStorage.setItem('pa_likes',JSON.stringify(likes));
+  if(was) sbRemoveLike(id); else sbSaveLike(id);
+  renderFeed();
+}
+function markRead(id) {
+  if(!readItems.includes(id)){ readItems.push(id); localStorage.setItem('pa_read',JSON.stringify(readItems.slice(-200))); sbSaveRead(id); }
+}
+function savePref(key,val) { prefs[key]=val; sbSavePrefs(); }
+function addAlert() {
+  const inp=document.getElementById('alertKeywordInput');
+  const kw=(inp?.value||'').trim();
+  if(!kw||alertKws.includes(kw))return;
+  alertKws.push(kw); localStorage.setItem('pa_alerts',JSON.stringify(alertKws));
+  if(inp) inp.value=''; renderAlertsList(); sbSavePrefs();
+  const d=document.getElementById('notifDot'); if(d) d.style.display='block';
+  const d2=document.getElementById('mobNotifDot'); if(d2) d2.style.display='block';
+  showToast('🔔 Alert set for "'+kw+'"');
+}
+function removeAlert(kw) {
+  alertKws=alertKws.filter(k=>k!==kw); localStorage.setItem('pa_alerts',JSON.stringify(alertKws));
+  renderAlertsList(); sbSavePrefs();
+}
+
+// ── INPUT ERROR CLEAR ─────────────────────────────
+['loginEmail','loginPassword','signupEmail','signupPassword'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',()=>el.classList.remove('error'));
+});
+
+// ══════════════════════════════════════════════════
 // PROFILE SYSTEM
 // ══════════════════════════════════════════════════
-
-let profileData = {
-  name:'',email:'',bio:'',location:'',website:'',profession:'',
-  dob:'',avatar_url:'',avatar_initials:'',
-  email_verified:false,joined:'',sector_preferences:[],articles_read:0
-};
+let profileData = { name:'',email:'',bio:'',location:'',website:'',profession:'',dob:'',avatar_url:'',avatar_initials:'',email_verified:false,joined:'',sector_preferences:[] };
 
 async function openProfile() {
   if (!currentUser) { showToast('Please sign in to view your profile'); return; }
   document.getElementById('profileOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
   await loadProfile();
 }
-
-function closeProfile() {
-  document.getElementById('profileOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function closeProfileOnBg(e) {
-  if (e.target.id === 'profileOverlay') closeProfile();
-}
+function closeProfile() { document.getElementById('profileOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function closeProfileOnBg(e) { if(e.target.id==='profileOverlay') closeProfile(); }
 
 async function loadProfile() {
   const el = document.getElementById('profileContent');
-  el.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text3);"><div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:var(--accent2);"></div><div style="font-size:14px;">Loading profile...</div></div>';
-
+  el.innerHTML='<div style="padding:60px;text-align:center;color:var(--text3);"><div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:var(--accent2);"></div><div>Loading...</div></div>';
   if (currentUser && !currentUser.isGuest) {
     try {
-      const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-      if (data) {
-        profileData = {
-          name: data.name||currentUser.name||'',
-          email: data.email||currentUser.email||'',
-          bio: data.bio||'',
-          location: data.location||'',
-          website: data.website||'',
-          profession: data.profession||'',
-          dob: data.dob||'',
-          avatar_url: data.avatar_url||'',
-          avatar_initials: data.avatar_initials||getInitials(data.name||currentUser.email||'?'),
-          email_verified: data.email_verified||false,
-          joined: data.created_at||new Date().toISOString(),
-          sector_preferences: data.sector_preferences||[],
-          articles_read: data.articles_read||0,
-        };
-      }
-      const { data: { user } } = await sb.auth.getUser();
-      if (user) {
-        profileData.email_verified = !!user.email_confirmed_at;
-        profileData.joined = user.created_at || profileData.joined;
-      }
-    } catch(e) { console.error('Profile load:', e); }
-  } else {
-    profileData = { name:'Guest User', email:'', bio:'Browsing as guest', email_verified:false, joined:new Date().toISOString(), avatar_initials:'G', sector_preferences:[] };
-  }
+      const {data} = await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+      if (data) { profileData={name:data.name||currentUser.name||'',email:data.email||currentUser.email||'',bio:data.bio||'',location:data.location||'',website:data.website||'',profession:data.profession||'',dob:data.dob||'',avatar_url:data.avatar_url||'',avatar_initials:data.avatar_initials||getInitials(currentUser.name||currentUser.email||'?'),email_verified:false,joined:data.created_at||'',sector_preferences:data.sector_preferences||[]}; }
+      const {data:{user}} = await sb.auth.getUser();
+      if (user) { profileData.email_verified=!!user.email_confirmed_at; profileData.joined=user.created_at||profileData.joined; }
+    } catch(e) { console.warn('Profile load:',e); }
+  } else { profileData={name:'Guest User',email:'',bio:'',email_verified:false,joined:new Date().toISOString(),avatar_initials:'G',sector_preferences:[]}; }
   renderProfile();
 }
 
@@ -2691,751 +2943,156 @@ function renderProfile() {
   const isGuest = currentUser?.isGuest;
   const isVerified = profileData.email_verified;
   const joinedDate = profileData.joined ? new Date(profileData.joined).toLocaleDateString('en-IN',{month:'long',year:'numeric'}) : 'Recently';
-  const savedCount = bookmarks.length;
-  const likedCount = likes.length;
-  const readCount  = readItems.length;
-  const alertCount = alertKws.length;
-
-  const sectorsHtml = (profileData.sector_preferences?.length ? profileData.sector_preferences : (prefs.favSectors||[])).map(s =>
-    `<span style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${SECTOR_COLORS[s]||'#9333ea'}22;color:${SECTOR_COLORS[s]||'#9333ea'};border:1px solid ${SECTOR_COLORS[s]||'#9333ea'}44;">${SECTOR_EMOJIS[s]||''} ${s}</span>`
-  ).join('') || '<span style="color:var(--text3);font-size:13px;">No sectors selected — edit profile to add</span>';
-
-  const editSectorsHtml = ['Tech','Finance','Health','Science','Politics','Climate','Sports'].map(s => {
-    const sel = (profileData.sector_preferences||prefs.favSectors||[]).includes(s);
-    return `<button onclick="toggleEditSector('${s}',this)" style="padding:6px 14px;border-radius:20px;border:1px solid ${sel?'transparent':SECTOR_COLORS[s]+'44'};background:${sel?SECTOR_COLORS[s]+'22':'transparent'};color:${SECTOR_COLORS[s]};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;" ${sel?'class="sector-sel"':''}>${SECTOR_EMOJIS[s]} ${s}</button>`;
-  }).join('');
-
-  el.innerHTML = `
-    <div class="profile-hero">
-      <div class="profile-header">
-        <div class="profile-avatar-wrap">
-          <div class="profile-avatar" onclick="${isGuest?'':'changeAvatar()'}">
-            ${profileData.avatar_url ? `<img src="${profileData.avatar_url}" alt="Avatar" onerror="this.parentElement.innerHTML='<span>${profileData.avatar_initials||'?'}</span>'">` : `<span>${profileData.avatar_initials||'?'}</span>`}
-          </div>
-          ${!isGuest?'<div class="profile-avatar-edit" onclick="changeAvatar()" title="Change photo">📷</div>':''}
-        </div>
-        <div class="profile-name-area">
-          <div class="profile-name">
-            ${profileData.name||'User'}
-            ${isVerified?'<span class="verified-badge">✅ Verified</span>':!isGuest?'<span class="unverified-badge" onclick="resendVerification()">⚠️ Unverified — tap to verify</span>':''}
-          </div>
-          <div class="profile-email">${profileData.email||'Guest session'}</div>
-          ${profileData.profession?`<div class="profile-joined">💼 ${profileData.profession}</div>`:''}
-          ${profileData.location?`<div class="profile-joined">📍 ${profileData.location}</div>`:''}
-          <div class="profile-joined">📅 Joined ${joinedDate}</div>
-        </div>
-      </div>
-      <div class="profile-stats">
-        <div class="profile-stat" onclick="closeProfile();setView('bookmarks')">
-          <div class="profile-stat-num">${savedCount}</div>
-          <div class="profile-stat-label">Saved</div>
-        </div>
-        <div class="profile-stat">
-          <div class="profile-stat-num">${likedCount}</div>
-          <div class="profile-stat-label">Liked</div>
-        </div>
-        <div class="profile-stat">
-          <div class="profile-stat-num">${readCount}</div>
-          <div class="profile-stat-label">Read</div>
-        </div>
-        <div class="profile-stat" onclick="openAlertModal();closeProfile()">
-          <div class="profile-stat-num">${alertCount}</div>
-          <div class="profile-stat-label">Alerts</div>
-        </div>
-      </div>
-    </div>
-
-    ${!isVerified&&!isGuest?`<div class="verify-banner"><span style="font-size:20px;">📧</span><div class="verify-banner-text"><strong>Verify your email</strong> to unlock cross-device sync.</div><button class="verify-banner-btn" onclick="resendVerification()">Send Link</button></div>`:''}
-
-    <div class="profile-tabs">
-      <button class="profile-tab active" onclick="switchProfileTab('info',this)">👤 Info</button>
-      <button class="profile-tab" onclick="switchProfileTab('saved',this)">🔖 Saved</button>
-      <button class="profile-tab" onclick="switchProfileTab('activity',this)">📊 Activity</button>
-      ${!isGuest?'<button class="profile-tab" onclick="switchProfileTab('edit',this)">✏️ Edit</button>':''}
-    </div>
-
-    <div class="profile-tab-content active" id="ptab-info">
-      <div class="profile-info-section">
-        <div class="profile-info-title">Personal Details</div>
-        <div class="profile-info-grid">
-          ${[['Full Name',profileData.name],['Email',profileData.email],['Profession',profileData.profession],['Location',profileData.location],['Date of Birth',profileData.dob?new Date(profileData.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''],['Website',profileData.website?`<a href="${profileData.website}" target="_blank" style="color:var(--accent5);text-decoration:none;">${profileData.website.replace('https://','')}</a>`:'']]
-            .map(([label,val])=>`<div class="profile-info-item"><div class="profile-info-label">${label}</div><div class="profile-info-value ${val?'':'muted'}">${val||'Not set'}</div></div>`).join('')}
-        </div>
-      </div>
-      ${profileData.bio?`<div class="profile-info-section"><div class="profile-info-title">Bio</div><div style="font-size:14px;color:var(--text2);line-height:1.7;">${profileData.bio}</div></div>`:''}
-      <div class="profile-info-section">
-        <div class="profile-info-title">Favourite Sectors</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">${sectorsHtml}</div>
-      </div>
-      <div class="profile-info-section" style="border-bottom:none;">
-        <div class="profile-info-title">Account Status</div>
-        <div class="profile-info-grid">
-          <div class="profile-info-item" style="border-color:${isVerified?'rgba(16,185,129,.3)':'rgba(245,158,11,.3)'}">
-            <div class="profile-info-label">Email Status</div>
-            <div class="profile-info-value" style="color:${isVerified?'#10b981':'#f59e0b'}">${isVerified?'✅ Verified':'⚠️ Not Verified'}</div>
-          </div>
-          <div class="profile-info-item">
-            <div class="profile-info-label">Account Type</div>
-            <div class="profile-info-value">${isGuest?'👤 Guest':'🔐 Registered'}</div>
-          </div>
-          <div class="profile-info-item">
-            <div class="profile-info-label">Data Sync</div>
-            <div class="profile-info-value" style="color:${!isGuest?'#10b981':'#f59e0b'}">${!isGuest?'🟢 Supabase':'🟡 Local only'}</div>
-          </div>
-          <div class="profile-info-item">
-            <div class="profile-info-label">Member Since</div>
-            <div class="profile-info-value">${joinedDate}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-tab-content" id="ptab-saved">${renderProfileArticles(bookmarks,'saved')}</div>
-
-    <div class="profile-tab-content" id="ptab-activity">
-      <div class="profile-info-section">
-        <div class="profile-info-title">Reading Stats</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;">
-          ${[['📖','Articles Read',readCount,'#3b82f6'],['❤️','Liked',likedCount,'#e91e8c'],['🔖','Bookmarked',savedCount,'#f59e0b'],['🔔','Active Alerts',alertCount,'#10b981']]
-            .map(([icon,label,val,color])=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;">${icon}</div><div style="font-size:24px;font-weight:800;color:${color};margin:4px 0;">${val}</div><div style="font-size:11px;color:var(--text3);">${label}</div></div>`).join('')}
-        </div>
-      </div>
-      <div class="profile-info-section" style="border-bottom:none;">
-        <div class="profile-info-title">Recently Read</div>
-        ${renderProfileArticles(readItems.slice(-8),'read')}
-      </div>
-    </div>
-
-    ${!isGuest?`
-    <div class="profile-tab-content" id="ptab-edit">
-      <div class="edit-form">
-        <div class="edit-field"><label class="edit-label">Full Name</label><input class="edit-input" id="editName" value="${profileData.name||''}" placeholder="Your full name"></div>
-        <div class="edit-field"><label class="edit-label">Bio</label><textarea class="edit-textarea" id="editBio" placeholder="Tell us about yourself...">${profileData.bio||''}</textarea></div>
-        <div class="edit-field"><label class="edit-label">Profession</label><input class="edit-input" id="editProfession" value="${profileData.profession||''}" placeholder="e.g. Software Engineer, Student..."></div>
-        <div class="edit-field"><label class="edit-label">Location</label><input class="edit-input" id="editLocation" value="${profileData.location||''}" placeholder="e.g. Lucknow, India"></div>
-        <div class="edit-field"><label class="edit-label">Date of Birth</label><input class="edit-input" id="editDob" type="date" value="${profileData.dob||''}" style="color-scheme:dark;"></div>
-        <div class="edit-field"><label class="edit-label">Website</label><input class="edit-input" id="editWebsite" value="${profileData.website||''}" placeholder="https://yoursite.com"></div>
-        <div class="edit-field"><label class="edit-label">Favourite Sectors</label><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="editSectors">${editSectorsHtml}</div></div>
-        <div id="editError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div>
-        <button class="save-btn" id="saveProfileBtn" onclick="saveProfile()"><span>💾</span><span>Save Profile</span></button>
-        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
-          <div class="profile-info-title" style="margin-bottom:14px;">Change Password</div>
-          <div class="edit-field"><label class="edit-label">New Password</label><input class="edit-input" id="editNewPw" type="password" placeholder="Min 6 characters"></div>
-          <div class="edit-field"><label class="edit-label">Confirm Password</label><input class="edit-input" id="editConfirmPw" type="password" placeholder="Repeat new password"></div>
-          <div id="pwError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div>
-          <button class="save-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="changePassword()">🔑 Update Password</button>
-        </div>
-        <div class="danger-zone" style="margin:24px 0 0;">
-          <div class="danger-title">⚠️ Danger Zone</div>
-          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">These actions cannot be undone.</div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="danger-btn" onclick="clearAllData()">🗑️ Clear Local Data</button>
-            <button class="danger-btn" onclick="doLogout()">🚪 Sign Out</button>
-          </div>
-        </div>
-      </div>
-    </div>`:''}
-  `;
+  const sHtml = (profileData.sector_preferences?.length?profileData.sector_preferences:(prefs.favSectors||[])).map(s=>`<span style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${SECTOR_COLORS[s]||'#9333ea'}22;color:${SECTOR_COLORS[s]||'#9333ea'};border:1px solid ${SECTOR_COLORS[s]||'#9333ea'}44;">${SECTOR_EMOJIS[s]||''} ${s}</span>`).join('')||'<span style="color:var(--text3);font-size:13px;">No sectors selected</span>';
+  const eHtml = ['Tech','Finance','Health','Science','Politics','Climate','Sports'].map(s=>{const sel=(profileData.sector_preferences||prefs.favSectors||[]).includes(s);return`<button onclick="toggleEditSector('${s}',this)" style="padding:6px 14px;border-radius:20px;border:1px solid ${sel?'transparent':SECTOR_COLORS[s]+'44'};background:${sel?SECTOR_COLORS[s]+'22':'transparent'};color:${SECTOR_COLORS[s]};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;" ${sel?'class="sector-sel"':''}>${SECTOR_EMOJIS[s]} ${s}</button>`;}).join('');
+  el.innerHTML=`<div class="profile-hero"><div class="profile-header"><div class="profile-avatar-wrap"><div class="profile-avatar">${profileData.avatar_url?`<img src="${profileData.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${profileData.avatar_initials||'?'}'">`:profileData.avatar_initials||'?'}</div>${!isGuest?'<div class="profile-avatar-edit" onclick="changeAvatar()">📷</div>':''}</div><div class="profile-name-area"><div class="profile-name">${profileData.name||'User'} ${isVerified?'<span class="verified-badge">✅ Verified</span>':!isGuest?'<span class="unverified-badge" onclick="resendVerification()">⚠️ Unverified</span>':''}</div><div class="profile-email">${profileData.email||'Guest session'}</div>${profileData.profession?`<div class="profile-joined">💼 ${profileData.profession}</div>`:''} ${profileData.location?`<div class="profile-joined">📍 ${profileData.location}</div>`:''}<div class="profile-joined">📅 Joined ${joinedDate}</div></div></div><div class="profile-stats"><div class="profile-stat" onclick="closeProfile();setView('bookmarks')"><div class="profile-stat-num">${bookmarks.length}</div><div class="profile-stat-label">Saved</div></div><div class="profile-stat"><div class="profile-stat-num">${likes.length}</div><div class="profile-stat-label">Liked</div></div><div class="profile-stat"><div class="profile-stat-num">${readItems.length}</div><div class="profile-stat-label">Read</div></div><div class="profile-stat" onclick="openAlertModal();closeProfile()"><div class="profile-stat-num">${alertKws.length}</div><div class="profile-stat-label">Alerts</div></div></div></div>${!isVerified&&!isGuest?'<div class="verify-banner"><span style="font-size:20px;">📧</span><div class="verify-banner-text"><strong>Verify your email</strong> to unlock cross-device sync.</div><button class="verify-banner-btn" onclick="resendVerification()">Send Link</button></div>':''}<div class="profile-tabs"><button class="profile-tab active" onclick="switchProfileTab('info',this)">👤 Info</button><button class="profile-tab" onclick="switchProfileTab('saved',this)">🔖 Saved</button><button class="profile-tab" onclick="switchProfileTab('activity',this)">📊 Activity</button>${!isGuest?'<button class="profile-tab" onclick="switchProfileTab('edit',this)">✏️ Edit</button>':''}</div><div class="profile-tab-content active" id="ptab-info"><div class="profile-info-section"><div class="profile-info-title">Personal Details</div><div class="profile-info-grid">${[['Full Name',profileData.name],['Email',profileData.email],['Profession',profileData.profession],['Location',profileData.location],['Date of Birth',profileData.dob?new Date(profileData.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''],['Website',profileData.website?`<a href="${profileData.website}" target="_blank" style="color:var(--accent5);text-decoration:none;">${profileData.website.replace('https://','')}</a>`:'']].map(([l,v])=>`<div class="profile-info-item"><div class="profile-info-label">${l}</div><div class="profile-info-value ${v?'':'muted'}">${v||'Not set'}</div></div>`).join('')}</div></div>${profileData.bio?`<div class="profile-info-section"><div class="profile-info-title">Bio</div><div style="font-size:14px;color:var(--text2);line-height:1.7;">${profileData.bio}</div></div>`:''}<div class="profile-info-section"><div class="profile-info-title">Favourite Sectors</div><div style="display:flex;flex-wrap:wrap;gap:8px;">${sHtml}</div></div><div class="profile-info-section" style="border-bottom:none;"><div class="profile-info-title">Account Status</div><div class="profile-info-grid"><div class="profile-info-item" style="border-color:${isVerified?'rgba(16,185,129,.3)':'rgba(245,158,11,.3)'}"><div class="profile-info-label">Email</div><div class="profile-info-value" style="color:${isVerified?'#10b981':'#f59e0b'}">${isVerified?'✅ Verified':'⚠️ Not Verified'}</div></div><div class="profile-info-item"><div class="profile-info-label">Type</div><div class="profile-info-value">${isGuest?'👤 Guest':'🔐 Registered'}</div></div><div class="profile-info-item"><div class="profile-info-label">Data Sync</div><div class="profile-info-value" style="color:${!isGuest?'#10b981':'#f59e0b'}">${!isGuest?'🟢 Supabase':'🟡 Local only'}</div></div><div class="profile-info-item"><div class="profile-info-label">Since</div><div class="profile-info-value">${joinedDate}</div></div></div></div></div><div class="profile-tab-content" id="ptab-saved">${renderProfileArticles(bookmarks,'saved')}</div><div class="profile-tab-content" id="ptab-activity"><div class="profile-info-section"><div class="profile-info-title">Reading Stats</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">${[['📖','Read',readItems.length,'#3b82f6'],['❤️','Liked',likes.length,'#e91e8c'],['🔖','Saved',bookmarks.length,'#f59e0b'],['🔔','Alerts',alertKws.length,'#10b981']].map(([i,l,v,c])=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;">${i}</div><div style="font-size:22px;font-weight:800;color:${c};margin:4px 0;">${v}</div><div style="font-size:11px;color:var(--text3);">${l}</div></div>`).join('')}</div></div></div>${!isGuest?`<div class="profile-tab-content" id="ptab-edit"><div class="edit-form"><div class="edit-field"><label class="edit-label">Full Name</label><input class="edit-input" id="editName" value="${profileData.name||''}" placeholder="Your full name"></div><div class="edit-field"><label class="edit-label">Bio</label><textarea class="edit-textarea" id="editBio" placeholder="About you...">${profileData.bio||''}</textarea></div><div class="edit-field"><label class="edit-label">Profession</label><input class="edit-input" id="editProfession" value="${profileData.profession||''}" placeholder="e.g. Engineer, Student..."></div><div class="edit-field"><label class="edit-label">Location</label><input class="edit-input" id="editLocation" value="${profileData.location||''}" placeholder="e.g. Lucknow, India"></div><div class="edit-field"><label class="edit-label">Date of Birth</label><input class="edit-input" id="editDob" type="date" value="${profileData.dob||''}" style="color-scheme:dark;"></div><div class="edit-field"><label class="edit-label">Website</label><input class="edit-input" id="editWebsite" value="${profileData.website||''}" placeholder="https://yoursite.com"></div><div class="edit-field"><label class="edit-label">Sectors</label><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="editSectors">${eHtml}</div></div><div id="editError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div><button class="save-btn" id="saveProfileBtn" onclick="saveProfile()"><span>💾</span><span>Save Profile</span></button><div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);"><div class="profile-info-title" style="margin-bottom:14px;">Change Password</div><div class="edit-field"><label class="edit-label">New Password</label><input class="edit-input" id="editNewPw" type="password" placeholder="Min 6 characters"></div><div class="edit-field"><label class="edit-label">Confirm</label><input class="edit-input" id="editConfirmPw" type="password" placeholder="Repeat"></div><div id="pwError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div><button class="save-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="changePassword()">🔑 Update Password</button></div><div class="danger-zone" style="margin:24px 0 0;"><div class="danger-title">⚠️ Danger Zone</div><div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Cannot be undone.</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="danger-btn" onclick="clearAllData()">🗑️ Clear Data</button><button class="danger-btn" onclick="doLogout()">🚪 Sign Out</button></div></div></div></div>`:''}`;
 }
 
-function switchProfileTab(tab, btn) {
+function switchProfileTab(tab,btn) {
   document.querySelectorAll('.profile-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.profile-tab-content').forEach(c=>c.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  const el = document.getElementById('ptab-'+tab);
-  if(el) el.classList.add('active');
+  const el=document.getElementById('ptab-'+tab); if(el) el.classList.add('active');
 }
 
-function renderProfileArticles(ids, type) {
-  const allCards = [...Object.values(newsCache).flat(),...newsData];
-  const seen = new Set();
-  const cards = (ids||[]).map(id=>allCards.find(c=>c.id===id)).filter(c=>c&&!seen.has(c.id)&&seen.add(c.id));
-  if (!cards.length) return `<div class="profile-empty"><div class="profile-empty-icon">${type==='saved'?'🔖':'📖'}</div><div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">${type==='saved'?'No saved articles yet':'No reading history yet'}</div><div style="font-size:12px;">Start reading to see your ${type==='saved'?'bookmarks':'history'} here.</div></div>`;
-  return `<div class="profile-articles">${cards.map(c=>`<div class="profile-article-thumb" onclick="closeProfile();openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})"><img src="${c.image||SECTOR_FALLBACK_IMAGES[c.sector]}" alt="" loading="lazy" onerror="this.style.background='var(--surface3)'"><div class="profile-article-thumb-overlay"><div class="profile-article-thumb-title">${(c.title||'').substring(0,60)}...</div></div></div>`).join('')}</div>`;
+function renderProfileArticles(ids,type) {
+  const all=[...Object.values(newsCache).flat(),...newsData];
+  const seen=new Set();
+  const cards=(ids||[]).map(id=>all.find(c=>c.id===id)).filter(c=>c&&!seen.has(c.id)&&seen.add(c.id));
+  if(!cards.length) return`<div class="profile-empty"><div class="profile-empty-icon">${type==='saved'?'🔖':'📖'}</div><div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">${type==='saved'?'No saved articles yet':'No reading history'}</div></div>`;
+  return`<div class="profile-articles">${cards.map(c=>`<div class="profile-article-thumb" onclick="closeProfile();openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})"><img src="${c.image||''}" alt="" loading="lazy" onerror="this.style.display='none'"><div class="profile-article-thumb-overlay"><div class="profile-article-thumb-title">${(c.title||'').substring(0,60)}</div></div></div>`).join('')}</div>`;
 }
 
 async function saveProfile() {
   const btn=document.getElementById('saveProfileBtn');
   const errEl=document.getElementById('editError');
-  btn.disabled=true;btn.innerHTML='<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span><span>Saving...</span>';
-  const name=document.getElementById('editName').value.trim();
-  const bio=document.getElementById('editBio').value.trim();
-  const profession=document.getElementById('editProfession').value.trim();
-  const location=document.getElementById('editLocation').value.trim();
-  const dob=document.getElementById('editDob').value;
-  const website=document.getElementById('editWebsite').value.trim();
-  const selBtns=document.querySelectorAll('#editSectors .sector-sel');
-  const sectorPref=[...selBtns].map(b=>b.textContent.trim().replace(/[^\w\s]/g,'').trim().split(/\s+/).slice(-1)[0]);
+  btn.disabled=true; btn.innerHTML='<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span><span>Saving...</span>';
+  const name=(document.getElementById('editName')?.value||'').trim();
+  const bio=(document.getElementById('editBio')?.value||'').trim();
+  const profession=(document.getElementById('editProfession')?.value||'').trim();
+  const location=(document.getElementById('editLocation')?.value||'').trim();
+  const dob=document.getElementById('editDob')?.value||null;
+  const website=(document.getElementById('editWebsite')?.value||'').trim();
+  const sels=[...document.querySelectorAll('#editSectors .sector-sel')].map(b=>b.textContent.trim().split(' ').slice(-1)[0]);
   if(!name){errEl.textContent='Name is required.';btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';return;}
-  const updates={name,bio,profession,location,dob:dob||null,website,sector_preferences:sectorPref,avatar_initials:getInitials(name),updated_at:new Date().toISOString()};
-  if(!currentUser.isGuest){
-    const{error}=await sb.from('profiles').upsert({id:currentUser.id,email:currentUser.email,...updates},{onConflict:'id'});
-    if(error){errEl.textContent=error.message;btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';return;}
+  const up={name,bio,profession,location,dob:dob||null,website,sector_preferences:sels,avatar_initials:getInitials(name),updated_at:new Date().toISOString()};
+  try {
+    await sb.from('profiles').upsert({id:currentUser.id,email:currentUser.email,...up},{onConflict:'id'});
     await sb.auth.updateUser({data:{name,avatar_initials:getInitials(name)}});
-  }
-  Object.assign(profileData,updates);
-  Object.assign(currentUser,{name,initials:getInitials(name)});
-  prefs.favSectors=sectorPref;
-  _baseSavePref('favSectors',sectorPref);
-  updateUserUI(currentUser);
-  btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';
-  showToast('✅ Profile saved!');
-  await loadProfile();
+  } catch(e) { errEl.textContent=e.message; }
+  Object.assign(profileData,up); Object.assign(currentUser,{name,initials:getInitials(name)});
+  prefs.favSectors=sels; savePref('favSectors',sels);
+  updateUserUI(currentUser); btn.disabled=false; btn.innerHTML='<span>💾</span><span>Save Profile</span>';
+  showToast('✅ Profile saved!'); await loadProfile();
 }
 
-function toggleEditSector(s,btn){
+function toggleEditSector(s,btn) {
   btn.classList.toggle('sector-sel');
   const sel=btn.classList.contains('sector-sel');
   btn.style.background=sel?SECTOR_COLORS[s]+'22':'transparent';
   btn.style.borderColor=sel?'transparent':SECTOR_COLORS[s]+'44';
 }
 
-async function changePassword(){
-  const pw1=document.getElementById('editNewPw').value;
-  const pw2=document.getElementById('editConfirmPw').value;
+async function changePassword() {
+  const pw1=document.getElementById('editNewPw')?.value||'';
+  const pw2=document.getElementById('editConfirmPw')?.value||'';
   const errEl=document.getElementById('pwError');
-  if(pw1.length<6){errEl.textContent='Password must be at least 6 characters.';return;}
+  if(pw1.length<6){errEl.textContent='Min 6 characters.';return;}
   if(pw1!==pw2){errEl.textContent='Passwords do not match.';return;}
   const{error}=await sb.auth.updateUser({password:pw1});
   if(error){errEl.textContent=error.message;return;}
-  errEl.style.color='#10b981';errEl.textContent='✅ Password updated!';
-  document.getElementById('editNewPw').value='';
-  document.getElementById('editConfirmPw').value='';
+  errEl.style.color='#10b981'; errEl.textContent='✅ Updated!';
+  document.getElementById('editNewPw').value=''; document.getElementById('editConfirmPw').value='';
   setTimeout(()=>{errEl.textContent='';errEl.style.color='#ef4444';},3000);
 }
 
-async function resendVerification(){
+async function resendVerification() {
   if(!currentUser?.email)return;
   const{error}=await sb.auth.resend({type:'signup',email:currentUser.email,options:{emailRedirectTo:'https://kushagra486.github.io/bharat-news-ai/'}});
-  if(error)showToast('⚠️ '+error.message);
-  else showToast('📧 Verification email sent to '+currentUser.email);
+  if(error) showToast('⚠️ '+error.message);
+  else showToast('📧 Verification email sent!');
 }
 
-function changeAvatar(){
-  const inp=document.createElement('input');
-  inp.type='file';inp.accept='image/*';
+function changeAvatar() {
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
   inp.onchange=async(e)=>{
-    const file=e.target.files[0];if(!file)return;
-    if(file.size>2*1024*1024){showToast('⚠️ Image must be under 2MB');return;}
+    const file=e.target.files[0]; if(!file) return;
+    if(file.size>2*1024*1024){showToast('⚠️ Max 2MB');return;}
     showToast('📤 Uploading...');
     try{
       const ext=file.name.split('.').pop();
       const path=`avatars/${currentUser.id}.${ext}`;
-      const{error:upErr}=await sb.storage.from('avatars').upload(path,file,{upsert:true});
-      if(upErr)throw upErr;
-      const{data:urlData}=sb.storage.from('avatars').getPublicUrl(path);
-      await sb.from('profiles').upsert({id:currentUser.id,avatar_url:urlData.publicUrl},{onConflict:'id'});
-      profileData.avatar_url=urlData.publicUrl;
-      showToast('✅ Avatar updated!');renderProfile();
-    }catch(e){showToast('⚠️ Upload failed: '+e.message);}
-  };
-  inp.click();
+      const{error}=await sb.storage.from('avatars').upload(path,file,{upsert:true});
+      if(error) throw error;
+      const{data}=sb.storage.from('avatars').getPublicUrl(path);
+      await sb.from('profiles').upsert({id:currentUser.id,avatar_url:data.publicUrl},{onConflict:'id'});
+      profileData.avatar_url=data.publicUrl; showToast('✅ Avatar updated!'); renderProfile();
+    }catch(e){showToast('⚠️ '+e.message);}
+  }; inp.click();
 }
 
-function clearAllData(){
+function clearAllData() {
   if(!confirm('Clear all local data?'))return;
   bookmarks=[];likes=[];readItems=[];
   ['pa_bookmarks','pa_likes','pa_read'].forEach(k=>localStorage.removeItem(k));
-  renderFeed();showToast('🗑️ Local data cleared');renderProfile();
+  renderFeed(); showToast('🗑️ Cleared'); renderProfile();
 }
-
 
 // ══════════════════════════════════════════════════
-// SUPABASE AUTH + DATA SYNC
+// APP STARTUP
 // ══════════════════════════════════════════════════
-
-const SUPABASE_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyOTQsImV4cCI6MjA5Njg1NDI5NH0.cMzCkgMLSU1cxTw6vXpd7I_E2chCgys3neBLqawhSCQ';
-
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let currentUser = null;
-
-
-// ── HELPERS ──────────────────────────────────────
-function getInitials(nameOrEmail) {
-  const parts = (nameOrEmail || '').split(/[\s@]+/).filter(Boolean);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return (nameOrEmail || '?')[0].toUpperCase();
-}
-
-function showAuthError(formType, msg) {
-  const el = document.getElementById(formType + 'Error');
-  if (el) el.textContent = msg;
-}
-
-function setAuthLoading(btnId, loading, text = '') {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  btn.disabled = loading;
-  btn.textContent = loading ? '...' : text;
-}
-
-// ── SWITCH TAB ────────────────────────────────────
-function switchAuthTab(tab) {
-  document.getElementById('loginForm').style.display   = tab === 'login'  ? 'block' : 'none';
-  document.getElementById('signupForm').style.display  = tab === 'signup' ? 'block' : 'none';
-  document.getElementById('loginTabBtn').classList.toggle('active', tab === 'login');
-  document.getElementById('signupTabBtn').classList.toggle('active', tab === 'signup');
-  showAuthError('login', ''); showAuthError('signup', '');
-}
-
-// ── SIGN UP ───────────────────────────────────────
-async function doSignup() {
-  const name  = document.getElementById('signupName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-  const pw    = document.getElementById('signupPassword').value;
-
-  if (!name)  return showAuthError('signup', 'Please enter your name.');
-  if (!email || !email.includes('@')) return showAuthError('signup', 'Please enter a valid email.');
-  if (pw.length < 6) return showAuthError('signup', 'Password must be at least 6 characters.');
-
-  setAuthLoading('signupBtn', true, 'Creating account...');
-  showAuthError('signup', '');
-
-  const { data, error } = await sb.auth.signUp({
-    email, password: pw,
-    options: { data: { name, avatar_initials: getInitials(name) } }
-  });
-
-  setAuthLoading('signupBtn', false, 'Create Account →');
-
-  if (error) {
-    showAuthError('signup', error.message);
-    return;
-  }
-
-  if (data.user && !data.session) {
-    // Email confirmation required
-    showAuthError('signup', '');
-    document.getElementById('signupForm').innerHTML = `
-      <div style="text-align:center;padding:20px 0;">
-        <div style="font-size:48px;margin-bottom:12px;">📧</div>
-        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Check your email</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6;">
-          We sent a confirmation link to <strong>${email}</strong>.<br>
-          Click it to activate your account, then sign in.
-        </div>
-        <button class="login-demo-btn" style="margin-top:20px;" onclick="switchAuthTab('login')">← Back to Sign In</button>
-      </div>`;
-    return;
-  }
-
-  showToast(`👋 Welcome to Bharat News AI, ${name.split(' ')[0]}!`);
-}
-
-// ── SIGN IN ───────────────────────────────────────
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pw    = document.getElementById('loginPassword').value;
-
-  if (!email) return showAuthError('login', 'Please enter your email.');
-  if (!pw)    return showAuthError('login', 'Please enter your password.');
-
-  setAuthLoading('loginBtn', true, 'Signing in...');
-  showAuthError('login', '');
-
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-
-  setAuthLoading('loginBtn', false, 'Sign In →');
-
-  if (error) {
-    const msg = error.message.includes('Invalid') ? 'Incorrect email or password.' : error.message;
-    showAuthError('login', msg);
-    document.getElementById('loginPassword').classList.add('error');
-    return;
-  }
-
-  showToast(`👋 Welcome back, ${data.user.user_metadata?.name?.split(' ')[0] || 'there'}!`);
-}
-
-// ── GUEST LOGIN ───────────────────────────────────
-function demoLogin() {
-  localStorage.setItem('bna_guest_mode', 'true');
-  currentUser = { id: 'guest', name: 'Guest', email: '', initials: 'G', isGuest: true };
-  onLoginSuccess(currentUser);
-  showToast('👋 Browsing as Guest — you'll be auto-signed in next time.');
-}
-
-// ── LOGOUT ───────────────────────────────────────
-async function doLogout() {
-  if (currentUser && !currentUser.isGuest) {
-    await sb.auth.signOut();
-  }
-  currentUser = null;
-  // Reset local state
-  bookmarks = []; likes = []; readItems = []; alertKws = [];
-  localStorage.removeItem('pa_bookmarks');
-  localStorage.removeItem('pa_likes');
-  localStorage.removeItem('pa_read');
-  localStorage.removeItem('pa_alerts');
-  localStorage.removeItem('bna_guest_mode');
-  updateUserUI(null);
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('loginScreen').style.display = 'flex';
-  toggleUserDropdown(false);
-  // Reset inputs
-  ['loginEmail','loginPassword','signupName','signupEmail','signupPassword']
-    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
-  showAuthError('login', ''); showAuthError('signup', '');
-  appLoaded = false;
-}
-
-// ── FORGOT PASSWORD ───────────────────────────────
-async function doForgotPassword() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  if (!email) return showAuthError('login', 'Enter your email first, then click Forgot Password.');
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://kushagra486.github.io/bharat-news-ai/'
-  });
-  if (error) showAuthError('login', error.message);
-  else showToast('📧 Password reset email sent!');
-}
-
-// ── ON LOGIN SUCCESS ──────────────────────────────
-let appLoaded = false;
-
-// ── AUTH UI HELPERS ───────────────────────────────
-function showAuthLoader() { /* no-op */ }
-
-function hideAuthLoader() { /* no-op */ }
-
-function showLoginScreen() { const s=document.getElementById("loginScreen"); if(s){s.style.display="flex";s.classList.remove("hidden");} }
-
 async function _startApp() {
-  // Restore theme
-  const savedTheme = localStorage.getItem('pa_theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  const themeBtn = document.getElementById('themeBtn');
-  if (themeBtn) themeBtn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-  const mobIcon = document.getElementById('mobThemeIcon');
-  if (mobIcon) mobIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+  const theme=localStorage.getItem('pa_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',theme);
+  const tb=document.getElementById('themeBtn'); if(tb) tb.textContent=theme==='dark'?'🌙':'☀️';
+  const mi=document.getElementById('mobThemeIcon'); if(mi) mi.textContent=theme==='dark'?'🌙':'☀️';
 
   installPWA();
   renderSectors();
   renderStories();
   renderRightPanel();
 
-  // Sync badges
-  const bc = document.getElementById('bookmarkCount');
-  if (bc) bc.textContent = bookmarks.length || '0';
-  const mbc = document.getElementById('mobBookmarkBadge');
-  if (mbc && bookmarks.length > 0) { mbc.textContent = bookmarks.length; mbc.style.display = 'block'; }
-  if (alertKws.length) {
-    const d1 = document.getElementById('notifDot'); if (d1) d1.style.display = 'block';
-    const d2 = document.getElementById('mobNotifDot'); if (d2) d2.style.display = 'block';
-  }
+  const bc=document.getElementById('bookmarkCount'); if(bc) bc.textContent=bookmarks.length||'0';
+  const mbc=document.getElementById('mobBookmarkBadge'); if(mbc&&bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}
+  if(alertKws.length){ const d1=document.getElementById('notifDot');if(d1)d1.style.display='block'; const d2=document.getElementById('mobNotifDot');if(d2)d2.style.display='block'; }
 
-  // Fetch news
-  const initial = await fetchNews('All');
-  newsData = initial;
-  renderFeed();
-  updateLastFetchedBadge();
-
-  // Background fetch all sectors
-  fetchAllSectors().then(() => { renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
-
-  // AI daily briefing
+  const initial=await fetchNews('All');
+  newsData=initial; renderFeed(); updateLastFetchedBadge();
+  fetchAllSectors().then(()=>{ renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
   generateDailyBriefing();
-
-  // Auto-story
-  if (prefs.autoStory && storiesData.length) setTimeout(() => openStory(0), 2000);
-
-  // Auto-refresh every 15 min
-  setInterval(async () => {
-    const r = await fetchNews(state.currentSector, true);
-    if (state.currentSector === 'All') newsData = r;
-    renderFeed(); renderRightPanel(); updateLastFetchedBadge();
-    showToast('🔄 News refreshed');
-  }, 15 * 60 * 1000);
+  if(prefs.autoStory&&storiesData.length) setTimeout(()=>openStory(0),2000);
+  setInterval(async()=>{ const r=await fetchNews(state.currentSector,true); if(state.currentSector==='All') newsData=r; renderFeed();renderRightPanel();updateLastFetchedBadge();showToast('🔄 Refreshed'); },15*60*1000);
 }
-
-function onLoginSuccess(user) {
-  currentUser = user;
-  updateUserUI(user);
-  const screen = document.getElementById('loginScreen');
-  if (screen) {
-    screen.classList.add('hidden');
-    setTimeout(() => { screen.style.display = 'none'; }, 350);
-  }
-  if (!appLoaded) { appLoaded = true; _startApp(); }
-}
-
-// ── UPDATE UI ─────────────────────────────────────
-function updateUserUI(user) {
-  const avatar = document.getElementById('userAvatarBtn');
-  const dName  = document.getElementById('dropdownName');
-  const dEmail = document.getElementById('dropdownEmail');
-  if (!user) {
-    if(avatar) avatar.textContent = '?';
-    if(dName)  dName.textContent  = 'Not signed in';
-    if(dEmail) dEmail.textContent = '';
-    return;
-  }
-  const initials = user.initials || getInitials(user.name || user.email || 'G');
-  if(avatar) avatar.textContent = initials;
-  if(dName)  dName.textContent  = user.isGuest ? 'Guest User' : (user.name || 'User');
-  if(dEmail) dEmail.textContent = user.isGuest ? 'Browsing as guest' : (user.email || '');
-}
-
-// ── USER DROPDOWN ─────────────────────────────────
-function toggleUserDropdown(force) {
-  const dd = document.getElementById('userDropdown');
-  if (!dd) return;
-  const shouldOpen = force !== undefined ? force : !dd.classList.contains('open');
-  dd.classList.toggle('open', shouldOpen);
-  if (shouldOpen) {
-    setTimeout(() => {
-      document.addEventListener('click', function h(e) {
-        if (!dd.contains(e.target) && e.target.id !== 'userAvatarBtn') {
-          dd.classList.remove('open');
-          document.removeEventListener('click', h);
-        }
-      });
-    }, 0);
-  }
-}
-
-// ── PASSWORD STRENGTH ────────────────────────────
-function updatePwStrength(pw) {
-  const bar = document.getElementById('pwStrength');
-  if (!bar) return;
-  let s = 0;
-  if (pw.length >= 6)  s++;
-  if (pw.length >= 10) s++;
-  if (/[A-Z]/.test(pw)) s++;
-  if (/[0-9]/.test(pw)) s++;
-  if (/[^A-Za-z0-9]/.test(pw)) s++;
-  bar.style.background = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981'][s-1] || '#2a2a2a';
-  bar.style.width = ['20%','40%','60%','80%','100%'][s-1] || '0%';
-}
-
-// ══════════════════════════════════════════════════
-// SUPABASE DATA SYNC (bookmarks, likes, prefs, history)
-// ══════════════════════════════════════════════════
-
-async function syncUserDataFromSupabase() {
-  if (!currentUser || currentUser.isGuest) return;
-  const uid = currentUser.id;
-
-  try {
-    // Load bookmarks
-    const { data: bkData } = await sb.from('bookmarks').select('article_id, article_data').eq('user_id', uid);
-    if (bkData) {
-      bookmarks = bkData.map(b => b.article_id);
-      // Restore full article objects into cache
-      bkData.forEach(b => {
-        if (b.article_data) {
-          const s = b.article_data.sector || 'All';
-          if (!newsCache[s]) newsCache[s] = [];
-          if (!newsCache[s].find(c => c.id === b.article_id)) {
-            newsCache[s].push(b.article_data);
-          }
-        }
-      });
-    }
-
-    // Load likes
-    const { data: lkData } = await sb.from('likes').select('article_id').eq('user_id', uid);
-    if (lkData) likes = lkData.map(l => l.article_id);
-
-    // Load read history
-    const { data: rdData } = await sb.from('read_history').select('article_id').eq('user_id', uid);
-    if (rdData) readItems = rdData.map(r => r.article_id);
-
-    // Load prefs + alerts
-    const { data: prData } = await sb.from('user_prefs').select('prefs, alert_keywords').eq('user_id', uid).single();
-    if (prData) {
-      if (prData.prefs) prefs = { ...prefs, ...prData.prefs };
-      if (prData.alert_keywords) alertKws = prData.alert_keywords;
-    }
-
-    // Update local storage mirrors
-    localStorage.setItem('pa_bookmarks', JSON.stringify(bookmarks));
-    localStorage.setItem('pa_likes',     JSON.stringify(likes));
-    localStorage.setItem('pa_read',      JSON.stringify(readItems));
-    localStorage.setItem('pa_alerts',    JSON.stringify(alertKws));
-    localStorage.setItem('pa_prefs',     JSON.stringify(prefs));
-
-    // Update UI
-    const bc = document.getElementById('bookmarkCount');
-    if (bc) bc.textContent = bookmarks.length || '0';
-    const mbc = document.getElementById('mobBookmarkBadge');
-    if (mbc && bookmarks.length > 0) { mbc.textContent = bookmarks.length; mbc.style.display = 'block'; }
-    if (alertKws.length) {
-      const d1 = document.getElementById('notifDot'); if(d1) d1.style.display = 'block';
-      const d2 = document.getElementById('mobNotifDot'); if(d2) d2.style.display = 'block';
-    }
-
-    console.log('[Supabase] Synced:', { bookmarks: bookmarks.length, likes: likes.length, read: readItems.length });
-  } catch(e) {
-    console.error('[Supabase] Sync error:', e);
-  }
-}
-
-async function sbSaveBookmark(card) {
-  if (!currentUser || currentUser.isGuest) return;
-  await sb.from('bookmarks').upsert({
-    user_id: currentUser.id,
-    article_id: card.id,
-    article_data: card,
-  }, { onConflict: 'user_id,article_id' });
-}
-
-async function sbRemoveBookmark(articleId) {
-  if (!currentUser || currentUser.isGuest) return;
-  await sb.from('bookmarks').delete().eq('user_id', currentUser.id).eq('article_id', articleId);
-}
-
-async function sbSaveLike(articleId) {
-  if (!currentUser || currentUser.isGuest) return;
-  await sb.from('likes').upsert({ user_id: currentUser.id, article_id: articleId }, { onConflict: 'user_id,article_id' });
-}
-
-async function sbRemoveLike(articleId) {
-  if (!currentUser || currentUser.isGuest) return;
-  await sb.from('likes').delete().eq('user_id', currentUser.id).eq('article_id', articleId);
-}
-
-async function sbSaveReadItem(articleId) {
-  if (!currentUser || currentUser.isGuest) return;
-  await sb.from('read_history').upsert({ user_id: currentUser.id, article_id: articleId }, { onConflict: 'user_id,article_id' });
-}
-
-async function sbSavePrefs() {
-  if (!currentUser || currentUser.isGuest) {
-    localStorage.setItem('pa_prefs', JSON.stringify(prefs));
-    localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
-    return;
-  }
-  await sb.from('user_prefs').upsert({
-    user_id: currentUser.id,
-    prefs,
-    alert_keywords: alertKws,
-    updated_at: new Date().toISOString(),
-  }, { onConflict: 'user_id' });
-}
-
-// ── PATCH toggleBookmark to also sync Supabase ────
-function toggleBookmark(id) {
-  const card = [...Object.values(newsCache).flat(), ...newsData].find(c => c.id === id);
-  const wasBookmarked = bookmarks.includes(id);
-  _baseToggleBookmark(id);
-  if (wasBookmarked) sbRemoveBookmark(id);
-  else if (card) sbSaveBookmark(card);
-}
-
-// ── PATCH toggleLike to also sync Supabase ────────
-function toggleLike(id) {
-  const wasLiked = likes.includes(id);
-  _baseToggleLike(id);
-  if (wasLiked) sbRemoveLike(id);
-  else sbSaveLike(id);
-}
-
-// ── PATCH markRead to also sync Supabase ─────────
-function markRead(id) {
-  _baseMarkRead(id);
-  sbSaveReadItem(id);
-}
-
-// ── PATCH savePref to also sync Supabase ─────────
-function savePref(key, val) {
-  _baseSavePref(key, val);
-  sbSavePrefs();
-}
-
-// ── PATCH addAlert to sync ────────────────────────
-function addAlert() {
-  _baseAddAlert();
-  sbSavePrefs();
-}
-
-// ── PATCH removeAlert to sync ─────────────────────
-function removeAlert(kw) {
-  _baseRemoveAlert(kw);
-  sbSavePrefs();
-}
-
-// ── SESSION LISTENER ──────────────────────────────
-sb.auth.onAuthStateChange(async (event, session) => {
-  console.log('[Supabase] Auth event:', event);
-
-  // INITIAL_SESSION is handled by waitForSession — skip here to avoid double-fire
-  if (event === 'INITIAL_SESSION') return;
-
-  if (event === 'SIGNED_IN' && session?.user) {
-    const u = session.user;
-    const name = u.user_metadata?.name || u.email.split('@')[0];
-    currentUser = {
-      id: u.id,
-      name,
-      email: u.email,
-      initials: getInitials(name),
-      isGuest: false,
-    };
-    onLoginSuccess(currentUser);
-    // Sync data after login
-    await syncUserDataFromSupabase();
-    renderFeed();
-  }
-
-  if (event === 'SIGNED_OUT') {
-    currentUser = null;
-    updateUserUI(null);
-  }
-
-  if (event === 'PASSWORD_RECOVERY') {
-    showToast('🔑 Set your new password');
-  }
-});
-
-// ── CHECK EXISTING SESSION ────────────────────────
-// ── SESSION CHECK ────────────────────────────────────
-async function handleAuthUser(u) {
-  const name = u.user_metadata?.name || u.email.split('@')[0];
-  currentUser = { id:u.id, name, email:u.email, initials:getInitials(name), isGuest:false };
-  onLoginSuccess(currentUser);
-  await syncUserDataFromSupabase();
-}
-
-async function checkAuthSession() {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.user) { await handleAuthUser(session.user); return true; }
-  } catch(e) { console.warn('Session check:', e.message); }
-  return false;
-}
-
-
-
-// Input error clear on type
-['loginEmail','loginPassword','signupEmail','signupPassword'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('input', () => el.classList.remove('error'));
-});
-
 
 // ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 async function init() {
-  // Simple: check Supabase session, show/hide login screen accordingly
-  const hasSession = await checkAuthSession();
-  if (!hasSession) {
-    // Auto-guest if previously chose guest
-    if (localStorage.getItem('bna_guest_mode') === 'true') {
-      demoLogin();
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      // Existing session — auto login
+      const u=session.user;
+      const name=u.user_metadata?.name||u.email.split('@')[0];
+      currentUser={id:u.id,name,email:u.email,initials:getInitials(name),isGuest:false};
+      updateUserUI(currentUser);
+      hideLogin();
+      appLoaded=true;
+      _startApp();
+      syncUserDataFromSupabase().then(()=>renderFeed()).catch(()=>{});
       return;
     }
-    // Show login screen
-    const screen = document.getElementById('loginScreen');
-    if (screen) { screen.style.display = 'flex'; screen.classList.remove('hidden'); }
-  }
+  } catch(e) { console.warn('[Init] Session error:',e.message); }
+
+  // No session — check guest
+  if (localStorage.getItem('bna_guest')==='1') { demoLogin(); return; }
+
+  // Show login
+  showLogin();
 }
 
-
-
 init();
+
 
 // ══════════════════════════════════════════════════
 // MOBILE JS
