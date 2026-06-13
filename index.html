@@ -2949,73 +2949,6 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
-// Stored login screen HTML for restoring after auth loader
-const loginScreenHTML = `<div class="login-card">
-    <div class="login-logo">
-      <div class="login-logo-icon">B</div>
-      <div class="login-logo-text">Bharat News AI</div>
-    </div>
-    <div class="login-tagline">AI-powered daily intelligence · 4 live sources · Groq Llama 3.3</div>
-
-    <div class="login-tabs">
-      <button class="login-tab active" id="loginTabBtn" onclick="switchAuthTab('login')">Sign In</button>
-      <button class="login-tab" id="signupTabBtn" onclick="switchAuthTab('signup')">Create Account</button>
-    </div>
-
-    <!-- SIGN IN FORM -->
-    <div id="loginForm">
-      <div class="login-form">
-        <div class="login-field">
-          <label class="login-label">Email</label>
-          <input class="login-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
-        </div>
-        <div class="login-field">
-          <label class="login-label">Password</label>
-          <input class="login-input" id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password"
-            onkeydown="if(event.key==='Enter')doLogin()">
-        </div>
-        <div class="login-error" id="loginError"></div>
-        <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
-        <div style="text-align:right;margin-top:-6px;">
-          <button onclick="doForgotPassword()" style="background:none;border:none;color:var(--accent5);font-size:12px;cursor:pointer;font-family:inherit;padding:0;">Forgot password?</button>
-        </div>
-      </div>
-      <div class="login-divider">or</div>
-      <button class="login-demo-btn" onclick="demoLogin()">
-        ⚡ Continue as Guest (No account needed)
-      </button>
-    </div>
-
-    <!-- SIGN UP FORM -->
-    <div id="signupForm" style="display:none;">
-      <div class="login-form">
-        <div class="login-field">
-          <label class="login-label">Full Name</label>
-          <input class="login-input" id="signupName" type="text" placeholder="Your name" autocomplete="name">
-        </div>
-        <div class="login-field">
-          <label class="login-label">Email</label>
-          <input class="login-input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email">
-        </div>
-        <div class="login-field">
-          <label class="login-label">Password</label>
-          <input class="login-input" id="signupPassword" type="password" placeholder="Min 6 characters"
-            oninput="updatePwStrength(this.value)" autocomplete="new-password">
-          <div class="pw-strength" id="pwStrength"></div>
-        </div>
-        <div class="login-error" id="signupError"></div>
-        <button class="login-btn" id="signupBtn" onclick="doSignup()">Create Account →</button>
-      </div>
-      <div class="login-divider">or</div>
-      <button class="login-demo-btn" onclick="demoLogin()">
-        ⚡ Continue as Guest
-      </button>
-    </div>
-
-    <div class="login-footer">
-      🔒 Secured by Supabase · Data synced across devices · 100% free
-    </div>
-  </div>`;
 
 
 // ── HELPERS ──────────────────────────────────────
@@ -3162,39 +3095,11 @@ async function doForgotPassword() {
 let appLoaded = false;
 
 // ── AUTH UI HELPERS ───────────────────────────────
-function showAuthLoader() {
-  const screen = document.getElementById('loginScreen');
-  if (screen) {
-    screen.innerHTML = `
-      <div style="text-align:center;">
-        <div style="font-size:48px;margin-bottom:16px;">
-          <span style="background:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900;font-size:32px;">Bharat News AI</span>
-        </div>
-        <div class="spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 16px;border-top-color:#9333ea;"></div>
-        <div style="font-size:14px;color:var(--text3);font-weight:500;">Signing you in...</div>
-      </div>`;
-    screen.style.display = 'flex';
-    screen.classList.remove('hidden');
-  }
-}
+function showAuthLoader() { /* no-op */ }
 
-function hideAuthLoader() {
-  // Will be replaced by showLoginScreen or onLoginSuccess
-}
+function hideAuthLoader() { /* no-op */ }
 
-function showLoginScreen() {
-  const screen = document.getElementById('loginScreen');
-  if (!screen) return;
-  // Restore full login form HTML
-  screen.innerHTML = loginScreenHTML;
-  screen.style.display = 'flex';
-  screen.classList.remove('hidden');
-  // Re-attach input listeners
-  ['loginEmail','loginPassword','signupEmail','signupPassword'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', () => el.classList.remove('error'));
-  });
-}
+function showLoginScreen() { const s=document.getElementById("loginScreen"); if(s){s.style.display="flex";s.classList.remove("hidden");} }
 
 async function _startApp() {
   // Restore theme
@@ -3248,7 +3153,10 @@ function onLoginSuccess(user) {
   currentUser = user;
   updateUserUI(user);
   const screen = document.getElementById('loginScreen');
-  if (screen) { screen.classList.add('hidden'); setTimeout(() => { screen.style.display = 'none'; }, 400); }
+  if (screen) {
+    screen.classList.add('hidden');
+    setTimeout(() => { screen.style.display = 'none'; }, 350);
+  }
   if (!appLoaded) { appLoaded = true; _startApp(); }
 }
 
@@ -3482,60 +3390,23 @@ sb.auth.onAuthStateChange(async (event, session) => {
 });
 
 // ── CHECK EXISTING SESSION ────────────────────────
-// Wait for Supabase INITIAL_SESSION event with timeout fallback
-function waitForSession(timeoutMs) {
-  return new Promise(resolve => {
-    let resolved = false;
-
-    // Primary: listen for INITIAL_SESSION from onAuthStateChange
-    const unsub = sb.auth.onAuthStateChange(async (event, session) => {
-      if (resolved) return;
-      if (event === 'INITIAL_SESSION') {
-        resolved = true;
-        unsub.data?.subscription?.unsubscribe?.();
-        if (session?.user) {
-          await handleAuthUser(session.user);
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }
-    });
-
-    // Fallback: manual getSession after timeout
-    setTimeout(async () => {
-      if (resolved) return;
-      resolved = true;
-      try {
-        const { data: { session } } = await sb.auth.getSession();
-        if (session?.user) {
-          await handleAuthUser(session.user);
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      } catch(e) {
-        resolve(false);
-      }
-    }, timeoutMs);
-  });
-}
-
+// ── SESSION CHECK ────────────────────────────────────
 async function handleAuthUser(u) {
   const name = u.user_metadata?.name || u.email.split('@')[0];
-  currentUser = { id: u.id, name, email: u.email, initials: getInitials(name), isGuest: false };
+  currentUser = { id:u.id, name, email:u.email, initials:getInitials(name), isGuest:false };
   onLoginSuccess(currentUser);
   await syncUserDataFromSupabase();
 }
 
 async function checkAuthSession() {
   try {
-    const { data: { session }, error } = await sb.auth.getSession();
-    if (error) return false;
+    const { data: { session } } = await sb.auth.getSession();
     if (session?.user) { await handleAuthUser(session.user); return true; }
-  } catch(e) {}
+  } catch(e) { console.warn('Session check:', e.message); }
   return false;
 }
+
+
 
 // Input error clear on type
 ['loginEmail','loginPassword','signupEmail','signupPassword'].forEach(id => {
@@ -3548,22 +3419,21 @@ async function checkAuthSession() {
 // INIT
 // ══════════════════════════════════════════════════
 async function init() {
-  // Show loader while checking saved session
-  showAuthLoader();
-
-  // Race: Supabase INITIAL_SESSION event vs 1.5s timeout
-  const sessionFound = await waitForSession(1500);
-
-  if (!sessionFound) {
-    // Check persisted guest preference
+  // Simple: check Supabase session, show/hide login screen accordingly
+  const hasSession = await checkAuthSession();
+  if (!hasSession) {
+    // Auto-guest if previously chose guest
     if (localStorage.getItem('bna_guest_mode') === 'true') {
       demoLogin();
       return;
     }
-    // Nothing found — show login screen
-    showLoginScreen();
+    // Show login screen
+    const screen = document.getElementById('loginScreen');
+    if (screen) { screen.style.display = 'flex'; screen.classList.remove('hidden'); }
   }
 }
+
+
 
 init();
 
