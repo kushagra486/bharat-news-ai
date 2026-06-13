@@ -9,6 +9,7 @@
 <title>Bharat News AI — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
@@ -492,6 +493,100 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   #feedArea{padding-left:0;padding-right:0}
 }
 
+
+/* ══ PROFILE ══════════════════════════════════════ */
+.profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0}
+.profile-overlay.open{display:flex}
+@media(min-width:768px){.profile-overlay{align-items:center;padding:20px}}
+
+.profile-sheet{
+  background:var(--surface);border-radius:24px 24px 0 0;
+  width:100%;max-width:680px;max-height:93vh;
+  overflow-y:auto;position:relative;
+}
+@media(min-width:768px){.profile-sheet{border-radius:20px;max-height:88vh}}
+
+.profile-hero{
+  background:linear-gradient(135deg,#1a0a2e 0%,#0a1528 50%,#0a1a10 100%);
+  padding:28px 24px 0;position:relative;overflow:hidden;
+}
+.profile-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(233,30,140,.18),transparent 60%),radial-gradient(ellipse at 80% 30%,rgba(59,130,246,.15),transparent 60%);pointer-events:none}
+
+.profile-avatar-row{display:flex;align-items:flex-end;gap:16px;position:relative;z-index:1}
+.p-avatar{
+  width:80px;height:80px;border-radius:50%;
+  background:var(--grad);display:flex;align-items:center;justify-content:center;
+  font-size:32px;font-weight:900;color:#fff;
+  border:3px solid var(--bg);cursor:pointer;
+  position:relative;overflow:hidden;flex-shrink:0;transition:transform .2s;
+}
+.p-avatar:hover{transform:scale(1.04)}
+.p-avatar img{width:100%;height:100%;object-fit:cover}
+.p-avatar-edit{
+  position:absolute;inset:0;background:rgba(0,0,0,.45);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;font-size:22px;
+}
+.p-avatar:hover .p-avatar-edit{opacity:1}
+
+.p-name-col{flex:1;min-width:0;padding-bottom:14px}
+.p-name{font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.p-handle{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
+.p-badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.p-badge.verified{background:rgba(59,130,246,.2);color:#3b82f6;border:1px solid rgba(59,130,246,.3)}
+.p-badge.local{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+
+.p-stats{display:flex;background:rgba(0,0,0,.3);border-radius:0;margin-top:16px}
+.p-stat{flex:1;text-align:center;padding:12px 6px;cursor:pointer;transition:background .15s;border-right:1px solid rgba(255,255,255,.06)}
+.p-stat:last-child{border-right:none}
+.p-stat:hover{background:rgba(255,255,255,.05)}
+.p-stat-n{font-size:18px;font-weight:800;color:#fff}
+.p-stat-l{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.7px;margin-top:1px}
+
+.p-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2}
+.p-tab{flex:1;padding:12px 6px;border:none;background:transparent;color:var(--text3);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.p-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+
+.p-section{padding:18px 20px;border-bottom:1px solid var(--border)}
+.p-section:last-child{border-bottom:none}
+.p-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:12px}
+
+.p-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.p-grid{grid-template-columns:1fr}}
+.p-field{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px}
+.p-field-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.p-field-value{font-size:13px;font-weight:500;color:var(--text)}
+.p-field-value.empty{color:var(--text3);font-style:italic}
+
+.p-edit-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;display:block}
+.p-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 13px;outline:none;margin-bottom:12px;transition:border-color .2s}
+.p-input:focus{border-color:var(--accent2)}
+.p-input::placeholder{color:var(--text3)}
+.p-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 13px;outline:none;resize:vertical;min-height:72px;margin-bottom:12px;transition:border-color .2s}
+.p-textarea:focus{border-color:var(--accent2)}
+
+.p-save-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.p-save-btn:hover{opacity:.9}
+.p-save-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.p-sector-chip{padding:6px 13px;border-radius:20px;border:1px solid;background:transparent;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+
+.p-articles-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border)}
+@media(min-width:600px){.p-articles-grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+.p-article-thumb{aspect-ratio:1;overflow:hidden;background:var(--surface2);cursor:pointer;position:relative}
+.p-article-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.p-article-thumb:hover img{transform:scale(1.06)}
+.p-article-thumb-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.7));opacity:0;transition:opacity .2s;display:flex;align-items:flex-end;padding:6px}
+.p-article-thumb:hover .p-article-thumb-overlay{opacity:1}
+.p-article-thumb-title{font-size:9px;font-weight:600;color:#fff;line-height:1.3}
+
+.p-empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.p-empty-icon{font-size:36px;margin-bottom:8px}
+.p-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.4);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;backdrop-filter:blur(4px)}
+.p-close:hover{background:rgba(0,0,0,.7)}
+
+.pw-bar{height:3px;border-radius:2px;margin-top:5px;margin-bottom:12px;transition:all .3s;background:#2a2a2a}
+
 </style>
 </head>
 <body>
@@ -523,10 +618,23 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <span class="mob-nav-icon">🔖</span>
     <span class="mob-nav-label">Saved</span>
   </button>
+  <button class="mob-nav-btn" id="mbn-profile" onclick="openProfile()">
+    <span class="mob-nav-icon">👤</span>
+    <span class="mob-nav-label">Profile</span>
+  </button>
   <button class="mob-nav-btn" id="mbn-research" onclick="mobNav('research',this)">
     <span class="mob-nav-icon">🔬</span>
     <span class="mob-nav-label">Research</span>
   </button>
+</div>
+
+
+<!-- ══ PROFILE OVERLAY ══ -->
+<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-sheet" id="profileSheet">
+    <button class="p-close" onclick="closeProfile()">✕</button>
+    <div id="profileContent"></div>
+  </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
@@ -658,6 +766,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="nav-item" onclick="setSector('Climate')"><span class="nav-icon">🌍</span><span>Climate</span></div>
     <div class="nav-item" onclick="setSector('Sports')"><span class="nav-icon">⚽</span><span>Sports</span></div>
     <div class="sidebar-footer">
+      <div class="nav-item" onclick="openProfile()"><span class="nav-icon">👤</span><span>Profile</span></div>
       <div class="nav-item" onclick="openAlertModal()" style="position:relative;">
         <span class="nav-icon">🔔</span><span>Alerts</span>
         <div class="notif-dot" id="notifDot" style="display:none;"></div>
@@ -2039,6 +2148,352 @@ async function init() {
     showToast('🔄 News refreshed');
   }, 15*60*1000);
 }
+
+
+// ══════════════════════════════════════════════════
+// SUPABASE (background sync only — no auth/login)
+// ══════════════════════════════════════════════════
+const SB_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyOTQsImV4cCI6MjA5Njg1NDI5NH0.cMzCkgMLSU1cxTw6vXpd7I_E2chCgys3neBLqawhSCQ';
+let _sb = null;
+function getSB() {
+  if (!_sb && typeof supabase !== 'undefined') {
+    _sb = supabase.createClient(SB_URL, SB_KEY);
+  }
+  return _sb;
+}
+
+// ── LOCAL PROFILE (always available, no login needed) ─────────────────────
+const PROFILE_KEY = 'bna_profile';
+let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || JSON.stringify({
+  name: '',
+  handle: '',
+  bio: '',
+  profession: '',
+  location: '',
+  dob: '',
+  website: '',
+  avatar_url: '',
+  avatar_initials: 'B',
+  sectors: [],
+  theme: 'dark',
+  device_id: 'dev_' + Math.random().toString(36).slice(2,10),
+}));
+
+function saveProfile(updates) {
+  Object.assign(profile, updates);
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  // Background sync to Supabase (fire and forget)
+  const sb = getSB();
+  if (sb && profile.device_id) {
+    sb.from('profiles').upsert({
+      id: profile.device_id,
+      ...profile,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'id' }).then(() => {}).catch(() => {});
+  }
+}
+
+function getInitials(name) {
+  const parts = (name || '').split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return (name || 'B')[0].toUpperCase();
+}
+
+// ══════════════════════════════════════════════════
+// PROFILE UI
+// ══════════════════════════════════════════════════
+let profileTab = 'info';
+
+function openProfile() {
+  document.getElementById('profileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderProfile();
+}
+
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function switchPTab(tab, btn) {
+  profileTab = tab;
+  document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.p-tab-content').forEach(c => c.classList.remove('active'));
+  const el = document.getElementById('ptab-' + tab);
+  if (el) el.classList.add('active');
+}
+
+function renderProfile() {
+  const el = document.getElementById('profileContent');
+  const initials = profile.avatar_initials || getInitials(profile.name) || 'B';
+  const savedCount = bookmarks.length;
+  const likedCount = likes.length;
+  const readCount  = readItems.length;
+  const alertCount = alertKws.length;
+  const joinedStr  = profile.joined_at
+    ? new Date(profile.joined_at).toLocaleDateString('en-IN', {month:'long', year:'numeric'})
+    : new Date().toLocaleDateString('en-IN', {month:'long', year:'numeric'});
+
+  const sectorChips = ['Tech','Finance','Health','Science','Politics','Climate','Sports'].map(s => {
+    const sel = (profile.sectors || []).includes(s);
+    const col = SECTOR_COLORS[s] || '#9333ea';
+    return '<button class="p-sector-chip" onclick="togglePSector('' + s + '',this)" ' +
+      'style="border-color:' + col + ';' + (sel ? 'background:' + col + '22;color:' + col : 'color:var(--text3)') + '"' +
+      (sel ? ' data-sel="1"' : '') + '>' +
+      (SECTOR_EMOJIS[s] || '') + ' ' + s + '</button>';
+  }).join('');
+
+  const allCards = [...Object.values(newsCache).flat(), ...newsData];
+  const seen = new Set();
+
+  function thumbs(ids) {
+    const cards = (ids || []).map(id => allCards.find(c => c.id === id))
+      .filter(c => c && !seen.has(c.id) && seen.add(c.id));
+    if (!cards.length) return '<div class="p-empty"><div class="p-empty-icon">📭</div><div style="font-size:13px;color:var(--text2);">Nothing here yet</div></div>';
+    return '<div class="p-articles-grid">' + cards.map(function(c) {
+      const safe = JSON.stringify(c).split('"').join('&quot;');
+      return '<div class="p-article-thumb" onclick="closeProfile();openReader(' + safe + ')">' +
+        '<img src="' + (c.image || '') + '" loading="lazy" onerror="this.style.display='none'">' +
+        '<div class="p-article-thumb-overlay"><div class="p-article-thumb-title">' + (c.title || '').substring(0,50) + '</div></div>' +
+        '</div>';
+    }).join('') + '</div>';
+  }
+
+  el.innerHTML =
+    // ── HERO ──
+    '<div class="profile-hero">' +
+      '<div class="profile-avatar-row">' +
+        '<div class="p-avatar" onclick="changeAvatar()">' +
+          (profile.avatar_url
+            ? '<img src="' + profile.avatar_url + '" onerror="this.style.display='none'">'
+            : '<span>' + initials + '</span>') +
+          '<div class="p-avatar-edit">📷</div>' +
+        '</div>' +
+        '<div class="p-name-col">' +
+          '<div class="p-name">' +
+            (profile.name || 'Your Name') +
+            ' <span class="p-badge local">📱 Local Profile</span>' +
+          '</div>' +
+          (profile.handle ? '<div class="p-handle">@' + profile.handle + '</div>' : '') +
+          (profile.profession ? '<div class="p-handle">💼 ' + profile.profession + '</div>' : '') +
+          (profile.location  ? '<div class="p-handle">📍 ' + profile.location  + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="p-stats">' +
+        '<div class="p-stat" onclick="closeProfile();setView('bookmarks')">' +
+          '<div class="p-stat-n">' + savedCount + '</div><div class="p-stat-l">Saved</div></div>' +
+        '<div class="p-stat"><div class="p-stat-n">' + likedCount + '</div><div class="p-stat-l">Liked</div></div>' +
+        '<div class="p-stat"><div class="p-stat-n">' + readCount  + '</div><div class="p-stat-l">Read</div></div>' +
+        '<div class="p-stat" onclick="openAlertModal();closeProfile()">' +
+          '<div class="p-stat-n">' + alertCount + '</div><div class="p-stat-l">Alerts</div></div>' +
+      '</div>' +
+    '</div>' +
+
+    // ── TABS ──
+    '<div class="p-tabs">' +
+      '<button class="p-tab' + (profileTab==='info'?' active':'') + '" onclick="switchPTab('info',this)">👤 Info</button>' +
+      '<button class="p-tab' + (profileTab==='saved'?' active':'') + '" onclick="switchPTab('saved',this)">🔖 Saved</button>' +
+      '<button class="p-tab' + (profileTab==='activity'?' active':'') + '" onclick="switchPTab('activity',this)">📊 Activity</button>' +
+      '<button class="p-tab' + (profileTab==='edit'?' active':'') + '" onclick="switchPTab('edit',this)">✏️ Edit</button>' +
+    '</div>' +
+
+    // ── INFO TAB ──
+    '<div class="p-tab-content' + (profileTab==='info'?' active':'') + '" id="ptab-info">' +
+      '<div class="p-section">' +
+        '<div class="p-section-title">Personal Details</div>' +
+        '<div class="p-grid">' +
+          ['Full Name|' + profile.name,
+           'Handle|' + (profile.handle ? '@'+profile.handle : ''),
+           'Profession|' + profile.profession,
+           'Location|' + profile.location,
+           'Date of Birth|' + (profile.dob ? new Date(profile.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : ''),
+           'Website|' + profile.website,
+          ].map(function(pair) {
+            const parts = pair.split('|');
+            const label = parts[0], val = parts[1] || '';
+            const isLink = label === 'Website' && val;
+            return '<div class="p-field"><div class="p-field-label">' + label + '</div>' +
+              '<div class="p-field-value' + (val ? '' : ' empty') + '">' +
+                (isLink ? '<a href="' + val + '" target="_blank" style="color:var(--accent5);text-decoration:none;">' + val.replace('https://','') + '</a>' : (val || 'Not set')) +
+              '</div></div>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+      (profile.bio ? '<div class="p-section"><div class="p-section-title">Bio</div><div style="font-size:14px;color:var(--text2);line-height:1.7;">' + profile.bio + '</div></div>' : '') +
+      '<div class="p-section">' +
+        '<div class="p-section-title">Favourite Sectors</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;">' +
+          ((profile.sectors && profile.sectors.length)
+            ? profile.sectors.map(function(s){ const col=SECTOR_COLORS[s]||'#9333ea'; return '<span style="padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;background:'+col+'22;color:'+col+';border:1px solid '+col+'44;">'+(SECTOR_EMOJIS[s]||'')+' '+s+'</span>'; }).join('')
+            : '<span style="color:var(--text3);font-size:13px;">None selected — tap Edit to add</span>') +
+        '</div>' +
+      '</div>' +
+      '<div class="p-section" style="border-bottom:none;">' +
+        '<div class="p-section-title">Device Info</div>' +
+        '<div class="p-grid">' +
+          '<div class="p-field"><div class="p-field-label">Profile Type</div><div class="p-field-value">📱 Local Device</div></div>' +
+          '<div class="p-field"><div class="p-field-label">Data Sync</div><div class="p-field-value" style="color:var(--accent4);">🟢 Supabase</div></div>' +
+          '<div class="p-field"><div class="p-field-label">Using Since</div><div class="p-field-value">' + joinedStr + '</div></div>' +
+          '<div class="p-field"><div class="p-field-label">Device ID</div><div class="p-field-value" style="font-size:11px;font-family:monospace;">' + (profile.device_id || '—').substring(0,12) + '…</div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // ── SAVED TAB ──
+    '<div class="p-tab-content' + (profileTab==='saved'?' active':'') + '" id="ptab-saved">' +
+      '<div style="padding:16px 20px 0;"><div class="p-section-title" style="margin-bottom:12px;">Bookmarked Articles</div></div>' +
+      thumbs(bookmarks) +
+    '</div>' +
+
+    // ── ACTIVITY TAB ──
+    '<div class="p-tab-content' + (profileTab==='activity'?' active':'') + '" id="ptab-activity">' +
+      '<div class="p-section">' +
+        '<div class="p-section-title">Reading Stats</div>' +
+        '<div class="p-grid">' +
+          [['📖','Articles Read',readCount,'#3b82f6'],
+           ['❤️','Liked',likedCount,'#e91e8c'],
+           ['🔖','Bookmarked',savedCount,'#f59e0b'],
+           ['🔔','Alerts Set',alertCount,'#10b981']].map(function(row) {
+            return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;">' +
+              '<div style="font-size:26px;">' + row[0] + '</div>' +
+              '<div style="font-size:22px;font-weight:800;color:' + row[3] + ';margin:4px 0;">' + row[2] + '</div>' +
+              '<div style="font-size:11px;color:var(--text3);">' + row[1] + '</div></div>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="p-section" style="border-bottom:none;">' +
+        '<div class="p-section-title">Recently Read</div>' +
+        thumbs(readItems.slice(-12).reverse()) +
+      '</div>' +
+    '</div>' +
+
+    // ── EDIT TAB ──
+    '<div class="p-tab-content' + (profileTab==='edit'?' active':'') + '" id="ptab-edit">' +
+      '<div class="p-section">' +
+        '<div class="p-section-title">Edit Profile</div>' +
+        '<label class="p-edit-label">Full Name</label>' +
+        '<input class="p-input" id="pe-name" value="' + (profile.name||'') + '" placeholder="Your name">' +
+        '<label class="p-edit-label">Username / Handle</label>' +
+        '<input class="p-input" id="pe-handle" value="' + (profile.handle||'') + '" placeholder="yourhandle (no @)">' +
+        '<label class="p-edit-label">Bio</label>' +
+        '<textarea class="p-textarea" id="pe-bio" placeholder="Tell us about yourself...">' + (profile.bio||'') + '</textarea>' +
+        '<label class="p-edit-label">Profession</label>' +
+        '<input class="p-input" id="pe-profession" value="' + (profile.profession||'') + '" placeholder="e.g. Engineer, Student...">' +
+        '<label class="p-edit-label">Location</label>' +
+        '<input class="p-input" id="pe-location" value="' + (profile.location||'') + '" placeholder="e.g. Lucknow, India">' +
+        '<label class="p-edit-label">Date of Birth</label>' +
+        '<input class="p-input" id="pe-dob" type="date" value="' + (profile.dob||'') + '" style="color-scheme:dark;">' +
+        '<label class="p-edit-label">Website</label>' +
+        '<input class="p-input" id="pe-website" value="' + (profile.website||'') + '" placeholder="https://yoursite.com">' +
+        '<label class="p-edit-label">Favourite Sectors</label>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;" id="pe-sectors">' + sectorChips + '</div>' +
+        '<div id="pe-error" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:14px;"></div>' +
+        '<button class="p-save-btn" id="pe-save" onclick="doSaveProfile()">💾 Save Profile</button>' +
+      '</div>' +
+      '<div class="p-section" style="border-bottom:none;">' +
+        '<div class="p-section-title">Danger Zone</div>' +
+        '<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Clear all locally stored data.</div>' +
+        '<button onclick="clearProfileData()" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.05);color:#ef4444;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">🗑️ Clear All Local Data</button>' +
+      '</div>' +
+    '</div>';
+}
+
+function togglePSector(s, btn) {
+  btn.dataset.sel = btn.dataset.sel === '1' ? '' : '1';
+  const sel = btn.dataset.sel === '1';
+  const col = SECTOR_COLORS[s] || '#9333ea';
+  btn.style.background = sel ? col + '22' : 'transparent';
+  btn.style.color      = sel ? col : 'var(--text3)';
+}
+
+function doSaveProfile() {
+  const btn    = document.getElementById('pe-save');
+  const errEl  = document.getElementById('pe-error');
+  const name   = (document.getElementById('pe-name')?.value || '').trim();
+  const handle = (document.getElementById('pe-handle')?.value || '').trim().replace(/^@/,'');
+  const bio    = (document.getElementById('pe-bio')?.value || '').trim();
+  const profession = (document.getElementById('pe-profession')?.value || '').trim();
+  const location   = (document.getElementById('pe-location')?.value || '').trim();
+  const dob        = document.getElementById('pe-dob')?.value || '';
+  const website    = (document.getElementById('pe-website')?.value || '').trim();
+  const sectors    = [...document.querySelectorAll('#pe-sectors [data-sel="1"]')]
+    .map(b => b.textContent.trim().replace(/[^\w\s]/g,'').trim().split(/\s+/).pop());
+
+  if (!name) { errEl.textContent = 'Name is required.'; return; }
+
+  btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span> Saving...';
+
+  saveProfile({
+    name, handle, bio, profession, location,
+    dob: dob || null, website, sectors,
+    avatar_initials: getInitials(name),
+    joined_at: profile.joined_at || new Date().toISOString(),
+  });
+
+  btn.disabled = false; btn.innerHTML = '💾 Save Profile';
+  errEl.textContent = '';
+  showToast('✅ Profile saved!');
+  renderProfile();
+}
+
+function changeAvatar() {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 3 * 1024 * 1024) { showToast('⚠️ Image must be under 3MB'); return; }
+    showToast('📤 Uploading photo...');
+    try {
+      const sb = getSB();
+      if (sb) {
+        const ext  = file.name.split('.').pop();
+        const path = 'avatars/' + profile.device_id + '.' + ext;
+        const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
+        if (error) throw error;
+        const { data } = sb.storage.from('avatars').getPublicUrl(path);
+        saveProfile({ avatar_url: data.publicUrl });
+        showToast('✅ Photo updated!');
+      } else {
+        // Fallback: base64 in localStorage
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          saveProfile({ avatar_url: ev.target.result });
+          showToast('✅ Photo updated (local)!');
+          renderProfile();
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+    } catch(err) { showToast('⚠️ Upload failed: ' + err.message); return; }
+    renderProfile();
+  };
+  inp.click();
+}
+
+function clearProfileData() {
+  if (!confirm('Clear all bookmarks, likes, read history and preferences?')) return;
+  bookmarks = []; likes = []; readItems = []; alertKws = [];
+  ['pa_bookmarks','pa_likes','pa_read','pa_alerts'].forEach(k => localStorage.removeItem(k));
+  renderFeed();
+  showToast('🗑️ Data cleared');
+  renderProfile();
+}
+
+// Keyboard close
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('profileOverlay').classList.contains('open')) closeProfile();
+});
+// Swipe down to close on mobile
+(function(){
+  let sy = 0;
+  document.addEventListener('touchstart', function(e){ sy = e.touches[0].clientY; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (e.changedTouches[0].clientY - sy > 80 &&
+        document.getElementById('profileOverlay').classList.contains('open')) closeProfile();
+  }, {passive:true});
+})();
 
 init();
 
