@@ -3089,12 +3089,61 @@ async function doForgotPassword() {
 }
 
 // ── ON LOGIN SUCCESS ──────────────────────────────
+let appLoaded = false;
+
+async function _startApp() {
+  // Restore theme
+  const savedTheme = localStorage.getItem('pa_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  const themeBtn = document.getElementById('themeBtn');
+  if (themeBtn) themeBtn.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+  const mobIcon = document.getElementById('mobThemeIcon');
+  if (mobIcon) mobIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+  installPWA();
+  renderSectors();
+  renderStories();
+  renderRightPanel();
+
+  // Sync badges
+  const bc = document.getElementById('bookmarkCount');
+  if (bc) bc.textContent = bookmarks.length || '0';
+  const mbc = document.getElementById('mobBookmarkBadge');
+  if (mbc && bookmarks.length > 0) { mbc.textContent = bookmarks.length; mbc.style.display = 'block'; }
+  if (alertKws.length) {
+    const d1 = document.getElementById('notifDot'); if (d1) d1.style.display = 'block';
+    const d2 = document.getElementById('mobNotifDot'); if (d2) d2.style.display = 'block';
+  }
+
+  // Fetch news
+  const initial = await fetchNews('All');
+  newsData = initial;
+  renderFeed();
+  updateLastFetchedBadge();
+
+  // Background fetch all sectors
+  fetchAllSectors().then(() => { renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
+
+  // AI daily briefing
+  generateDailyBriefing();
+
+  // Auto-story
+  if (prefs.autoStory && storiesData.length) setTimeout(() => openStory(0), 2000);
+
+  // Auto-refresh every 15 min
+  setInterval(async () => {
+    const r = await fetchNews(state.currentSector, true);
+    if (state.currentSector === 'All') newsData = r;
+    renderFeed(); renderRightPanel(); updateLastFetchedBadge();
+    showToast('🔄 News refreshed');
+  }, 15 * 60 * 1000);
+}
+
 function onLoginSuccess(user) {
   currentUser = user;
   updateUserUI(user);
   const screen = document.getElementById('loginScreen');
-  screen.classList.add('hidden');
-  setTimeout(() => { screen.style.display = 'none'; }, 400);
+  if (screen) { screen.classList.add('hidden'); setTimeout(() => { screen.style.display = 'none'; }, 400); }
   if (!appLoaded) { appLoaded = true; _startApp(); }
 }
 
@@ -3326,17 +3375,22 @@ sb.auth.onAuthStateChange(async (event, session) => {
 
 // ── CHECK EXISTING SESSION ────────────────────────
 async function checkAuthSession() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user) {
-    const u = session.user;
-    const name = u.user_metadata?.name || u.email.split('@')[0];
-    currentUser = {
-      id: u.id, name, email: u.email,
-      initials: getInitials(name), isGuest: false,
-    };
-    onLoginSuccess(currentUser);
-    await syncUserDataFromSupabase();
-    return true;
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error) { console.warn('[Auth] getSession error:', error.message); return false; }
+    if (session?.user) {
+      const u = session.user;
+      const name = u.user_metadata?.name || u.email.split('@')[0];
+      currentUser = {
+        id: u.id, name, email: u.email,
+        initials: getInitials(name), isGuest: false,
+      };
+      onLoginSuccess(currentUser);
+      await syncUserDataFromSupabase();
+      return true;
+    }
+  } catch(e) {
+    console.warn('[Auth] Session check failed:', e.message);
   }
   return false;
 }
@@ -3353,7 +3407,7 @@ async function checkAuthSession() {
 // ══════════════════════════════════════════════════
 async function init() {
   // Check auth before loading app
-  const hasSession = checkAuthSession();
+  const hasSession = await checkAuthSession();
   if (!hasSession) {
     // Show login screen, defer app load until after login
     return;
