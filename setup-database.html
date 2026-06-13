@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharat News AI — Database Setup</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#f5f5f5;font-family:system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#111;border:1px solid #333;border-radius:20px;width:100%;max-width:560px;padding:36px}
+.logo{font-size:26px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.sub{font-size:13px;color:#666;margin-bottom:24px;line-height:1.5}
+.progress-bar{height:4px;background:#222;border-radius:2px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#e91e8c,#9333ea,#3b82f6);border-radius:2px;transition:width .5s ease}
+.step{display:flex;align-items:flex-start;gap:14px;padding:12px 14px;border-radius:10px;border:1px solid #222;margin-bottom:8px;transition:all .3s}
+.step.running{border-color:#9333ea;background:rgba(147,51,234,.08)}
+.step.success{border-color:#10b981;background:rgba(16,185,129,.08)}
+.step.error{border-color:#ef4444;background:rgba(239,68,68,.08)}
+.step.skip{border-color:#f59e0b;background:rgba(245,158,11,.08)}
+.step-icon{font-size:18px;flex-shrink:0;margin-top:1px;min-width:22px;text-align:center}
+.step-name{font-size:13px;font-weight:600;color:#f5f5f5}
+.step-detail{font-size:11px;color:#666;margin-top:3px;font-family:monospace;word-break:break-all}
+.step-detail.err{color:#ef4444}
+.step-detail.ok{color:#10b981}
+.step-detail.warn{color:#f59e0b}
+.spin{width:18px;height:18px;border:2px solid #333;border-top-color:#9333ea;border-radius:50%;animation:spin .6s linear infinite;display:inline-block;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.run-btn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#e91e8c,#9333ea);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .15s;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px}
+.run-btn:hover{opacity:.9}
+.run-btn:disabled{opacity:.5;cursor:not-allowed}
+.done-box{margin-top:20px;padding:20px;border-radius:12px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);text-align:center;display:none}
+.done-box.show{display:block}
+.done-title{font-size:18px;font-weight:800;color:#10b981;margin-bottom:8px}
+.done-sub{font-size:13px;color:#aaa;line-height:1.6}
+.done-link{display:inline-block;margin-top:14px;padding:12px 28px;border-radius:10px;background:linear-gradient(135deg,#e91e8c,#9333ea);color:#fff;text-decoration:none;font-weight:700;font-size:14px;transition:opacity .15s}
+.done-link:hover{opacity:.9}
+.error-box{margin-top:20px;padding:16px;border-radius:12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);display:none}
+.error-box.show{display:block}
+.error-title{font-size:14px;font-weight:700;color:#ef4444;margin-bottom:6px}
+.error-text{font-size:12px;color:#aaa;line-height:1.6}
+.stats{display:flex;gap:12px;margin-bottom:16px}
+.stat{flex:1;background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:10px;text-align:center}
+.stat-num{font-size:22px;font-weight:800;color:#f5f5f5}
+.stat-label{font-size:11px;color:#666;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Bharat News AI</div>
+  <div class="sub">🗄️ Automatic database setup — creates all required Supabase tables with one click</div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="statTotal">8</div><div class="stat-label">migrations</div></div>
+    <div class="stat"><div class="stat-num" id="statDone" style="color:#10b981">0</div><div class="stat-label">completed</div></div>
+    <div class="stat"><div class="stat-num" id="statFail" style="color:#ef4444">0</div><div class="stat-label">failed</div></div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div id="stepsList"></div>
+
+  <button class="run-btn" id="runBtn" onclick="runMigration()">
+    <span>🚀</span><span id="btnText">Create All Tables Now</span>
+  </button>
+
+  <div class="done-box" id="doneBox">
+    <div class="done-title">✅ Database Ready!</div>
+    <div class="done-sub">
+      All tables created with Row Level Security and auto-triggers.<br>
+      Bharat News AI is fully configured.
+    </div>
+    <a class="done-link" href="https://kushagra486.github.io/bharat-news-ai/" target="_blank">
+      Open Bharat News AI →
+    </a>
+  </div>
+
+  <div class="error-box" id="errorBox">
+    <div class="error-title">⚠️ Some migrations failed</div>
+    <div class="error-text" id="errorText"></div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
+const SVC_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTI3ODI5NCwiZXhwIjoyMDk2ODU0Mjk0fQ.Q7ovch3WC4SHOS0Q465w2C6jQDnziMoprJMe_6GsegI';
+
+const STEPS = [
+  { name:'profiles table',    icon:'👤', sql:`CREATE TABLE IF NOT EXISTS public.profiles (id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY, name TEXT, email TEXT, avatar_initials TEXT, created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW());` },
+  { name:'bookmarks table',   icon:'🔖', sql:`CREATE TABLE IF NOT EXISTS public.bookmarks (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, article_id TEXT NOT NULL, article_data JSONB NOT NULL, created_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(user_id, article_id));` },
+  { name:'likes table',       icon:'❤️', sql:`CREATE TABLE IF NOT EXISTS public.likes (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, article_id TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(user_id, article_id));` },
+  { name:'user_prefs table',  icon:'⚙️', sql:`CREATE TABLE IF NOT EXISTS public.user_prefs (user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY, prefs JSONB DEFAULT '{}'::jsonb, alert_keywords TEXT[] DEFAULT '{}', updated_at TIMESTAMPTZ DEFAULT NOW());` },
+  { name:'read_history table',icon:'📖', sql:`CREATE TABLE IF NOT EXISTS public.read_history (id UUID DEFAULT gen_random_uuid() PRIMARY KEY, user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, article_id TEXT NOT NULL, read_at TIMESTAMPTZ DEFAULT NOW(), UNIQUE(user_id, article_id));` },
+  { name:'Row Level Security', icon:'🔒', sql:`ALTER TABLE IF EXISTS public.profiles ENABLE ROW LEVEL SECURITY; ALTER TABLE IF EXISTS public.bookmarks ENABLE ROW LEVEL SECURITY; ALTER TABLE IF EXISTS public.likes ENABLE ROW LEVEL SECURITY; ALTER TABLE IF EXISTS public.user_prefs ENABLE ROW LEVEL SECURITY; ALTER TABLE IF EXISTS public.read_history ENABLE ROW LEVEL SECURITY;` },
+  { name:'RLS policies',      icon:'🛡️', sql:`DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE tablename='profiles' AND policyname='Own profile') THEN CREATE POLICY "Own profile" ON public.profiles FOR ALL USING(auth.uid()=id); END IF; IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE tablename='bookmarks' AND policyname='Own bookmarks') THEN CREATE POLICY "Own bookmarks" ON public.bookmarks FOR ALL USING(auth.uid()=user_id); END IF; IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE tablename='likes' AND policyname='Own likes') THEN CREATE POLICY "Own likes" ON public.likes FOR ALL USING(auth.uid()=user_id); END IF; IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE tablename='user_prefs' AND policyname='Own prefs') THEN CREATE POLICY "Own prefs" ON public.user_prefs FOR ALL USING(auth.uid()=user_id); END IF; IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE tablename='read_history' AND policyname='Own history') THEN CREATE POLICY "Own history" ON public.read_history FOR ALL USING(auth.uid()=user_id); END IF; END $$;` },
+  { name:'signup trigger',    icon:'⚡', sql:`CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER AS $func$ BEGIN INSERT INTO public.profiles(id,email,name,avatar_initials) VALUES(NEW.id,NEW.email,COALESCE(NEW.raw_user_meta_data->>'name',split_part(NEW.email,'@',1)),UPPER(LEFT(COALESCE(NEW.raw_user_meta_data->>'name',NEW.email),1))) ON CONFLICT(id) DO NOTHING; INSERT INTO public.user_prefs(user_id) VALUES(NEW.id) ON CONFLICT(user_id) DO NOTHING; RETURN NEW; END; $func$ LANGUAGE plpgsql SECURITY DEFINER; DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users; CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();` },
+];
+
+const states = {};
+let doneCount = 0, failCount = 0;
+
+function render() {
+  document.getElementById('statDone').textContent = doneCount;
+  document.getElementById('statFail').textContent = failCount;
+  document.getElementById('progressFill').style.width = ((doneCount + failCount) / STEPS.length * 100) + '%';
+
+  document.getElementById('stepsList').innerHTML = STEPS.map((s, i) => {
+    const st = states[i] || 'idle';
+    const icon = st==='running'?'<div class="spin"></div>':st==='success'?'✅':st==='skip'?'⏭️':st==='error'?'❌':s.icon;
+    const det  = states['d'+i] || '';
+    const detCls = st==='error'?'err':st==='skip'?'warn':'ok';
+    return `<div class="step ${st}">
+      <div class="step-icon">${icon}</div>
+      <div>
+        <div class="step-name">${s.name}</div>
+        ${det?`<div class="step-detail ${detCls}">${det}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+render();
+
+async function execSQL(sql) {
+  // Try all available endpoints in order
+  const endpoints = [
+    // 1. pg-meta proxy (works on self-hosted & cloud)
+    { url: `${SB_URL}/pg/query`,       body: { query: sql } },
+    // 2. REST RPC (if exec_sql function exists)
+    { url: `${SB_URL}/rest/v1/rpc/exec_sql`, body: { sql } },
+    // 3. Management API style
+    { url: `${SB_URL}/pg/sql`,         body: { query: sql } },
+  ];
+
+  let lastErr = null;
+  for (const ep of endpoints) {
+    try {
+      const r = await fetch(ep.url, {
+        method: 'POST',
+        headers: {
+          'apikey': SVC_KEY,
+          'Authorization': `Bearer ${SVC_KEY}`,
+          'Content-Type': 'application/json',
+          'X-Connection-Encrypted': 'true',
+        },
+        body: JSON.stringify(ep.body),
+      });
+
+      const text = await r.text();
+
+      if (r.ok) return { ok: true, data: text };
+
+      // Parse error
+      let errMsg = text;
+      try { errMsg = JSON.parse(text)?.message || JSON.parse(text)?.error || text; } catch(e) {}
+
+      // "already exists" is fine — treat as success
+      if (errMsg.includes('already exists') || errMsg.includes('42P07') || errMsg.includes('42710')) {
+        return { ok: true, skip: true, data: 'Already exists' };
+      }
+
+      // This endpoint doesn't support it — try next
+      if (r.status === 404 || r.status === 405) {
+        lastErr = `${ep.url.split('/').pop()}: 404`;
+        continue;
+      }
+
+      lastErr = errMsg.substring(0, 150);
+    } catch(e) {
+      lastErr = e.message;
+      continue;
+    }
+  }
+  return { ok: false, error: lastErr };
+}
+
+async function runMigration() {
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  document.getElementById('btnText').textContent = 'Running migrations...';
+  doneCount = 0; failCount = 0;
+  const errors = [];
+
+  for (let i = 0; i < STEPS.length; i++) {
+    states[i] = 'running';
+    states['d'+i] = 'Executing SQL...';
+    render();
+
+    const result = await execSQL(STEPS[i].sql);
+    await new Promise(r => setTimeout(r, 200));
+
+    if (result.ok) {
+      states[i] = result.skip ? 'skip' : 'success';
+      states['d'+i] = result.skip ? 'Already exists — skipped' : 'Created successfully ✓';
+      doneCount++;
+    } else {
+      states[i] = 'error';
+      states['d'+i] = result.error || 'Unknown error';
+      failCount++;
+      errors.push(`${STEPS[i].name}: ${result.error}`);
+    }
+    render();
+  }
+
+  document.getElementById('progressFill').style.width = '100%';
+
+  if (failCount === 0) {
+    document.getElementById('doneBox').classList.add('show');
+    document.getElementById('btnText').textContent = '✅ All done!';
+  } else if (failCount === STEPS.length) {
+    // ALL failed — likely network/endpoint issue
+    document.getElementById('errorBox').classList.add('show');
+    document.getElementById('errorText').innerHTML = `
+      <strong>Could not reach Supabase pg API.</strong><br><br>
+      This usually means the pg-meta endpoint is not exposed on your plan.<br><br>
+      <strong>Quick fix:</strong> Go to your Supabase project → SQL Editor → New Query →
+      paste the SQL from the
+      <a href="https://github.com/kushagra486/bharat-news-ai" target="_blank" style="color:#3b82f6;">README</a>
+      and run it. Or share your project's service_role key + PAT and we'll handle it differently.
+    `;
+    btn.disabled = false;
+    document.getElementById('btnText').textContent = 'Retry';
+  } else {
+    document.getElementById('errorBox').classList.add('show');
+    document.getElementById('errorText').textContent = errors.join('\n');
+    btn.disabled = false;
+    document.getElementById('btnText').textContent = 'Retry failed steps';
+  }
+}
+</script>
+</body>
+</html>

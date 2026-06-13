@@ -723,6 +723,238 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   .login-logo-text { font-size: 18px; }
 }
 
+
+/* ── PROFILE PAGE ── */
+.profile-page { padding: 0 0 40px; }
+
+.profile-hero {
+  position: relative;
+  background: linear-gradient(135deg,#1a0a2e,#0a1a3b,#0a1a0a);
+  padding: 32px 24px 0;
+  overflow: hidden;
+}
+.profile-hero::before {
+  content:'';position:absolute;inset:0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(233,30,140,.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(59,130,246,.12) 0%, transparent 60%);
+  pointer-events:none;
+}
+.profile-cover {
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:.18;
+}
+
+.profile-header {
+  position:relative;z-index:2;
+  display:flex;align-items:flex-end;gap:20px;
+  padding-bottom:0;
+}
+
+.profile-avatar-wrap { position:relative;flex-shrink:0; }
+.profile-avatar {
+  width:88px;height:88px;border-radius:50%;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;font-weight:900;color:#fff;
+  border:4px solid var(--bg);
+  position:relative;z-index:1;
+  overflow:hidden;cursor:pointer;
+  transition:transform .2s;
+}
+.profile-avatar:hover { transform:scale(1.04); }
+.profile-avatar img { width:100%;height:100%;object-fit:cover; }
+.profile-avatar-edit {
+  position:absolute;bottom:2px;right:2px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--accent2);border:2px solid var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;cursor:pointer;z-index:2;
+}
+
+.profile-name-area { flex:1;min-width:0;padding-bottom:16px; }
+.profile-name {
+  font-size:22px;font-weight:800;color:#fff;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.verified-badge {
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:20px;
+  font-size:11px;font-weight:700;
+  background:rgba(59,130,246,.2);color:#3b82f6;
+  border:1px solid rgba(59,130,246,.3);
+}
+.unverified-badge {
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:20px;
+  font-size:11px;font-weight:700;
+  background:rgba(245,158,11,.15);color:#f59e0b;
+  border:1px solid rgba(245,158,11,.3);
+  cursor:pointer;
+}
+.unverified-badge:hover { background:rgba(245,158,11,.25); }
+.profile-email { font-size:13px;color:rgba(255,255,255,.6);margin-top:3px; }
+.profile-joined { font-size:11px;color:rgba(255,255,255,.4);margin-top:2px; }
+
+/* Stats bar */
+.profile-stats {
+  position:relative;z-index:2;
+  display:flex;gap:0;
+  margin-top:20px;
+  background:rgba(0,0,0,.3);
+  border-radius:12px 12px 0 0;
+  overflow:hidden;
+}
+.profile-stat {
+  flex:1;text-align:center;padding:14px 8px;
+  border-right:1px solid rgba(255,255,255,.06);
+  cursor:pointer;transition:background .15s;
+}
+.profile-stat:last-child { border-right:none; }
+.profile-stat:hover { background:rgba(255,255,255,.05); }
+.profile-stat-num { font-size:20px;font-weight:800;color:#fff; }
+.profile-stat-label { font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;text-transform:uppercase;letter-spacing:.8px; }
+
+/* Tabs */
+.profile-tabs {
+  display:flex;gap:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:56px;z-index:80;
+}
+.profile-tab {
+  flex:1;padding:12px 8px;
+  border:none;background:transparent;
+  color:var(--text3);font-size:13px;font-weight:500;
+  font-family:inherit;cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.profile-tab.active {
+  color:var(--accent);border-bottom-color:var(--accent);
+  font-weight:700;
+}
+.profile-tab-content { display:none; }
+.profile-tab-content.active { display:block; }
+
+/* Info section */
+.profile-info-section {
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+}
+.profile-info-title {
+  font-size:12px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.8px;
+  margin-bottom:14px;
+}
+.profile-info-grid {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media(max-width:480px){ .profile-info-grid{grid-template-columns:1fr;} }
+.profile-info-item {
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;
+}
+.profile-info-label { font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px; }
+.profile-info-value { font-size:13px;font-weight:500;color:var(--text); }
+.profile-info-value.muted { color:var(--text3); }
+
+/* Edit form */
+.edit-form { padding:20px 24px; }
+.edit-field { margin-bottom:16px; }
+.edit-label { font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:block; }
+.edit-input {
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:inherit;
+  font-size:14px;padding:10px 14px;outline:none;
+  transition:border-color .2s;
+}
+.edit-input:focus { border-color:var(--accent2); }
+.edit-input::placeholder { color:var(--text3); }
+.edit-select {
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:inherit;
+  font-size:14px;padding:10px 14px;outline:none;cursor:pointer;
+  -webkit-appearance:none;
+}
+.edit-textarea {
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:inherit;
+  font-size:14px;padding:10px 14px;outline:none;resize:vertical;min-height:80px;
+  transition:border-color .2s;
+}
+.edit-textarea:focus { border-color:var(--accent2); }
+.save-btn {
+  width:100%;padding:12px;border-radius:10px;border:none;
+  background:var(--grad);color:#fff;font-size:14px;font-weight:700;
+  font-family:inherit;cursor:pointer;transition:opacity .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.save-btn:hover { opacity:.9; }
+.save-btn:disabled { opacity:.5;cursor:not-allowed; }
+
+/* Bookmarks / activity in profile */
+.profile-articles {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--border);
+}
+@media(max-width:480px){ .profile-articles{grid-template-columns:1fr 1fr;} }
+.profile-article-thumb {
+  aspect-ratio:1;overflow:hidden;
+  background:var(--surface2);cursor:pointer;
+  position:relative;
+}
+.profile-article-thumb img {
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .3s;
+}
+.profile-article-thumb:hover img { transform:scale(1.05); }
+.profile-article-thumb-overlay {
+  position:absolute;inset:0;
+  background:linear-gradient(transparent 40%,rgba(0,0,0,.7));
+  opacity:0;transition:opacity .2s;
+  display:flex;align-items:flex-end;padding:8px;
+}
+.profile-article-thumb:hover .profile-article-thumb-overlay { opacity:1; }
+.profile-article-thumb-title {
+  font-size:10px;font-weight:600;color:#fff;line-height:1.3;
+}
+.profile-empty {
+  grid-column:1/-1;
+  text-align:center;padding:48px 24px;color:var(--text3);
+}
+.profile-empty-icon { font-size:40px;margin-bottom:10px; }
+
+/* Danger zone */
+.danger-zone {
+  margin:20px 24px;padding:16px;
+  border:1px solid rgba(239,68,68,.2);border-radius:12px;
+  background:rgba(239,68,68,.04);
+}
+.danger-title { font-size:13px;font-weight:700;color:#ef4444;margin-bottom:10px; }
+.danger-btn {
+  padding:8px 16px;border-radius:8px;border:1px solid rgba(239,68,68,.3);
+  background:transparent;color:#ef4444;font-size:13px;font-weight:600;
+  font-family:inherit;cursor:pointer;transition:all .15s;
+}
+.danger-btn:hover { background:rgba(239,68,68,.1); }
+
+/* Notification verify banner */
+.verify-banner {
+  margin:16px 24px;padding:12px 16px;
+  background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);
+  border-radius:10px;display:flex;align-items:center;gap:10px;
+}
+.verify-banner-text { flex:1;font-size:13px;color:var(--text2);line-height:1.5; }
+.verify-banner-btn {
+  padding:6px 14px;border-radius:8px;border:none;
+  background:var(--accent3);color:#000;font-size:12px;font-weight:700;
+  font-family:inherit;cursor:pointer;flex-shrink:0;
+  transition:opacity .15s;
+}
+.verify-banner-btn:hover { opacity:.85; }
+
 </style>
 </head>
 <body>
@@ -849,12 +1081,27 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <span class="nav-label-small">Saved</span>
     <div class="mob-nav-badge" id="mobBookmarkBadge" style="display:none;">0</div>
   </button>
+  <button class="mob-nav-btn" id="mobnav-profile" onclick="openProfile()">
+    <span class="nav-icon-big">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </span>
+    <span class="nav-label-small">Profile</span>
+  </button>
   <button class="mob-nav-btn" id="mobnav-prefs" onclick="openPrefsModal()">
     <span class="nav-icon-big">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
     </span>
     <span class="nav-label-small">More</span>
   </button>
+</div>
+
+
+<!-- ══ PROFILE PAGE OVERLAY ══ -->
+<div class="analysis-overlay" id="profileOverlay" onclick="closeProfileOnBg(event)">
+  <div class="analysis-modal" id="profileModal" style="padding:0;max-height:92vh;overflow-y:auto;border-radius:20px;width:100%;max-width:820px;">
+    <button class="modal-close" onclick="closeProfile()" style="z-index:10;top:12px;right:12px;background:rgba(0,0,0,.5);color:#fff;">✕</button>
+    <div id="profileContent"></div>
+  </div>
 </div>
 
 <!-- ══ MOBILE SEARCH PAGE ══ -->
@@ -1003,6 +1250,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="nav-item" onclick="setSector('Climate')"><span class="nav-icon">🌍</span><span>Climate</span></div>
     <div class="nav-item" onclick="setSector('Sports')"><span class="nav-icon">⚽</span><span>Sports</span></div>
     <div class="sidebar-footer">
+      <div class="nav-item" onclick="openProfile()"><span class="nav-icon">👤</span><span>Profile</span></div>
       <div class="nav-item" onclick="openAlertModal()" style="position:relative;">
         <span class="nav-icon">🔔</span><span>Alerts</span>
         <div class="notif-dot" id="notifDot" style="display:none;"></div>
@@ -1048,6 +1296,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
             <div class="user-dropdown-email" id="dropdownEmail">Not signed in</div>
           </div>
           <div class="user-dropdown-item" id="syncStatusItem" style="color:var(--accent4);font-size:12px;">🟢 Synced with Supabase</div>
+          <div class="user-dropdown-item" onclick="openProfile();toggleUserDropdown()">👤 My Profile</div>
           <div class="user-dropdown-item" onclick="openPrefsModal();toggleUserDropdown()">⚙️ Preferences</div>
           <div class="user-dropdown-item" onclick="openAlertModal();toggleUserDropdown()">🔔 Keyword Alerts</div>
           <div class="user-dropdown-item" onclick="setView('bookmarks');toggleUserDropdown()">🔖 Saved Articles</div>
@@ -2373,6 +2622,322 @@ document.addEventListener('keydown',e=>{
   if ((e.ctrlKey||e.metaKey)&&e.key==='k') { document.getElementById('searchInput').focus(); e.preventDefault(); }
   if ((e.ctrlKey||e.metaKey)&&e.key==='d') { toggleTheme(); e.preventDefault(); }
 });
+
+
+
+// ══════════════════════════════════════════════════
+// PROFILE SYSTEM
+// ══════════════════════════════════════════════════
+
+let profileData = {
+  name:'',email:'',bio:'',location:'',website:'',profession:'',
+  dob:'',avatar_url:'',avatar_initials:'',
+  email_verified:false,joined:'',sector_preferences:[],articles_read:0
+};
+
+async function openProfile() {
+  if (!currentUser) { showToast('Please sign in to view your profile'); return; }
+  document.getElementById('profileOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  await loadProfile();
+}
+
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeProfileOnBg(e) {
+  if (e.target.id === 'profileOverlay') closeProfile();
+}
+
+async function loadProfile() {
+  const el = document.getElementById('profileContent');
+  el.innerHTML = '<div style="padding:60px;text-align:center;color:var(--text3);"><div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:var(--accent2);"></div><div style="font-size:14px;">Loading profile...</div></div>';
+
+  if (currentUser && !currentUser.isGuest) {
+    try {
+      const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+      if (data) {
+        profileData = {
+          name: data.name||currentUser.name||'',
+          email: data.email||currentUser.email||'',
+          bio: data.bio||'',
+          location: data.location||'',
+          website: data.website||'',
+          profession: data.profession||'',
+          dob: data.dob||'',
+          avatar_url: data.avatar_url||'',
+          avatar_initials: data.avatar_initials||getInitials(data.name||currentUser.email||'?'),
+          email_verified: data.email_verified||false,
+          joined: data.created_at||new Date().toISOString(),
+          sector_preferences: data.sector_preferences||[],
+          articles_read: data.articles_read||0,
+        };
+      }
+      const { data: { user } } = await sb.auth.getUser();
+      if (user) {
+        profileData.email_verified = !!user.email_confirmed_at;
+        profileData.joined = user.created_at || profileData.joined;
+      }
+    } catch(e) { console.error('Profile load:', e); }
+  } else {
+    profileData = { name:'Guest User', email:'', bio:'Browsing as guest', email_verified:false, joined:new Date().toISOString(), avatar_initials:'G', sector_preferences:[] };
+  }
+  renderProfile();
+}
+
+function renderProfile() {
+  const el = document.getElementById('profileContent');
+  const isGuest = currentUser?.isGuest;
+  const isVerified = profileData.email_verified;
+  const joinedDate = profileData.joined ? new Date(profileData.joined).toLocaleDateString('en-IN',{month:'long',year:'numeric'}) : 'Recently';
+  const savedCount = bookmarks.length;
+  const likedCount = likes.length;
+  const readCount  = readItems.length;
+  const alertCount = alertKws.length;
+
+  const sectorsHtml = (profileData.sector_preferences?.length ? profileData.sector_preferences : (prefs.favSectors||[])).map(s =>
+    `<span style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${SECTOR_COLORS[s]||'#9333ea'}22;color:${SECTOR_COLORS[s]||'#9333ea'};border:1px solid ${SECTOR_COLORS[s]||'#9333ea'}44;">${SECTOR_EMOJIS[s]||''} ${s}</span>`
+  ).join('') || '<span style="color:var(--text3);font-size:13px;">No sectors selected — edit profile to add</span>';
+
+  const editSectorsHtml = ['Tech','Finance','Health','Science','Politics','Climate','Sports'].map(s => {
+    const sel = (profileData.sector_preferences||prefs.favSectors||[]).includes(s);
+    return `<button onclick="toggleEditSector('${s}',this)" style="padding:6px 14px;border-radius:20px;border:1px solid ${sel?'transparent':SECTOR_COLORS[s]+'44'};background:${sel?SECTOR_COLORS[s]+'22':'transparent'};color:${SECTOR_COLORS[s]};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;" ${sel?'class="sector-sel"':''}>${SECTOR_EMOJIS[s]} ${s}</button>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-header">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" onclick="${isGuest?'':'changeAvatar()'}">
+            ${profileData.avatar_url ? `<img src="${profileData.avatar_url}" alt="Avatar" onerror="this.parentElement.innerHTML='<span>${profileData.avatar_initials||'?'}</span>'">` : `<span>${profileData.avatar_initials||'?'}</span>`}
+          </div>
+          ${!isGuest?'<div class="profile-avatar-edit" onclick="changeAvatar()" title="Change photo">📷</div>':''}
+        </div>
+        <div class="profile-name-area">
+          <div class="profile-name">
+            ${profileData.name||'User'}
+            ${isVerified?'<span class="verified-badge">✅ Verified</span>':!isGuest?'<span class="unverified-badge" onclick="resendVerification()">⚠️ Unverified — tap to verify</span>':''}
+          </div>
+          <div class="profile-email">${profileData.email||'Guest session'}</div>
+          ${profileData.profession?`<div class="profile-joined">💼 ${profileData.profession}</div>`:''}
+          ${profileData.location?`<div class="profile-joined">📍 ${profileData.location}</div>`:''}
+          <div class="profile-joined">📅 Joined ${joinedDate}</div>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="profile-stat" onclick="closeProfile();setView('bookmarks')">
+          <div class="profile-stat-num">${savedCount}</div>
+          <div class="profile-stat-label">Saved</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-num">${likedCount}</div>
+          <div class="profile-stat-label">Liked</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-num">${readCount}</div>
+          <div class="profile-stat-label">Read</div>
+        </div>
+        <div class="profile-stat" onclick="openAlertModal();closeProfile()">
+          <div class="profile-stat-num">${alertCount}</div>
+          <div class="profile-stat-label">Alerts</div>
+        </div>
+      </div>
+    </div>
+
+    ${!isVerified&&!isGuest?`<div class="verify-banner"><span style="font-size:20px;">📧</span><div class="verify-banner-text"><strong>Verify your email</strong> to unlock cross-device sync.</div><button class="verify-banner-btn" onclick="resendVerification()">Send Link</button></div>`:''}
+
+    <div class="profile-tabs">
+      <button class="profile-tab active" onclick="switchProfileTab('info',this)">👤 Info</button>
+      <button class="profile-tab" onclick="switchProfileTab('saved',this)">🔖 Saved</button>
+      <button class="profile-tab" onclick="switchProfileTab('activity',this)">📊 Activity</button>
+      ${!isGuest?'<button class="profile-tab" onclick="switchProfileTab('edit',this)">✏️ Edit</button>':''}
+    </div>
+
+    <div class="profile-tab-content active" id="ptab-info">
+      <div class="profile-info-section">
+        <div class="profile-info-title">Personal Details</div>
+        <div class="profile-info-grid">
+          ${[['Full Name',profileData.name],['Email',profileData.email],['Profession',profileData.profession],['Location',profileData.location],['Date of Birth',profileData.dob?new Date(profileData.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''],['Website',profileData.website?`<a href="${profileData.website}" target="_blank" style="color:var(--accent5);text-decoration:none;">${profileData.website.replace('https://','')}</a>`:'']]
+            .map(([label,val])=>`<div class="profile-info-item"><div class="profile-info-label">${label}</div><div class="profile-info-value ${val?'':'muted'}">${val||'Not set'}</div></div>`).join('')}
+        </div>
+      </div>
+      ${profileData.bio?`<div class="profile-info-section"><div class="profile-info-title">Bio</div><div style="font-size:14px;color:var(--text2);line-height:1.7;">${profileData.bio}</div></div>`:''}
+      <div class="profile-info-section">
+        <div class="profile-info-title">Favourite Sectors</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">${sectorsHtml}</div>
+      </div>
+      <div class="profile-info-section" style="border-bottom:none;">
+        <div class="profile-info-title">Account Status</div>
+        <div class="profile-info-grid">
+          <div class="profile-info-item" style="border-color:${isVerified?'rgba(16,185,129,.3)':'rgba(245,158,11,.3)'}">
+            <div class="profile-info-label">Email Status</div>
+            <div class="profile-info-value" style="color:${isVerified?'#10b981':'#f59e0b'}">${isVerified?'✅ Verified':'⚠️ Not Verified'}</div>
+          </div>
+          <div class="profile-info-item">
+            <div class="profile-info-label">Account Type</div>
+            <div class="profile-info-value">${isGuest?'👤 Guest':'🔐 Registered'}</div>
+          </div>
+          <div class="profile-info-item">
+            <div class="profile-info-label">Data Sync</div>
+            <div class="profile-info-value" style="color:${!isGuest?'#10b981':'#f59e0b'}">${!isGuest?'🟢 Supabase':'🟡 Local only'}</div>
+          </div>
+          <div class="profile-info-item">
+            <div class="profile-info-label">Member Since</div>
+            <div class="profile-info-value">${joinedDate}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-tab-content" id="ptab-saved">${renderProfileArticles(bookmarks,'saved')}</div>
+
+    <div class="profile-tab-content" id="ptab-activity">
+      <div class="profile-info-section">
+        <div class="profile-info-title">Reading Stats</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;">
+          ${[['📖','Articles Read',readCount,'#3b82f6'],['❤️','Liked',likedCount,'#e91e8c'],['🔖','Bookmarked',savedCount,'#f59e0b'],['🔔','Active Alerts',alertCount,'#10b981']]
+            .map(([icon,label,val,color])=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;">${icon}</div><div style="font-size:24px;font-weight:800;color:${color};margin:4px 0;">${val}</div><div style="font-size:11px;color:var(--text3);">${label}</div></div>`).join('')}
+        </div>
+      </div>
+      <div class="profile-info-section" style="border-bottom:none;">
+        <div class="profile-info-title">Recently Read</div>
+        ${renderProfileArticles(readItems.slice(-8),'read')}
+      </div>
+    </div>
+
+    ${!isGuest?`
+    <div class="profile-tab-content" id="ptab-edit">
+      <div class="edit-form">
+        <div class="edit-field"><label class="edit-label">Full Name</label><input class="edit-input" id="editName" value="${profileData.name||''}" placeholder="Your full name"></div>
+        <div class="edit-field"><label class="edit-label">Bio</label><textarea class="edit-textarea" id="editBio" placeholder="Tell us about yourself...">${profileData.bio||''}</textarea></div>
+        <div class="edit-field"><label class="edit-label">Profession</label><input class="edit-input" id="editProfession" value="${profileData.profession||''}" placeholder="e.g. Software Engineer, Student..."></div>
+        <div class="edit-field"><label class="edit-label">Location</label><input class="edit-input" id="editLocation" value="${profileData.location||''}" placeholder="e.g. Lucknow, India"></div>
+        <div class="edit-field"><label class="edit-label">Date of Birth</label><input class="edit-input" id="editDob" type="date" value="${profileData.dob||''}" style="color-scheme:dark;"></div>
+        <div class="edit-field"><label class="edit-label">Website</label><input class="edit-input" id="editWebsite" value="${profileData.website||''}" placeholder="https://yoursite.com"></div>
+        <div class="edit-field"><label class="edit-label">Favourite Sectors</label><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="editSectors">${editSectorsHtml}</div></div>
+        <div id="editError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div>
+        <button class="save-btn" id="saveProfileBtn" onclick="saveProfile()"><span>💾</span><span>Save Profile</span></button>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
+          <div class="profile-info-title" style="margin-bottom:14px;">Change Password</div>
+          <div class="edit-field"><label class="edit-label">New Password</label><input class="edit-input" id="editNewPw" type="password" placeholder="Min 6 characters"></div>
+          <div class="edit-field"><label class="edit-label">Confirm Password</label><input class="edit-input" id="editConfirmPw" type="password" placeholder="Repeat new password"></div>
+          <div id="pwError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div>
+          <button class="save-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="changePassword()">🔑 Update Password</button>
+        </div>
+        <div class="danger-zone" style="margin:24px 0 0;">
+          <div class="danger-title">⚠️ Danger Zone</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">These actions cannot be undone.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="danger-btn" onclick="clearAllData()">🗑️ Clear Local Data</button>
+            <button class="danger-btn" onclick="doLogout()">🚪 Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </div>`:''}
+  `;
+}
+
+function switchProfileTab(tab, btn) {
+  document.querySelectorAll('.profile-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.profile-tab-content').forEach(c=>c.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const el = document.getElementById('ptab-'+tab);
+  if(el) el.classList.add('active');
+}
+
+function renderProfileArticles(ids, type) {
+  const allCards = [...Object.values(newsCache).flat(),...newsData];
+  const seen = new Set();
+  const cards = (ids||[]).map(id=>allCards.find(c=>c.id===id)).filter(c=>c&&!seen.has(c.id)&&seen.add(c.id));
+  if (!cards.length) return `<div class="profile-empty"><div class="profile-empty-icon">${type==='saved'?'🔖':'📖'}</div><div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">${type==='saved'?'No saved articles yet':'No reading history yet'}</div><div style="font-size:12px;">Start reading to see your ${type==='saved'?'bookmarks':'history'} here.</div></div>`;
+  return `<div class="profile-articles">${cards.map(c=>`<div class="profile-article-thumb" onclick="closeProfile();openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})"><img src="${c.image||SECTOR_FALLBACK_IMAGES[c.sector]}" alt="" loading="lazy" onerror="this.style.background='var(--surface3)'"><div class="profile-article-thumb-overlay"><div class="profile-article-thumb-title">${(c.title||'').substring(0,60)}...</div></div></div>`).join('')}</div>`;
+}
+
+async function saveProfile() {
+  const btn=document.getElementById('saveProfileBtn');
+  const errEl=document.getElementById('editError');
+  btn.disabled=true;btn.innerHTML='<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span><span>Saving...</span>';
+  const name=document.getElementById('editName').value.trim();
+  const bio=document.getElementById('editBio').value.trim();
+  const profession=document.getElementById('editProfession').value.trim();
+  const location=document.getElementById('editLocation').value.trim();
+  const dob=document.getElementById('editDob').value;
+  const website=document.getElementById('editWebsite').value.trim();
+  const selBtns=document.querySelectorAll('#editSectors .sector-sel');
+  const sectorPref=[...selBtns].map(b=>b.textContent.trim().replace(/[^\w\s]/g,'').trim().split(/\s+/).slice(-1)[0]);
+  if(!name){errEl.textContent='Name is required.';btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';return;}
+  const updates={name,bio,profession,location,dob:dob||null,website,sector_preferences:sectorPref,avatar_initials:getInitials(name),updated_at:new Date().toISOString()};
+  if(!currentUser.isGuest){
+    const{error}=await sb.from('profiles').upsert({id:currentUser.id,email:currentUser.email,...updates},{onConflict:'id'});
+    if(error){errEl.textContent=error.message;btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';return;}
+    await sb.auth.updateUser({data:{name,avatar_initials:getInitials(name)}});
+  }
+  Object.assign(profileData,updates);
+  Object.assign(currentUser,{name,initials:getInitials(name)});
+  prefs.favSectors=sectorPref;
+  _baseSavePref('favSectors',sectorPref);
+  updateUserUI(currentUser);
+  btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';
+  showToast('✅ Profile saved!');
+  await loadProfile();
+}
+
+function toggleEditSector(s,btn){
+  btn.classList.toggle('sector-sel');
+  const sel=btn.classList.contains('sector-sel');
+  btn.style.background=sel?SECTOR_COLORS[s]+'22':'transparent';
+  btn.style.borderColor=sel?'transparent':SECTOR_COLORS[s]+'44';
+}
+
+async function changePassword(){
+  const pw1=document.getElementById('editNewPw').value;
+  const pw2=document.getElementById('editConfirmPw').value;
+  const errEl=document.getElementById('pwError');
+  if(pw1.length<6){errEl.textContent='Password must be at least 6 characters.';return;}
+  if(pw1!==pw2){errEl.textContent='Passwords do not match.';return;}
+  const{error}=await sb.auth.updateUser({password:pw1});
+  if(error){errEl.textContent=error.message;return;}
+  errEl.style.color='#10b981';errEl.textContent='✅ Password updated!';
+  document.getElementById('editNewPw').value='';
+  document.getElementById('editConfirmPw').value='';
+  setTimeout(()=>{errEl.textContent='';errEl.style.color='#ef4444';},3000);
+}
+
+async function resendVerification(){
+  if(!currentUser?.email)return;
+  const{error}=await sb.auth.resend({type:'signup',email:currentUser.email,options:{emailRedirectTo:'https://kushagra486.github.io/bharat-news-ai/'}});
+  if(error)showToast('⚠️ '+error.message);
+  else showToast('📧 Verification email sent to '+currentUser.email);
+}
+
+function changeAvatar(){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=async(e)=>{
+    const file=e.target.files[0];if(!file)return;
+    if(file.size>2*1024*1024){showToast('⚠️ Image must be under 2MB');return;}
+    showToast('📤 Uploading...');
+    try{
+      const ext=file.name.split('.').pop();
+      const path=`avatars/${currentUser.id}.${ext}`;
+      const{error:upErr}=await sb.storage.from('avatars').upload(path,file,{upsert:true});
+      if(upErr)throw upErr;
+      const{data:urlData}=sb.storage.from('avatars').getPublicUrl(path);
+      await sb.from('profiles').upsert({id:currentUser.id,avatar_url:urlData.publicUrl},{onConflict:'id'});
+      profileData.avatar_url=urlData.publicUrl;
+      showToast('✅ Avatar updated!');renderProfile();
+    }catch(e){showToast('⚠️ Upload failed: '+e.message);}
+  };
+  inp.click();
+}
+
+function clearAllData(){
+  if(!confirm('Clear all local data?'))return;
+  bookmarks=[];likes=[];readItems=[];
+  ['pa_bookmarks','pa_likes','pa_read'].forEach(k=>localStorage.removeItem(k));
+  renderFeed();showToast('🗑️ Local data cleared');renderProfile();
+}
 
 
 // ══════════════════════════════════════════════════
