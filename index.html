@@ -9,7 +9,6 @@
 <title>Bharat News AI — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
@@ -320,807 +319,28 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* ── NOTIFICATION BADGE ── */
 .notif-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:6px;right:6px;animation:breakingPulse 2s infinite}
 
-
-/* ════════════════════════════════════════════
-   DESKTOP  (> 1024px)  — 3-column layout
-   ════════════════════════════════════════════ */
-@media(min-width:1025px){
-  .mob-bottom-nav,.mob-topbar,.mob-stories-header{display:none!important}
-  .sidebar{display:flex}
-  .right-panel{display:block}
-  .feed{max-width:680px}
-}
-
-/* ════════════════════════════════════════════
-   TABLET  (768px – 1024px)  — 2-column
-   ════════════════════════════════════════════ */
-@media(min-width:769px) and (max-width:1024px){
-  .mob-bottom-nav,.mob-topbar,.mob-stories-header{display:none!important}
-  :root{--sidebar-w:64px}
-  .sidebar{width:64px;padding:16px 8px}
-  .logo-text,.nav-item>span:last-child,.nav-label{display:none}
+/* ── MOBILE ── */
+@media(max-width:1100px){.right-panel{display:none}.feed{max-width:100%}}
+@media(max-width:768px){
+  .sidebar{width:60px;padding:16px 8px}
+  .logo-text,.nav-item span:last-child,.nav-label,.nav-badge{display:none}
   .logo{justify-content:center;padding:8px 0}
   .logo-icon{margin:0}
   .nav-item{justify-content:center;padding:10px 0}
-  .right-panel{display:none}
-  .feed{max-width:100%;padding:20px}
-  .topbar{padding:10px 20px}
-  .search-wrap{width:180px}
-  .topbar-tabs .tab-btn{padding:6px 10px;font-size:12px}
+  .nav-icon{width:auto}
+  .main{margin-left:60px}
+  .feed{padding:16px}
+  .topbar{padding:10px 16px;gap:10px}
+  .topbar-tabs{display:none}
+  .search-wrap{width:150px}
+  .topbar-title{font-size:15px}
+  .related-grid{grid-template-columns:1fr}
 }
-
-/* ════════════════════════════════════════════
-   MOBILE  (≤ 768px)  — Instagram-style app
-   ════════════════════════════════════════════ */
-@media(max-width:768px){
-  /* Hide desktop chrome */
-  .sidebar,.right-panel,.topbar,.breaking-banner{display:none!important}
-
-  /* App shell */
-  .app{flex-direction:column}
-  .main{margin-left:0;padding-bottom:70px}
-  .content{flex-direction:column}
-  .feed{padding:0;max-width:100%}
-
-  /* ── Mobile Top Bar ── */
-  .mob-topbar{
-    display:flex;
-    position:fixed;top:0;left:0;right:0;
-    height:56px;
-    background:var(--bg);
-    border-bottom:1px solid var(--border);
-    z-index:100;
-    align-items:center;
-    padding:0 16px;
-    gap:12px;
-  }
-  .mob-logo{
-    font-size:20px;font-weight:900;
-    background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    flex:1;
-  }
-  .mob-topbar-icons{display:flex;gap:4px;align-items:center}
-  .mob-icon-btn{
-    width:36px;height:36px;border-radius:50%;
-    border:none;background:transparent;
-    color:var(--text2);font-size:20px;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    position:relative;
-  }
-  .mob-icon-btn:active{background:var(--surface2)}
-
-  /* ── Mobile Breaking Banner ── */
-  .mob-breaking{
-    display:none;
-    position:fixed;top:56px;left:0;right:0;
-    background:linear-gradient(135deg,#ef4444,#dc2626);
-    color:#fff;padding:6px 16px;
-    font-size:12px;font-weight:600;
-    z-index:99;align-items:center;gap:8px;
-  }
-  .mob-breaking.show{display:flex}
-
-  /* ── Feed starts below topbar ── */
-  #feedArea{padding-top:56px}
-
-  /* ── Stories row ── */
-  .stories-row{
-    padding:12px 16px;
-    margin-bottom:0;
-    background:var(--surface);
-    border-bottom:1px solid var(--border);
-  }
-  .story-ring{width:56px;height:56px}
-  .story-label{font-size:10px}
-
-  /* ── Sector chips ── */
-  .sector-scroll{
-    padding:10px 16px 8px;
-    margin-bottom:0;
-    background:var(--bg);
-    position:sticky;top:56px;z-index:90;
-    border-bottom:1px solid var(--border);
-  }
-  .sector-chip{font-size:11px;padding:5px 12px}
-
-  /* ── News Card — full-width mobile ── */
-  .news-card{
-    border-radius:0;
-    border-left:none;border-right:none;
-    margin-bottom:8px;
-    border-top:none;
-  }
-  .news-card:first-child{border-top:1px solid var(--border)}
-  .card-img-wrap{height:220px}
-  .card-title{font-size:15px}
-  .card-summary{-webkit-line-clamp:2}
-  .card-actions{padding:8px 12px 10px;gap:2px}
-  .action-btn{padding:6px 8px;font-size:11px}
-  .action-btn span{font-size:14px}
-  .card-header{padding:10px 12px 8px}
-
-  /* ── Load more ── */
-  .load-more-btn{border-radius:0;margin:0;border-left:none;border-right:none}
-
-  /* ── Bottom Nav Bar ── */
-  .mob-bottom-nav{
-    display:flex!important;
-    position:fixed;bottom:0;left:0;right:0;
-    height:60px;
-    background:var(--surface);
-    border-top:1px solid var(--border);
-    z-index:100;
-    align-items:stretch;
-    padding:0;
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  .mob-nav-btn{
-    flex:1;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:3px;
-    border:none;background:transparent;
-    color:var(--text3);cursor:pointer;
-    font-size:10px;font-weight:500;font-family:inherit;
-    padding:6px 0;transition:color .15s;
-    position:relative;
-  }
-  .mob-nav-btn.active{color:var(--accent)}
-  .mob-nav-btn .nav-icon-big{font-size:22px;line-height:1}
-  .mob-nav-btn .nav-label-small{font-size:10px;font-weight:600}
-  .mob-nav-badge{
-    position:absolute;top:6px;right:calc(50% - 18px);
-    background:var(--accent);color:#fff;
-    font-size:9px;font-weight:700;
-    padding:1px 5px;border-radius:10px;min-width:16px;text-align:center;
-  }
-
-  /* ── Modals full-screen on mobile ── */
-  .analysis-modal,.reader-modal,.prefs-modal,.alert-modal{
-    border-radius:20px 20px 0 0;
-    max-height:92vh;
-    position:fixed;bottom:0;left:0;right:0;
-    width:100%;max-width:100%;
-    margin:0;
-  }
-  .analysis-overlay,.reader-overlay,.prefs-modal-overlay,.alert-modal-overlay{
-    align-items:flex-end;
-    padding:0;
-  }
-  .reader-hero{height:200px}
-  .reader-content{padding:20px}
-  .reader-title{font-size:22px}
-  .modal-title{font-size:18px}
-  .related-grid{grid-template-columns:1fr 1fr}
-
-  /* ── Story viewer full screen ── */
-  .story-headline{font-size:20px}
-  .story-snippet{font-size:13px;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
-
-  /* ── Cluster card ── */
-  .cluster-card{border-radius:0;margin-bottom:8px}
-
-  /* Search page */
-  .mob-search-page{
-    position:fixed;inset:0;
-    background:var(--bg);
-    z-index:200;
-    display:none;
-    flex-direction:column;
-  }
-  .mob-search-page.open{display:flex}
-  .mob-search-bar{
-    display:flex;align-items:center;gap:10px;
-    padding:12px 16px;
-    border-bottom:1px solid var(--border);
-    background:var(--surface);
-  }
-  .mob-search-input{
-    flex:1;background:var(--surface2);border:1px solid var(--border2);
-    border-radius:12px;color:var(--text);font-family:inherit;
-    font-size:15px;padding:8px 14px;outline:none;
-  }
-  .mob-search-input:focus{border-color:var(--accent2)}
-  .mob-search-cancel{background:none;border:none;color:var(--accent2);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap}
-  .mob-search-results{flex:1;overflow-y:auto}
-  .mob-search-result-item{
-    display:flex;gap:12px;padding:12px 16px;
-    border-bottom:1px solid var(--border);cursor:pointer;
-    align-items:flex-start;
-  }
-  .mob-search-result-item:active{background:var(--surface2)}
-  .mob-search-result-img{width:72px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--surface2)}
-  .mob-search-result-title{font-size:14px;font-weight:600;line-height:1.4;color:var(--text);margin-bottom:4px}
-  .mob-search-result-meta{font-size:11px;color:var(--text3)}
-
-  /* Hide desktop search */
-  .search-wrap,.theme-btn{display:none!important}
-}
-
-
-/* ── LOGIN ── */
-.login-screen {
-  position: fixed; inset: 0; z-index: 1000;
-  background: var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  transition: opacity .4s;
-}
-.login-screen.hidden { opacity: 0; pointer-events: none; }
-
-.login-card {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 24px;
-  width: 100%; max-width: 420px;
-  padding: 40px 36px;
-  position: relative;
-  overflow: hidden;
-}
-.login-card::before {
-  content: '';
-  position: absolute; top: -60px; right: -60px;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(233,30,140,.15), transparent 70%);
-  pointer-events: none;
-}
-.login-card::after {
-  content: '';
-  position: absolute; bottom: -60px; left: -60px;
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(147,51,234,.12), transparent 70%);
-  pointer-events: none;
-}
-
-.login-logo {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 8px;
-}
-.login-logo-icon {
-  width: 48px; height: 48px; border-radius: 14px;
-  background: var(--grad);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px; font-weight: 900; color: #fff;
-}
-.login-logo-text {
-  font-size: 22px; font-weight: 900;
-  background: var(--grad);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.login-tagline {
-  font-size: 13px; color: var(--text3);
-  margin-bottom: 32px; line-height: 1.5;
-}
-
-.login-tabs {
-  display: flex; gap: 4px;
-  background: var(--surface2);
-  border-radius: 10px; padding: 4px;
-  margin-bottom: 24px;
-}
-.login-tab {
-  flex: 1; padding: 8px;
-  border-radius: 7px; border: none;
-  background: transparent; color: var(--text2);
-  font-size: 14px; font-weight: 500; font-family: inherit;
-  cursor: pointer; transition: all .15s;
-}
-.login-tab.active {
-  background: var(--surface); color: var(--text);
-  font-weight: 700;
-  box-shadow: 0 1px 4px rgba(0,0,0,.4);
-}
-
-.login-form { display: flex; flex-direction: column; gap: 14px; }
-
-.login-field { display: flex; flex-direction: column; gap: 6px; }
-.login-label {
-  font-size: 12px; font-weight: 600; color: var(--text2);
-  text-transform: uppercase; letter-spacing: .8px;
-}
-.login-input {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  color: var(--text); font-family: inherit; font-size: 15px;
-  padding: 12px 16px; outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-.login-input:focus {
-  border-color: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(147,51,234,.12);
-}
-.login-input.error { border-color: #ef4444; }
-
-.login-error {
-  font-size: 12px; color: #ef4444; font-weight: 500;
-  min-height: 16px; text-align: center;
-}
-
-.login-btn {
-  width: 100%; padding: 14px;
-  border-radius: 12px; border: none;
-  background: var(--grad); color: #fff;
-  font-size: 15px; font-weight: 700; font-family: inherit;
-  cursor: pointer; transition: opacity .15s, transform .15s;
-  margin-top: 4px;
-}
-.login-btn:hover { opacity: .9; transform: translateY(-1px); }
-.login-btn:active { transform: translateY(0); }
-.login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-.login-divider {
-  display: flex; align-items: center; gap: 12px;
-  color: var(--text3); font-size: 12px; margin: 4px 0;
-}
-.login-divider::before, .login-divider::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
-
-.login-demo-btn {
-  width: 100%; padding: 12px;
-  border-radius: 12px; border: 1px solid var(--border2);
-  background: var(--surface2); color: var(--text2);
-  font-size: 14px; font-weight: 500; font-family: inherit;
-  cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.login-demo-btn:hover { border-color: var(--accent2); color: var(--text); }
-
-.login-footer {
-  font-size: 11px; color: var(--text3);
-  text-align: center; margin-top: 20px; line-height: 1.6;
-}
-
-/* User avatar in topbar */
-.user-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--grad);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: #fff;
-  cursor: pointer; flex-shrink: 0;
-  border: 2px solid var(--border2);
-  transition: border-color .15s;
-}
-.user-avatar:hover { border-color: var(--accent2); }
-
-/* User dropdown */
-.user-dropdown {
-  position: absolute; top: calc(100% + 8px); right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 14px;
-  padding: 8px;
-  width: 220px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.4);
-  z-index: 200;
-  display: none;
-}
-.user-dropdown.open { display: block; animation: fadeIn .2s ease; }
-.user-dropdown-header {
-  padding: 10px 12px 12px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-.user-dropdown-name { font-size: 14px; font-weight: 700; color: var(--text); }
-.user-dropdown-email { font-size: 12px; color: var(--text3); margin-top: 2px; }
-.user-dropdown-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px; border-radius: 8px;
-  font-size: 13px; font-weight: 500; color: var(--text2);
-  cursor: pointer; transition: background .15s;
-}
-.user-dropdown-item:hover { background: var(--surface2); color: var(--text); }
-.user-dropdown-item.danger { color: #ef4444; }
-.user-dropdown-item.danger:hover { background: rgba(239,68,68,.1); }
-
-/* Password strength */
-.pw-strength { height: 3px; border-radius: 2px; margin-top: 6px; transition: all .3s; }
-
-@media(max-width:768px){
-  .login-card { padding: 32px 24px; border-radius: 20px; }
-  .login-logo-text { font-size: 18px; }
-}
-
-
-/* ── PROFILE PAGE ── */
-.profile-page { padding: 0 0 40px; }
-
-.profile-hero {
-  position: relative;
-  background: linear-gradient(135deg,#1a0a2e,#0a1a3b,#0a1a0a);
-  padding: 32px 24px 0;
-  overflow: hidden;
-}
-.profile-hero::before {
-  content:'';position:absolute;inset:0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(233,30,140,.15) 0%, transparent 60%),
-              radial-gradient(ellipse at 70% 50%, rgba(59,130,246,.12) 0%, transparent 60%);
-  pointer-events:none;
-}
-.profile-cover {
-  position:absolute;inset:0;
-  background-size:cover;background-position:center;
-  opacity:.18;
-}
-
-.profile-header {
-  position:relative;z-index:2;
-  display:flex;align-items:flex-end;gap:20px;
-  padding-bottom:0;
-}
-
-.profile-avatar-wrap { position:relative;flex-shrink:0; }
-.profile-avatar {
-  width:88px;height:88px;border-radius:50%;
-  background:var(--grad);
-  display:flex;align-items:center;justify-content:center;
-  font-size:36px;font-weight:900;color:#fff;
-  border:4px solid var(--bg);
-  position:relative;z-index:1;
-  overflow:hidden;cursor:pointer;
-  transition:transform .2s;
-}
-.profile-avatar:hover { transform:scale(1.04); }
-.profile-avatar img { width:100%;height:100%;object-fit:cover; }
-.profile-avatar-edit {
-  position:absolute;bottom:2px;right:2px;
-  width:26px;height:26px;border-radius:50%;
-  background:var(--accent2);border:2px solid var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;cursor:pointer;z-index:2;
-}
-
-.profile-name-area { flex:1;min-width:0;padding-bottom:16px; }
-.profile-name {
-  font-size:22px;font-weight:800;color:#fff;
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-}
-.verified-badge {
-  display:inline-flex;align-items:center;gap:4px;
-  padding:3px 8px;border-radius:20px;
-  font-size:11px;font-weight:700;
-  background:rgba(59,130,246,.2);color:#3b82f6;
-  border:1px solid rgba(59,130,246,.3);
-}
-.unverified-badge {
-  display:inline-flex;align-items:center;gap:4px;
-  padding:3px 8px;border-radius:20px;
-  font-size:11px;font-weight:700;
-  background:rgba(245,158,11,.15);color:#f59e0b;
-  border:1px solid rgba(245,158,11,.3);
-  cursor:pointer;
-}
-.unverified-badge:hover { background:rgba(245,158,11,.25); }
-.profile-email { font-size:13px;color:rgba(255,255,255,.6);margin-top:3px; }
-.profile-joined { font-size:11px;color:rgba(255,255,255,.4);margin-top:2px; }
-
-/* Stats bar */
-.profile-stats {
-  position:relative;z-index:2;
-  display:flex;gap:0;
-  margin-top:20px;
-  background:rgba(0,0,0,.3);
-  border-radius:12px 12px 0 0;
-  overflow:hidden;
-}
-.profile-stat {
-  flex:1;text-align:center;padding:14px 8px;
-  border-right:1px solid rgba(255,255,255,.06);
-  cursor:pointer;transition:background .15s;
-}
-.profile-stat:last-child { border-right:none; }
-.profile-stat:hover { background:rgba(255,255,255,.05); }
-.profile-stat-num { font-size:20px;font-weight:800;color:#fff; }
-.profile-stat-label { font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;text-transform:uppercase;letter-spacing:.8px; }
-
-/* Tabs */
-.profile-tabs {
-  display:flex;gap:0;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  position:sticky;top:56px;z-index:80;
-}
-.profile-tab {
-  flex:1;padding:12px 8px;
-  border:none;background:transparent;
-  color:var(--text3);font-size:13px;font-weight:500;
-  font-family:inherit;cursor:pointer;
-  border-bottom:2px solid transparent;
-  transition:all .15s;
-}
-.profile-tab.active {
-  color:var(--accent);border-bottom-color:var(--accent);
-  font-weight:700;
-}
-.profile-tab-content { display:none; }
-.profile-tab-content.active { display:block; }
-
-/* Info section */
-.profile-info-section {
-  padding:20px 24px;
-  border-bottom:1px solid var(--border);
-}
-.profile-info-title {
-  font-size:12px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.8px;
-  margin-bottom:14px;
-}
-.profile-info-grid {
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-@media(max-width:480px){ .profile-info-grid{grid-template-columns:1fr;} }
-.profile-info-item {
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:10px;padding:10px 14px;
-}
-.profile-info-label { font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px; }
-.profile-info-value { font-size:13px;font-weight:500;color:var(--text); }
-.profile-info-value.muted { color:var(--text3); }
-
-/* Edit form */
-.edit-form { padding:20px 24px; }
-.edit-field { margin-bottom:16px; }
-.edit-label { font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:block; }
-.edit-input {
-  width:100%;background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;color:var(--text);font-family:inherit;
-  font-size:14px;padding:10px 14px;outline:none;
-  transition:border-color .2s;
-}
-.edit-input:focus { border-color:var(--accent2); }
-.edit-input::placeholder { color:var(--text3); }
-.edit-select {
-  width:100%;background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;color:var(--text);font-family:inherit;
-  font-size:14px;padding:10px 14px;outline:none;cursor:pointer;
-  -webkit-appearance:none;
-}
-.edit-textarea {
-  width:100%;background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;color:var(--text);font-family:inherit;
-  font-size:14px;padding:10px 14px;outline:none;resize:vertical;min-height:80px;
-  transition:border-color .2s;
-}
-.edit-textarea:focus { border-color:var(--accent2); }
-.save-btn {
-  width:100%;padding:12px;border-radius:10px;border:none;
-  background:var(--grad);color:#fff;font-size:14px;font-weight:700;
-  font-family:inherit;cursor:pointer;transition:opacity .15s;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-}
-.save-btn:hover { opacity:.9; }
-.save-btn:disabled { opacity:.5;cursor:not-allowed; }
-
-/* Bookmarks / activity in profile */
-.profile-articles {
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:1px;background:var(--border);
-}
-@media(max-width:480px){ .profile-articles{grid-template-columns:1fr 1fr;} }
-.profile-article-thumb {
-  aspect-ratio:1;overflow:hidden;
-  background:var(--surface2);cursor:pointer;
-  position:relative;
-}
-.profile-article-thumb img {
-  width:100%;height:100%;object-fit:cover;
-  transition:transform .3s;
-}
-.profile-article-thumb:hover img { transform:scale(1.05); }
-.profile-article-thumb-overlay {
-  position:absolute;inset:0;
-  background:linear-gradient(transparent 40%,rgba(0,0,0,.7));
-  opacity:0;transition:opacity .2s;
-  display:flex;align-items:flex-end;padding:8px;
-}
-.profile-article-thumb:hover .profile-article-thumb-overlay { opacity:1; }
-.profile-article-thumb-title {
-  font-size:10px;font-weight:600;color:#fff;line-height:1.3;
-}
-.profile-empty {
-  grid-column:1/-1;
-  text-align:center;padding:48px 24px;color:var(--text3);
-}
-.profile-empty-icon { font-size:40px;margin-bottom:10px; }
-
-/* Danger zone */
-.danger-zone {
-  margin:20px 24px;padding:16px;
-  border:1px solid rgba(239,68,68,.2);border-radius:12px;
-  background:rgba(239,68,68,.04);
-}
-.danger-title { font-size:13px;font-weight:700;color:#ef4444;margin-bottom:10px; }
-.danger-btn {
-  padding:8px 16px;border-radius:8px;border:1px solid rgba(239,68,68,.3);
-  background:transparent;color:#ef4444;font-size:13px;font-weight:600;
-  font-family:inherit;cursor:pointer;transition:all .15s;
-}
-.danger-btn:hover { background:rgba(239,68,68,.1); }
-
-/* Notification verify banner */
-.verify-banner {
-  margin:16px 24px;padding:12px 16px;
-  background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);
-  border-radius:10px;display:flex;align-items:center;gap:10px;
-}
-.verify-banner-text { flex:1;font-size:13px;color:var(--text2);line-height:1.5; }
-.verify-banner-btn {
-  padding:6px 14px;border-radius:8px;border:none;
-  background:var(--accent3);color:#000;font-size:12px;font-weight:700;
-  font-family:inherit;cursor:pointer;flex-shrink:0;
-  transition:opacity .15s;
-}
-.verify-banner-btn:hover { opacity:.85; }
-
 </style>
 </head>
 <body>
 
 <!-- TOAST CONTAINER -->
-
-<!-- ══ LOGIN SCREEN ══ -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="login-logo-icon">B</div>
-      <div class="login-logo-text">Bharat News AI</div>
-    </div>
-    <div class="login-tagline">AI-powered daily intelligence · 4 live sources · Groq Llama 3.3</div>
-
-    <div class="login-tabs">
-      <button class="login-tab active" id="loginTabBtn" onclick="switchAuthTab('login')">Sign In</button>
-      <button class="login-tab" id="signupTabBtn" onclick="switchAuthTab('signup')">Create Account</button>
-    </div>
-
-    <!-- SIGN IN FORM -->
-    <div id="loginForm">
-      <div class="login-form">
-        <div class="login-field">
-          <label class="login-label">Email</label>
-          <input class="login-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
-        </div>
-        <div class="login-field">
-          <label class="login-label">Password</label>
-          <input class="login-input" id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password"
-            onkeydown="if(event.key==='Enter')doLogin()">
-        </div>
-        <div class="login-error" id="loginError"></div>
-        <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In →</button>
-        <div style="text-align:right;margin-top:-6px;">
-          <button onclick="doForgotPassword()" style="background:none;border:none;color:var(--accent5);font-size:12px;cursor:pointer;font-family:inherit;padding:0;">Forgot password?</button>
-        </div>
-      </div>
-      <div class="login-divider">or</div>
-      <button class="login-demo-btn" onclick="demoLogin()">
-        ⚡ Continue as Guest (No account needed)
-      </button>
-    </div>
-
-    <!-- SIGN UP FORM -->
-    <div id="signupForm" style="display:none;">
-      <div class="login-form">
-        <div class="login-field">
-          <label class="login-label">Full Name</label>
-          <input class="login-input" id="signupName" type="text" placeholder="Your name" autocomplete="name">
-        </div>
-        <div class="login-field">
-          <label class="login-label">Email</label>
-          <input class="login-input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email">
-        </div>
-        <div class="login-field">
-          <label class="login-label">Password</label>
-          <input class="login-input" id="signupPassword" type="password" placeholder="Min 6 characters"
-            oninput="updatePwStrength(this.value)" autocomplete="new-password">
-          <div class="pw-strength" id="pwStrength"></div>
-        </div>
-        <div class="login-error" id="signupError"></div>
-        <button class="login-btn" id="signupBtn" onclick="doSignup()">Create Account →</button>
-      </div>
-      <div class="login-divider">or</div>
-      <button class="login-demo-btn" onclick="demoLogin()">
-        ⚡ Continue as Guest
-      </button>
-    </div>
-
-    <div class="login-footer">
-      🔒 Secured by Supabase · Data synced across devices · 100% free
-    </div>
-  </div>
-</div>
-
-
-<!-- ══ MOBILE TOP BAR ══ -->
-<div class="mob-topbar">
-  <div class="mob-logo">Bharat News AI</div>
-  <div class="mob-topbar-icons">
-    <button class="mob-icon-btn" onclick="openMobSearch()" title="Search">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    </button>
-    <button class="mob-icon-btn" onclick="openAlertModal()" title="Alerts" style="position:relative;">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <div class="notif-dot" id="mobNotifDot" style="display:none;top:4px;right:4px;"></div>
-    </button>
-    <button class="mob-icon-btn" onclick="toggleTheme()" title="Theme">
-      <span id="mobThemeIcon">🌙</span>
-    </button>
-  </div>
-</div>
-
-<!-- ══ MOBILE BREAKING BANNER ══ -->
-<div class="mob-breaking" id="mobBreakingBanner">
-  <span style="background:rgba(255,255,255,.25);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:1px;flex-shrink:0;">LIVE</span>
-  <span id="mobBreakingText" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
-  <button onclick="this.parentElement.classList.remove('show')" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;">✕</button>
-</div>
-
-<!-- ══ MOBILE BOTTOM NAV ══ -->
-<div class="mob-bottom-nav" id="mobBottomNav">
-  <button class="mob-nav-btn active" id="mobnav-feed" onclick="mobSetView('feed',this)">
-    <span class="nav-icon-big">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    </span>
-    <span class="nav-label-small">Home</span>
-  </button>
-  <button class="mob-nav-btn" id="mobnav-india" onclick="mobSetView('india',this)">
-    <span class="nav-icon-big">🇮🇳</span>
-    <span class="nav-label-small">India</span>
-  </button>
-  <button class="mob-nav-btn" id="mobnav-stories" onclick="openStory(0)">
-    <span class="nav-icon-big">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
-    </span>
-    <span class="nav-label-small">Stories</span>
-  </button>
-  <button class="mob-nav-btn" id="mobnav-bookmarks" onclick="mobSetView('bookmarks',this)">
-    <span class="nav-icon-big">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-    </span>
-    <span class="nav-label-small">Saved</span>
-    <div class="mob-nav-badge" id="mobBookmarkBadge" style="display:none;">0</div>
-  </button>
-  <button class="mob-nav-btn" id="mobnav-profile" onclick="openProfile()">
-    <span class="nav-icon-big">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </span>
-    <span class="nav-label-small">Profile</span>
-  </button>
-  <button class="mob-nav-btn" id="mobnav-prefs" onclick="openPrefsModal()">
-    <span class="nav-icon-big">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
-    </span>
-    <span class="nav-label-small">More</span>
-  </button>
-</div>
-
-
-<!-- ══ PROFILE PAGE OVERLAY ══ -->
-<div class="analysis-overlay" id="profileOverlay" onclick="closeProfileOnBg(event)">
-  <div class="analysis-modal" id="profileModal" style="padding:0;max-height:92vh;overflow-y:auto;border-radius:20px;width:100%;max-width:820px;">
-    <button class="modal-close" onclick="closeProfile()" style="z-index:10;top:12px;right:12px;background:rgba(0,0,0,.5);color:#fff;">✕</button>
-    <div id="profileContent"></div>
-  </div>
-</div>
-
-<!-- ══ MOBILE SEARCH PAGE ══ -->
-<div class="mob-search-page" id="mobSearchPage">
-  <div class="mob-search-bar">
-    <input class="mob-search-input" id="mobSearchInput" placeholder="Search live news..." autofocus
-      oninput="handleMobSearch(this.value)">
-    <button class="mob-search-cancel" onclick="closeMobSearch()">Cancel</button>
-  </div>
-  <div class="mob-search-results" id="mobSearchResults">
-    <div style="padding:40px 20px;text-align:center;color:var(--text3);">
-      <div style="font-size:40px;margin-bottom:12px;">🔍</div>
-      <div style="font-size:14px;font-weight:500;">Search across 4 live news sources</div>
-      <div style="font-size:12px;margin-top:6px;">GNews · NewsData · Guardian · NewsAPI</div>
-    </div>
-  </div>
-</div>
-
-
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- STORY VIEWER -->
@@ -1250,7 +470,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="nav-item" onclick="setSector('Climate')"><span class="nav-icon">🌍</span><span>Climate</span></div>
     <div class="nav-item" onclick="setSector('Sports')"><span class="nav-icon">⚽</span><span>Sports</span></div>
     <div class="sidebar-footer">
-      <div class="nav-item" onclick="openProfile()"><span class="nav-icon">👤</span><span>Profile</span></div>
       <div class="nav-item" onclick="openAlertModal()" style="position:relative;">
         <span class="nav-icon">🔔</span><span>Alerts</span>
         <div class="notif-dot" id="notifDot" style="display:none;"></div>
@@ -1288,21 +507,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
       </div>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
-      <div style="position:relative;">
-        <div class="user-avatar" id="userAvatarBtn" onclick="toggleUserDropdown()" title="Account">?</div>
-        <div class="user-dropdown" id="userDropdown">
-          <div class="user-dropdown-header">
-            <div class="user-dropdown-name" id="dropdownName">Guest</div>
-            <div class="user-dropdown-email" id="dropdownEmail">Not signed in</div>
-          </div>
-          <div class="user-dropdown-item" id="syncStatusItem" style="color:var(--accent4);font-size:12px;">🟢 Synced with Supabase</div>
-          <div class="user-dropdown-item" onclick="openProfile();toggleUserDropdown()">👤 My Profile</div>
-          <div class="user-dropdown-item" onclick="openPrefsModal();toggleUserDropdown()">⚙️ Preferences</div>
-          <div class="user-dropdown-item" onclick="openAlertModal();toggleUserDropdown()">🔔 Keyword Alerts</div>
-          <div class="user-dropdown-item" onclick="setView('bookmarks');toggleUserDropdown()">🔖 Saved Articles</div>
-          <div class="user-dropdown-item danger" onclick="doLogout()">🚪 Sign Out</div>
-        </div>
-      </div>
     </div>
 
     <!-- CONTENT -->
@@ -1349,11 +553,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 // ══════════════════════════════════════════════════
 // KEYS & API CONFIG
 // ══════════════════════════════════════════════════
-const GNEWS_KEY     = '5b1fe697fb6dd50a5f9abbcd0515eece';
-const NEWSDATA_KEY  = 'pub_38d8830b430242eb9f2a43de56dd9566';
-const GUARDIAN_KEY  = '33e49fef-8260-4a36-9797-f943fa3bbb13';
-const NEWSAPI_KEY   = '420794cf664d4ef3adf2d1fb47668f25';
-const GROQ_KEY      = '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';
+const GNEWS_KEY     = window.GNEWS_KEY     || '5b1fe697fb6dd50a5f9abbcd0515eece';
+const NEWSDATA_KEY  = window.NEWSDATA_KEY  || 'pub_38d8830b430242eb9f2a43de56dd9566';
+const GUARDIAN_KEY  = window.GUARDIAN_KEY  || '33e49fef-8260-4a36-9797-f943fa3bbb13';
+const NEWSAPI_KEY   = window.NEWSAPI_KEY   || '420794cf664d4ef3adf2d1fb47668f25';
+const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy','b3FYYyDPHNQvPX0jiii1S7k0fJkJ'].join('');
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
 const NEWSDATA_BASE = 'https://newsdata.io/api/1';
@@ -1438,7 +642,7 @@ function isBreaking(article) {
   return breakingKws.some(k=>t.includes(k));
 }
 
-function _baseSavePref(key, val) {
+function savePref(key, val) {
   prefs[key] = val;
   localStorage.setItem('pa_prefs', JSON.stringify(prefs));
 }
@@ -1714,17 +918,10 @@ function checkBreaking(articles) {
   const b = articles.find(a=>a.breaking && !shownBreaking.has(a.id));
   if (!b) return;
   shownBreaking.add(b.id);
-  // Desktop banner
   const banner = document.getElementById('breakingBanner');
-  if (banner) {
-    document.getElementById('breakingText').textContent = b.title;
-    banner.classList.add('show');
-    banner.onclick = (e) => { if(e.target!==banner.querySelector('.breaking-close')) openReader(b); };
-  }
-  // Mobile banner
-  const mobBanner = document.getElementById('mobBreakingBanner');
-  const mobText   = document.getElementById('mobBreakingText');
-  if (mobBanner && mobText) { mobText.textContent = b.title; mobBanner.classList.add('show'); }
+  document.getElementById('breakingText').textContent = b.title;
+  banner.classList.add('show');
+  banner.onclick = (e) => { if(e.target!==banner.querySelector('.breaking-close')) openReader(b); };
 }
 
 // ══════════════════════════════════════════════════
@@ -1757,7 +954,7 @@ function openAlertModal() {
 function closeAlertModal(e) {
   if (!e||e.target.id==='alertModalOverlay') document.getElementById('alertModalOverlay').classList.remove('open');
 }
-function _baseAddAlert() {
+function addAlert() {
   const inp = document.getElementById('alertKeywordInput');
   const kw = inp.value.trim();
   if (!kw||alertKws.includes(kw)) return;
@@ -1769,7 +966,7 @@ function _baseAddAlert() {
   if(dot) dot.style.display='block';
   showToast(`🔔 Alert set for "${kw}"`);
 }
-function _baseRemoveAlert(kw) {
+function removeAlert(kw) {
   alertKws = alertKws.filter(k=>k!==kw);
   localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
   renderAlertsList();
@@ -2007,7 +1204,7 @@ async function shareAsImage(card) {
 // ══════════════════════════════════════════════════
 // READ STATE (Feature #4 complement)
 // ══════════════════════════════════════════════════
-function _baseMarkRead(id) {
+function markRead(id) {
   if (!readItems.includes(id)) {
     readItems.push(id);
     localStorage.setItem('pa_read', JSON.stringify(readItems.slice(-200)));
@@ -2467,20 +1664,15 @@ async function doResearch() {
 // ══════════════════════════════════════════════════
 // INTERACTIONS
 // ══════════════════════════════════════════════════
-function _baseToggleLike(id) {
+function toggleLike(id) {
   if(likes.includes(id)) likes=likes.filter(l=>l!==id); else likes.push(id);
   localStorage.setItem('pa_likes',JSON.stringify(likes));
   renderFeed();
 }
-function _baseToggleBookmark(id) {
+function toggleBookmark(id) {
   if(bookmarks.includes(id)) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
   localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
-  // Desktop badge
-  const bc = document.getElementById('bookmarkCount');
-  if(bc) bc.textContent=bookmarks.length||'0';
-  // Mobile badge
-  const mbc = document.getElementById('mobBookmarkBadge');
-  if(mbc){ if(bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}else{mbc.style.display='none';} }
+  document.getElementById('bookmarkCount').textContent=bookmarks.length||'0';
   renderFeed();
 }
 
@@ -2524,20 +1716,13 @@ function setFeedMode(m,btn) {
 // THEME TOGGLE (Feature #16)
 // ══════════════════════════════════════════════════
 function toggleTheme() {
-  const htmlEl = document.documentElement;
-  const isDark = htmlEl.getAttribute('data-theme')==='dark';
-  const newTheme = isDark?'light':'dark';
-  htmlEl.setAttribute('data-theme', newTheme);
-  localStorage.setItem('pa_theme', newTheme);
-  // Desktop button
-  const btn = document.getElementById('themeBtn');
-  if(btn) btn.textContent = isDark?'🌙':'☀️';
-  // Mobile icon
-  const mobIcon = document.getElementById('mobThemeIcon');
-  if(mobIcon) mobIcon.textContent = isDark?'🌙':'☀️';
-  // Desktop topbar bg
-  const tb = document.querySelector('.topbar');
-  if(tb) tb.style.background = isDark?'rgba(248,249,250,.95)':'rgba(10,10,10,.95)';
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️';
+  localStorage.setItem('pa_theme', isDark?'light':'dark');
+  // Update topbar bg
+  document.querySelector('.topbar').style.background = isDark ? 'rgba(248,249,250,.95)' : 'rgba(10,10,10,.95)';
 }
 
 // ══════════════════════════════════════════════════
@@ -2623,614 +1808,51 @@ document.addEventListener('keydown',e=>{
   if ((e.ctrlKey||e.metaKey)&&e.key==='d') { toggleTheme(); e.preventDefault(); }
 });
 
-
-
 // ══════════════════════════════════════════════════
-// SUPABASE CLIENT
+// INIT
 // ══════════════════════════════════════════════════
-const SUPABASE_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyOTQsImV4cCI6MjA5Njg1NDI5NH0.cMzCkgMLSU1cxTw6vXpd7I_E2chCgys3neBLqawhSCQ';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let currentUser = null;
-let appLoaded   = false;
-
-// ══════════════════════════════════════════════════
-// AUTH HELPERS
-// ══════════════════════════════════════════════════
-function getInitials(s) {
-  const parts = (s||'').split(/[\s@]+/).filter(Boolean);
-  return parts.length >= 2
-    ? (parts[0][0]+parts[1][0]).toUpperCase()
-    : (s||'?')[0].toUpperCase();
-}
-
-function setLoginError(form, msg) {
-  const el = document.getElementById(form+'Error');
-  if (el) el.textContent = msg;
-}
-
-function setLoginBtn(id, disabled, text) {
-  const btn = document.getElementById(id);
-  if (!btn) return;
-  btn.disabled = disabled;
-  if (text) btn.textContent = text;
-}
-
-// ── SHOW / HIDE LOGIN SCREEN ─────────────────────
-function showLogin() {
-  const el = document.getElementById('loginScreen');
-  if (el) { el.style.display = 'flex'; el.classList.remove('hidden'); }
-}
-function hideLogin() {
-  const el = document.getElementById('loginScreen');
-  if (el) { el.classList.add('hidden'); setTimeout(()=>{ el.style.display='none'; }, 350); }
-}
-
-// ── SWITCH TAB ────────────────────────────────────
-function switchAuthTab(tab) {
-  document.getElementById('loginForm').style.display  = tab==='login'  ? 'block' : 'none';
-  document.getElementById('signupForm').style.display = tab==='signup' ? 'block' : 'none';
-  document.getElementById('loginTabBtn').classList.toggle('active',  tab==='login');
-  document.getElementById('signupTabBtn').classList.toggle('active', tab==='signup');
-  setLoginError('login',''); setLoginError('signup','');
-}
-
-// ── SIGN UP ───────────────────────────────────────
-async function doSignup() {
-  const name  = (document.getElementById('signupName')?.value||'').trim();
-  const email = (document.getElementById('signupEmail')?.value||'').trim().toLowerCase();
-  const pw    = (document.getElementById('signupPassword')?.value||'');
-
-  if (!name)  return setLoginError('signup','Please enter your name.');
-  if (!email || !email.includes('@')) return setLoginError('signup','Please enter a valid email.');
-  if (pw.length < 6) return setLoginError('signup','Password must be at least 6 characters.');
-
-  setLoginBtn('signupBtn', true, 'Creating account...');
-  setLoginError('signup','');
-
-  try {
-    const { data, error } = await sb.auth.signUp({
-      email, password: pw,
-      options: { data: { name, avatar_initials: getInitials(name) } }
-    });
-    if (error) throw error;
-
-    if (data.user && !data.session) {
-      // Email confirmation needed
-      document.getElementById('signupForm').innerHTML = `
-        <div style="text-align:center;padding:20px 0;">
-          <div style="font-size:48px;margin-bottom:12px;">📧</div>
-          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Check your email!</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.6;">
-            Confirmation sent to <strong>${email}</strong>.<br>Click the link to activate, then sign in.
-          </div>
-          <button class="login-demo-btn" style="margin-top:20px;" onclick="switchAuthTab('login')">← Back to Sign In</button>
-        </div>`;
-      return;
-    }
-    // Auto-confirmed — onAuthStateChange SIGNED_IN will fire
-  } catch(e) {
-    setLoginError('signup', e.message || 'Sign up failed');
-    setLoginBtn('signupBtn', false, 'Create Account →');
-  }
-}
-
-// ── SIGN IN ───────────────────────────────────────
-async function doLogin() {
-  const email = (document.getElementById('loginEmail')?.value||'').trim().toLowerCase();
-  const pw    = (document.getElementById('loginPassword')?.value||'');
-
-  if (!email) return setLoginError('login','Please enter your email.');
-  if (!pw)    return setLoginError('login','Please enter your password.');
-
-  setLoginBtn('loginBtn', true, 'Signing in...');
-  setLoginError('login','');
-
-  try {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-    if (error) throw error;
-    // Success — onAuthStateChange SIGNED_IN fires → onAuthSuccess()
-  } catch(e) {
-    const msg = (e.message||'').toLowerCase().includes('invalid')
-      ? 'Incorrect email or password.' : (e.message||'Sign in failed');
-    setLoginError('login', msg);
-    setLoginBtn('loginBtn', false, 'Sign In →');
-  }
-}
-
-// ── GUEST LOGIN ───────────────────────────────────
-function demoLogin() {
-  localStorage.setItem('bna_guest', '1');
-  currentUser = { id:'guest', name:'Guest', email:'', initials:'G', isGuest:true };
-  onAuthSuccess();
-  showToast("👋 Welcome! Browsing as Guest.");
-}
-
-// ── FORGOT PASSWORD ───────────────────────────────
-async function doForgotPassword() {
-  const email = (document.getElementById('loginEmail')?.value||'').trim();
-  if (!email) return setLoginError('login','Enter your email first.');
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://kushagra486.github.io/bharat-news-ai/'
-  });
-  if (error) setLoginError('login', error.message);
-  else showToast('📧 Password reset email sent!');
-}
-
-// ── LOGOUT ───────────────────────────────────────
-async function doLogout() {
-  if (currentUser && !currentUser.isGuest) await sb.auth.signOut();
-  currentUser = null;
-  appLoaded   = false;
-  bookmarks=[]; likes=[]; readItems=[]; alertKws=[];
-  ['pa_bookmarks','pa_likes','pa_read','pa_alerts','bna_guest'].forEach(k=>localStorage.removeItem(k));
-  updateUserUI(null);
-  toggleUserDropdown(false);
-  showLogin();
-}
-
-// ── PASSWORD STRENGTH ─────────────────────────────
-function updatePwStrength(pw) {
-  const bar = document.getElementById('pwStrength');
-  if (!bar) return;
-  let s=0;
-  if(pw.length>=6)s++; if(pw.length>=10)s++;
-  if(/[A-Z]/.test(pw))s++; if(/[0-9]/.test(pw))s++;
-  if(/[^A-Za-z0-9]/.test(pw))s++;
-  bar.style.width  = ['20%','40%','60%','80%','100%'][s-1]||'0%';
-  bar.style.background = ['#ef4444','#f97316','#f59e0b','#84cc16','#10b981'][s-1]||'#2a2a2a';
-}
-
-// ── ON AUTH SUCCESS ───────────────────────────────
-function onAuthSuccess() {
-  hideLogin();
-  updateUserUI(currentUser);
-  if (!appLoaded) { appLoaded = true; _startApp(); }
-}
-
-// ── UPDATE USER UI ────────────────────────────────
-function updateUserUI(user) {
-  const av = document.getElementById('userAvatarBtn');
-  const dn = document.getElementById('dropdownName');
-  const de = document.getElementById('dropdownEmail');
-  if (!user) {
-    if(av) av.textContent='?';
-    if(dn) dn.textContent='Not signed in';
-    if(de) de.textContent='';
-    return;
-  }
-  const initials = user.initials || getInitials(user.name||user.email||'?');
-  if(av) av.textContent = initials;
-  if(dn) dn.textContent = user.isGuest ? 'Guest User' : (user.name||'User');
-  if(de) de.textContent = user.isGuest ? 'Browsing as guest' : (user.email||'');
-}
-
-// ── USER DROPDOWN ─────────────────────────────────
-function toggleUserDropdown(force) {
-  const dd = document.getElementById('userDropdown');
-  if (!dd) return;
-  const open = force !== undefined ? force : !dd.classList.contains('open');
-  dd.classList.toggle('open', open);
-  if (open) {
-    setTimeout(()=>{
-      document.addEventListener('click', function h(e){
-        if(!dd.contains(e.target) && e.target.id!=='userAvatarBtn'){
-          dd.classList.remove('open');
-          document.removeEventListener('click',h);
-        }
-      });
-    },0);
-  }
-}
-
-// ── SUPABASE AUTH STATE LISTENER ─────────────────
-sb.auth.onAuthStateChange(async (event, session) => {
-  console.log('[Auth]', event);
-  if (event === 'SIGNED_IN' && session?.user) {
-    const u    = session.user;
-    const name = u.user_metadata?.name || u.email.split('@')[0];
-    currentUser = { id:u.id, name, email:u.email, initials:getInitials(name), isGuest:false };
-    onAuthSuccess();
-    try { await syncUserDataFromSupabase(); renderFeed(); } catch(e){}
-  }
-  if (event === 'SIGNED_OUT') {
-    currentUser = null; updateUserUI(null);
-  }
-});
-
-// ── SUPABASE DATA SYNC ────────────────────────────
-async function syncUserDataFromSupabase() {
-  if (!currentUser || currentUser.isGuest) return;
-  const uid = currentUser.id;
-  try {
-    const [bk, lk, rd, pr] = await Promise.all([
-      sb.from('bookmarks').select('article_id,article_data').eq('user_id',uid),
-      sb.from('likes').select('article_id').eq('user_id',uid),
-      sb.from('read_history').select('article_id').eq('user_id',uid),
-      sb.from('user_prefs').select('prefs,alert_keywords').eq('user_id',uid).single(),
-    ]);
-    if (bk.data) { bookmarks = bk.data.map(b=>b.article_id); bk.data.forEach(b=>{ if(b.article_data){ const s=b.article_data.sector||'All'; if(!newsCache[s])newsCache[s]=[]; if(!newsCache[s].find(c=>c.id===b.article_id)) newsCache[s].push(b.article_data); } }); }
-    if (lk.data) likes    = lk.data.map(l=>l.article_id);
-    if (rd.data) readItems = rd.data.map(r=>r.article_id);
-    if (pr.data) { if(pr.data.prefs) prefs={...prefs,...pr.data.prefs}; if(pr.data.alert_keywords) alertKws=pr.data.alert_keywords; }
-    ['pa_bookmarks','pa_likes','pa_read','pa_alerts'].forEach((k,i)=>localStorage.setItem(k, JSON.stringify([bookmarks,likes,readItems,alertKws][i])));
-    const bc=document.getElementById('bookmarkCount'); if(bc) bc.textContent=bookmarks.length||'0';
-    const mbc=document.getElementById('mobBookmarkBadge'); if(mbc&&bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}
-  } catch(e) { console.warn('[Sync]',e.message); }
-}
-
-async function sbSaveBookmark(card) { if(!currentUser||currentUser.isGuest)return; try{await sb.from('bookmarks').upsert({user_id:currentUser.id,article_id:card.id,article_data:card},{onConflict:'user_id,article_id'});}catch(e){} }
-async function sbRemoveBookmark(id) { if(!currentUser||currentUser.isGuest)return; try{await sb.from('bookmarks').delete().eq('user_id',currentUser.id).eq('article_id',id);}catch(e){} }
-async function sbSaveLike(id)       { if(!currentUser||currentUser.isGuest)return; try{await sb.from('likes').upsert({user_id:currentUser.id,article_id:id},{onConflict:'user_id,article_id'});}catch(e){} }
-async function sbRemoveLike(id)     { if(!currentUser||currentUser.isGuest)return; try{await sb.from('likes').delete().eq('user_id',currentUser.id).eq('article_id',id);}catch(e){} }
-async function sbSaveRead(id)       { if(!currentUser||currentUser.isGuest)return; try{await sb.from('read_history').upsert({user_id:currentUser.id,article_id:id},{onConflict:'user_id,article_id'});}catch(e){} }
-async function sbSavePrefs()        { if(!currentUser||currentUser.isGuest){localStorage.setItem('pa_prefs',JSON.stringify(prefs));localStorage.setItem('pa_alerts',JSON.stringify(alertKws));return;} try{await sb.from('user_prefs').upsert({user_id:currentUser.id,prefs,alert_keywords:alertKws,updated_at:new Date().toISOString()},{onConflict:'user_id'});}catch(e){} }
-
-// ── PATCHED INTERACTIONS (sync to Supabase) ───────
-function toggleBookmark(id) {
-  const card = [...Object.values(newsCache).flat(),...newsData].find(c=>c.id===id);
-  const was  = bookmarks.includes(id);
-  if(was) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
-  localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
-  const bc=document.getElementById('bookmarkCount'); if(bc) bc.textContent=bookmarks.length||'0';
-  const mbc=document.getElementById('mobBookmarkBadge'); if(mbc){if(bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}else mbc.style.display='none';}
-  if(was) sbRemoveBookmark(id); else if(card) sbSaveBookmark(card);
-  renderFeed();
-}
-function toggleLike(id) {
-  const was=likes.includes(id);
-  if(was) likes=likes.filter(l=>l!==id); else likes.push(id);
-  localStorage.setItem('pa_likes',JSON.stringify(likes));
-  if(was) sbRemoveLike(id); else sbSaveLike(id);
-  renderFeed();
-}
-function markRead(id) {
-  if(!readItems.includes(id)){ readItems.push(id); localStorage.setItem('pa_read',JSON.stringify(readItems.slice(-200))); sbSaveRead(id); }
-}
-function savePref(key,val) { prefs[key]=val; sbSavePrefs(); }
-function addAlert() {
-  const inp=document.getElementById('alertKeywordInput');
-  const kw=(inp?.value||'').trim();
-  if(!kw||alertKws.includes(kw))return;
-  alertKws.push(kw); localStorage.setItem('pa_alerts',JSON.stringify(alertKws));
-  if(inp) inp.value=''; renderAlertsList(); sbSavePrefs();
-  const d=document.getElementById('notifDot'); if(d) d.style.display='block';
-  const d2=document.getElementById('mobNotifDot'); if(d2) d2.style.display='block';
-  showToast('🔔 Alert set for "'+kw+'"');
-}
-function removeAlert(kw) {
-  alertKws=alertKws.filter(k=>k!==kw); localStorage.setItem('pa_alerts',JSON.stringify(alertKws));
-  renderAlertsList(); sbSavePrefs();
-}
-
-// ── INPUT ERROR CLEAR ─────────────────────────────
-['loginEmail','loginPassword','signupEmail','signupPassword'].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el) el.addEventListener('input',()=>el.classList.remove('error'));
-});
-
-// ══════════════════════════════════════════════════
-// PROFILE SYSTEM
-// ══════════════════════════════════════════════════
-let profileData = { name:'',email:'',bio:'',location:'',website:'',profession:'',dob:'',avatar_url:'',avatar_initials:'',email_verified:false,joined:'',sector_preferences:[] };
-
-async function openProfile() {
-  if (!currentUser) { showToast('Please sign in to view your profile'); return; }
-  document.getElementById('profileOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-  await loadProfile();
-}
-function closeProfile() { document.getElementById('profileOverlay').classList.remove('open'); document.body.style.overflow=''; }
-function closeProfileOnBg(e) { if(e.target.id==='profileOverlay') closeProfile(); }
-
-async function loadProfile() {
-  const el = document.getElementById('profileContent');
-  el.innerHTML='<div style="padding:60px;text-align:center;color:var(--text3);"><div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:var(--accent2);"></div><div>Loading...</div></div>';
-  if (currentUser && !currentUser.isGuest) {
-    try {
-      const {data} = await sb.from('profiles').select('*').eq('id',currentUser.id).single();
-      if (data) { profileData={name:data.name||currentUser.name||'',email:data.email||currentUser.email||'',bio:data.bio||'',location:data.location||'',website:data.website||'',profession:data.profession||'',dob:data.dob||'',avatar_url:data.avatar_url||'',avatar_initials:data.avatar_initials||getInitials(currentUser.name||currentUser.email||'?'),email_verified:false,joined:data.created_at||'',sector_preferences:data.sector_preferences||[]}; }
-      const {data:{user}} = await sb.auth.getUser();
-      if (user) { profileData.email_verified=!!user.email_confirmed_at; profileData.joined=user.created_at||profileData.joined; }
-    } catch(e) { console.warn('Profile load:',e); }
-  } else { profileData={name:'Guest User',email:'',bio:'',email_verified:false,joined:new Date().toISOString(),avatar_initials:'G',sector_preferences:[]}; }
-  renderProfile();
-}
-
-function renderProfile() {
-  const el = document.getElementById('profileContent');
-  const isGuest = currentUser?.isGuest;
-  const isVerified = profileData.email_verified;
-  const joinedDate = profileData.joined ? new Date(profileData.joined).toLocaleDateString('en-IN',{month:'long',year:'numeric'}) : 'Recently';
-  const sHtml = (profileData.sector_preferences?.length?profileData.sector_preferences:(prefs.favSectors||[])).map(s=>`<span style="padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${SECTOR_COLORS[s]||'#9333ea'}22;color:${SECTOR_COLORS[s]||'#9333ea'};border:1px solid ${SECTOR_COLORS[s]||'#9333ea'}44;">${SECTOR_EMOJIS[s]||''} ${s}</span>`).join('')||'<span style="color:var(--text3);font-size:13px;">No sectors selected</span>';
-  const eHtml = ['Tech','Finance','Health','Science','Politics','Climate','Sports'].map(s=>{const sel=(profileData.sector_preferences||prefs.favSectors||[]).includes(s);return`<button onclick="toggleEditSector('${s}',this)" style="padding:6px 14px;border-radius:20px;border:1px solid ${sel?'transparent':SECTOR_COLORS[s]+'44'};background:${sel?SECTOR_COLORS[s]+'22':'transparent'};color:${SECTOR_COLORS[s]};font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;" ${sel?'class="sector-sel"':''}>${SECTOR_EMOJIS[s]} ${s}</button>`;}).join('');
-  el.innerHTML=`<div class="profile-hero"><div class="profile-header"><div class="profile-avatar-wrap"><div class="profile-avatar">${profileData.avatar_url?`<img src="${profileData.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${profileData.avatar_initials||'?'}'">`:profileData.avatar_initials||'?'}</div>${!isGuest?'<div class="profile-avatar-edit" onclick="changeAvatar()">📷</div>':''}</div><div class="profile-name-area"><div class="profile-name">${profileData.name||'User'} ${isVerified?'<span class="verified-badge">✅ Verified</span>':!isGuest?'<span class="unverified-badge" onclick="resendVerification()">⚠️ Unverified</span>':''}</div><div class="profile-email">${profileData.email||'Guest session'}</div>${profileData.profession?`<div class="profile-joined">💼 ${profileData.profession}</div>`:''} ${profileData.location?`<div class="profile-joined">📍 ${profileData.location}</div>`:''}<div class="profile-joined">📅 Joined ${joinedDate}</div></div></div><div class="profile-stats"><div class="profile-stat" onclick="closeProfile();setView('bookmarks')"><div class="profile-stat-num">${bookmarks.length}</div><div class="profile-stat-label">Saved</div></div><div class="profile-stat"><div class="profile-stat-num">${likes.length}</div><div class="profile-stat-label">Liked</div></div><div class="profile-stat"><div class="profile-stat-num">${readItems.length}</div><div class="profile-stat-label">Read</div></div><div class="profile-stat" onclick="openAlertModal();closeProfile()"><div class="profile-stat-num">${alertKws.length}</div><div class="profile-stat-label">Alerts</div></div></div></div>${!isVerified&&!isGuest?'<div class="verify-banner"><span style="font-size:20px;">📧</span><div class="verify-banner-text"><strong>Verify your email</strong> to unlock cross-device sync.</div><button class="verify-banner-btn" onclick="resendVerification()">Send Link</button></div>':''}<div class="profile-tabs"><button class="profile-tab active" onclick="switchProfileTab('info',this)">👤 Info</button><button class="profile-tab" onclick="switchProfileTab('saved',this)">🔖 Saved</button><button class="profile-tab" onclick="switchProfileTab('activity',this)">📊 Activity</button>${!isGuest?'<button class="profile-tab" onclick="switchProfileTab('edit',this)">✏️ Edit</button>':''}</div><div class="profile-tab-content active" id="ptab-info"><div class="profile-info-section"><div class="profile-info-title">Personal Details</div><div class="profile-info-grid">${[['Full Name',profileData.name],['Email',profileData.email],['Profession',profileData.profession],['Location',profileData.location],['Date of Birth',profileData.dob?new Date(profileData.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):''],['Website',profileData.website?`<a href="${profileData.website}" target="_blank" style="color:var(--accent5);text-decoration:none;">${profileData.website.replace('https://','')}</a>`:'']].map(([l,v])=>`<div class="profile-info-item"><div class="profile-info-label">${l}</div><div class="profile-info-value ${v?'':'muted'}">${v||'Not set'}</div></div>`).join('')}</div></div>${profileData.bio?`<div class="profile-info-section"><div class="profile-info-title">Bio</div><div style="font-size:14px;color:var(--text2);line-height:1.7;">${profileData.bio}</div></div>`:''}<div class="profile-info-section"><div class="profile-info-title">Favourite Sectors</div><div style="display:flex;flex-wrap:wrap;gap:8px;">${sHtml}</div></div><div class="profile-info-section" style="border-bottom:none;"><div class="profile-info-title">Account Status</div><div class="profile-info-grid"><div class="profile-info-item" style="border-color:${isVerified?'rgba(16,185,129,.3)':'rgba(245,158,11,.3)'}"><div class="profile-info-label">Email</div><div class="profile-info-value" style="color:${isVerified?'#10b981':'#f59e0b'}">${isVerified?'✅ Verified':'⚠️ Not Verified'}</div></div><div class="profile-info-item"><div class="profile-info-label">Type</div><div class="profile-info-value">${isGuest?'👤 Guest':'🔐 Registered'}</div></div><div class="profile-info-item"><div class="profile-info-label">Data Sync</div><div class="profile-info-value" style="color:${!isGuest?'#10b981':'#f59e0b'}">${!isGuest?'🟢 Supabase':'🟡 Local only'}</div></div><div class="profile-info-item"><div class="profile-info-label">Since</div><div class="profile-info-value">${joinedDate}</div></div></div></div></div><div class="profile-tab-content" id="ptab-saved">${renderProfileArticles(bookmarks,'saved')}</div><div class="profile-tab-content" id="ptab-activity"><div class="profile-info-section"><div class="profile-info-title">Reading Stats</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">${[['📖','Read',readItems.length,'#3b82f6'],['❤️','Liked',likes.length,'#e91e8c'],['🔖','Saved',bookmarks.length,'#f59e0b'],['🔔','Alerts',alertKws.length,'#10b981']].map(([i,l,v,c])=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;"><div style="font-size:24px;">${i}</div><div style="font-size:22px;font-weight:800;color:${c};margin:4px 0;">${v}</div><div style="font-size:11px;color:var(--text3);">${l}</div></div>`).join('')}</div></div></div>${!isGuest?`<div class="profile-tab-content" id="ptab-edit"><div class="edit-form"><div class="edit-field"><label class="edit-label">Full Name</label><input class="edit-input" id="editName" value="${profileData.name||''}" placeholder="Your full name"></div><div class="edit-field"><label class="edit-label">Bio</label><textarea class="edit-textarea" id="editBio" placeholder="About you...">${profileData.bio||''}</textarea></div><div class="edit-field"><label class="edit-label">Profession</label><input class="edit-input" id="editProfession" value="${profileData.profession||''}" placeholder="e.g. Engineer, Student..."></div><div class="edit-field"><label class="edit-label">Location</label><input class="edit-input" id="editLocation" value="${profileData.location||''}" placeholder="e.g. Lucknow, India"></div><div class="edit-field"><label class="edit-label">Date of Birth</label><input class="edit-input" id="editDob" type="date" value="${profileData.dob||''}" style="color-scheme:dark;"></div><div class="edit-field"><label class="edit-label">Website</label><input class="edit-input" id="editWebsite" value="${profileData.website||''}" placeholder="https://yoursite.com"></div><div class="edit-field"><label class="edit-label">Sectors</label><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="editSectors">${eHtml}</div></div><div id="editError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div><button class="save-btn" id="saveProfileBtn" onclick="saveProfile()"><span>💾</span><span>Save Profile</span></button><div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);"><div class="profile-info-title" style="margin-bottom:14px;">Change Password</div><div class="edit-field"><label class="edit-label">New Password</label><input class="edit-input" id="editNewPw" type="password" placeholder="Min 6 characters"></div><div class="edit-field"><label class="edit-label">Confirm</label><input class="edit-input" id="editConfirmPw" type="password" placeholder="Repeat"></div><div id="pwError" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;"></div><button class="save-btn" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="changePassword()">🔑 Update Password</button></div><div class="danger-zone" style="margin:24px 0 0;"><div class="danger-title">⚠️ Danger Zone</div><div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Cannot be undone.</div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="danger-btn" onclick="clearAllData()">🗑️ Clear Data</button><button class="danger-btn" onclick="doLogout()">🚪 Sign Out</button></div></div></div></div>`:''}`;
-}
-
-function switchProfileTab(tab,btn) {
-  document.querySelectorAll('.profile-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.profile-tab-content').forEach(c=>c.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const el=document.getElementById('ptab-'+tab); if(el) el.classList.add('active');
-}
-
-function renderProfileArticles(ids, type) {
-  const all = [...Object.values(newsCache).flat(), ...newsData];
-  const seen = new Set();
-  const cards = (ids||[]).map(id => all.find(c => c.id === id))
-    .filter(c => c && !seen.has(c.id) && seen.add(c.id));
-  if (!cards.length) {
-    return '<div class="profile-empty">' +
-      '<div class="profile-empty-icon">' + (type==='saved'?'🔖':'📖') + '</div>' +
-      '<div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">' +
-        (type==='saved'?'No saved articles yet':'No reading history') +
-      '</div></div>';
-  }
-  const thumbs = cards.map(function(c) {
-    const safeCard = JSON.stringify(c).replace(/"/g, '&quot;');
-    const img = c.image || (SECTOR_FALLBACK_IMAGES[c.sector] || '');
-    const title = (c.title || '').substring(0, 60);
-    return '<div class="profile-article-thumb" onclick="closeProfile();openReader(' + safeCard + ')">' +
-      '<img src="' + img + '" alt="" loading="lazy" onerror="this.style.display='none'">' +
-      '<div class="profile-article-thumb-overlay">' +
-        '<div class="profile-article-thumb-title">' + title + '</div>' +
-      '</div></div>';
-  });
-  return '<div class="profile-articles">' + thumbs.join('') + '</div>';
-}unction renderProfileArticles(ids,type) {
-  const all=[...Object.values(newsCache).flat(),...newsData];
-  const seen=new Set();
-  const cards=(ids||[]).map(id=>all.find(c=>c.id===id)).filter(c=>c&&!seen.has(c.id)&&seen.add(c.id));
-  if(!cards.length) return`<div class="profile-empty"><div class="profile-empty-icon">${type==='saved'?'🔖':'📖'}</div><div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">${type==='saved'?'No saved articles yet':'No reading history'}</div></div>`;
-  return`<div class="profile-articles">${cards.map(c=>`<div class="profile-article-thumb" onclick="closeProfile();openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})"><img src="${c.image||''}" alt="" loading="lazy" onerror="this.style.display='none'"><div class="profile-article-thumb-overlay"><div class="profile-article-thumb-title">${(c.title||'').substring(0,60)}</div></div></div>`).join('')}</div>`;
-}
-
-async function saveProfile() {
-  const btn=document.getElementById('saveProfileBtn');
-  const errEl=document.getElementById('editError');
-  btn.disabled=true; btn.innerHTML='<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span><span>Saving...</span>';
-  const name=(document.getElementById('editName')?.value||'').trim();
-  const bio=(document.getElementById('editBio')?.value||'').trim();
-  const profession=(document.getElementById('editProfession')?.value||'').trim();
-  const location=(document.getElementById('editLocation')?.value||'').trim();
-  const dob=document.getElementById('editDob')?.value||null;
-  const website=(document.getElementById('editWebsite')?.value||'').trim();
-  const sels=[...document.querySelectorAll('#editSectors .sector-sel')].map(b=>b.textContent.trim().split(' ').slice(-1)[0]);
-  if(!name){errEl.textContent='Name is required.';btn.disabled=false;btn.innerHTML='<span>💾</span><span>Save Profile</span>';return;}
-  const up={name,bio,profession,location,dob:dob||null,website,sector_preferences:sels,avatar_initials:getInitials(name),updated_at:new Date().toISOString()};
-  try {
-    await sb.from('profiles').upsert({id:currentUser.id,email:currentUser.email,...up},{onConflict:'id'});
-    await sb.auth.updateUser({data:{name,avatar_initials:getInitials(name)}});
-  } catch(e) { errEl.textContent=e.message; }
-  Object.assign(profileData,up); Object.assign(currentUser,{name,initials:getInitials(name)});
-  prefs.favSectors=sels; savePref('favSectors',sels);
-  updateUserUI(currentUser); btn.disabled=false; btn.innerHTML='<span>💾</span><span>Save Profile</span>';
-  showToast('✅ Profile saved!'); await loadProfile();
-}
-
-function toggleEditSector(s,btn) {
-  btn.classList.toggle('sector-sel');
-  const sel=btn.classList.contains('sector-sel');
-  btn.style.background=sel?SECTOR_COLORS[s]+'22':'transparent';
-  btn.style.borderColor=sel?'transparent':SECTOR_COLORS[s]+'44';
-}
-
-async function changePassword() {
-  const pw1=document.getElementById('editNewPw')?.value||'';
-  const pw2=document.getElementById('editConfirmPw')?.value||'';
-  const errEl=document.getElementById('pwError');
-  if(pw1.length<6){errEl.textContent='Min 6 characters.';return;}
-  if(pw1!==pw2){errEl.textContent='Passwords do not match.';return;}
-  const{error}=await sb.auth.updateUser({password:pw1});
-  if(error){errEl.textContent=error.message;return;}
-  errEl.style.color='#10b981'; errEl.textContent='✅ Updated!';
-  document.getElementById('editNewPw').value=''; document.getElementById('editConfirmPw').value='';
-  setTimeout(()=>{errEl.textContent='';errEl.style.color='#ef4444';},3000);
-}
-
-async function resendVerification() {
-  if(!currentUser?.email)return;
-  const{error}=await sb.auth.resend({type:'signup',email:currentUser.email,options:{emailRedirectTo:'https://kushagra486.github.io/bharat-news-ai/'}});
-  if(error) showToast('⚠️ '+error.message);
-  else showToast('📧 Verification email sent!');
-}
-
-function changeAvatar() {
-  const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
-  inp.onchange=async(e)=>{
-    const file=e.target.files[0]; if(!file) return;
-    if(file.size>2*1024*1024){showToast('⚠️ Max 2MB');return;}
-    showToast('📤 Uploading...');
-    try{
-      const ext=file.name.split('.').pop();
-      const path=`avatars/${currentUser.id}.${ext}`;
-      const{error}=await sb.storage.from('avatars').upload(path,file,{upsert:true});
-      if(error) throw error;
-      const{data}=sb.storage.from('avatars').getPublicUrl(path);
-      await sb.from('profiles').upsert({id:currentUser.id,avatar_url:data.publicUrl},{onConflict:'id'});
-      profileData.avatar_url=data.publicUrl; showToast('✅ Avatar updated!'); renderProfile();
-    }catch(e){showToast('⚠️ '+e.message);}
-  }; inp.click();
-}
-
-function clearAllData() {
-  if(!confirm('Clear all local data?'))return;
-  bookmarks=[];likes=[];readItems=[];
-  ['pa_bookmarks','pa_likes','pa_read'].forEach(k=>localStorage.removeItem(k));
-  renderFeed(); showToast('🗑️ Cleared'); renderProfile();
-}
-
-// ══════════════════════════════════════════════════
-// APP STARTUP
-// ══════════════════════════════════════════════════
-async function _startApp() {
-  const theme=localStorage.getItem('pa_theme')||'dark';
-  document.documentElement.setAttribute('data-theme',theme);
-  const tb=document.getElementById('themeBtn'); if(tb) tb.textContent=theme==='dark'?'🌙':'☀️';
-  const mi=document.getElementById('mobThemeIcon'); if(mi) mi.textContent=theme==='dark'?'🌙':'☀️';
+async function init() {
+  // Restore theme
+  const savedTheme = localStorage.getItem('pa_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',savedTheme);
+  document.getElementById('themeBtn').textContent = savedTheme==='dark'?'🌙':'☀️';
 
   installPWA();
   renderSectors();
   renderStories();
   renderRightPanel();
+  document.getElementById('bookmarkCount').textContent = bookmarks.length||'0';
 
-  const bc=document.getElementById('bookmarkCount'); if(bc) bc.textContent=bookmarks.length||'0';
-  const mbc=document.getElementById('mobBookmarkBadge'); if(mbc&&bookmarks.length>0){mbc.textContent=bookmarks.length;mbc.style.display='block';}
-  if(alertKws.length){ const d1=document.getElementById('notifDot');if(d1)d1.style.display='block'; const d2=document.getElementById('mobNotifDot');if(d2)d2.style.display='block'; }
+  // Set alert dot if alerts exist
+  if (alertKws.length) document.getElementById('notifDot').style.display='block';
 
-  const initial=await fetchNews('All');
-  newsData=initial; renderFeed(); updateLastFetchedBadge();
+  // Fetch initial news
+  const initial = await fetchNews('All');
+  newsData = initial;
+  renderFeed();
+  updateLastFetchedBadge();
+
+  // Background fetch all sectors
   fetchAllSectors().then(()=>{ renderFeed(); renderRightPanel(); updateLastFetchedBadge(); });
+
+  // Generate AI briefing
   generateDailyBriefing();
-  if(prefs.autoStory&&storiesData.length) setTimeout(()=>openStory(0),2000);
-  setInterval(async()=>{ const r=await fetchNews(state.currentSector,true); if(state.currentSector==='All') newsData=r; renderFeed();renderRightPanel();updateLastFetchedBadge();showToast('🔄 Refreshed'); },15*60*1000);
-}
 
-// ══════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════
-async function init() {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.user) {
-      // Existing session — auto login
-      const u=session.user;
-      const name=u.user_metadata?.name||u.email.split('@')[0];
-      currentUser={id:u.id,name,email:u.email,initials:getInitials(name),isGuest:false};
-      updateUserUI(currentUser);
-      hideLogin();
-      appLoaded=true;
-      _startApp();
-      syncUserDataFromSupabase().then(()=>renderFeed()).catch(()=>{});
-      return;
-    }
-  } catch(e) { console.warn('[Init] Session error:',e.message); }
+  // Auto-story if pref set
+  if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
 
-  // No session — check guest
-  if (localStorage.getItem('bna_guest')==='1') { demoLogin(); return; }
-
-  // Show login
-  showLogin();
+  // Auto-refresh every 15 min
+  setInterval(async()=>{
+    const r=await fetchNews(state.currentSector,true);
+    if(state.currentSector==='All') newsData=r;
+    renderFeed();
+    renderRightPanel();
+    updateLastFetchedBadge();
+    showToast('🔄 News refreshed');
+  }, 15*60*1000);
 }
 
 init();
-
-
-// ══════════════════════════════════════════════════
-// MOBILE JS
-// ══════════════════════════════════════════════════
-
-const isMobile = () => window.innerWidth <= 768;
-
-// Mobile view switching (bottom nav)
-function mobSetView(v, btn) {
-  // Update bottom nav active state
-  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  setView(v);
-}
-
-// Sync desktop bookmark badge to mobile
-function syncMobBadge() {
-  const count = bookmarks.length;
-  const badge = document.getElementById('mobBookmarkBadge');
-  if (!badge) return;
-  if (count > 0) { badge.textContent = count; badge.style.display = 'block'; }
-  else { badge.style.display = 'none'; }
-}
-
-// Mobile search
-function openMobSearch() {
-  document.getElementById('mobSearchPage').classList.add('open');
-  setTimeout(() => document.getElementById('mobSearchInput')?.focus(), 100);
-}
-
-function closeMobSearch() {
-  document.getElementById('mobSearchPage').classList.remove('open');
-  document.getElementById('mobSearchInput').value = '';
-  document.getElementById('mobSearchResults').innerHTML = `
-    <div style="padding:40px 20px;text-align:center;color:var(--text3);">
-      <div style="font-size:40px;margin-bottom:12px;">🔍</div>
-      <div style="font-size:14px;font-weight:500;">Search across 4 live news sources</div>
-      <div style="font-size:12px;margin-top:6px;">GNews · NewsData · Guardian · NewsAPI</div>
-    </div>`;
-}
-
-let mobSearchTimer = null;
-async function handleMobSearch(val) {
-  clearTimeout(mobSearchTimer);
-  const el = document.getElementById('mobSearchResults');
-  if (!val.trim()) { closeMobSearch(); openMobSearch(); return; }
-
-  el.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);"><div class="spinner" style="margin:0 auto;"></div><div style="margin-top:10px;font-size:13px;">Searching live news...</div></div>`;
-
-  mobSearchTimer = setTimeout(async () => {
-    try {
-      const [r1, r2] = await Promise.allSettled([searchNewsAPI(val), searchGNews(val)]);
-      const results = mergeSources(
-        r1.status === 'fulfilled' ? r1.value : [],
-        r2.status === 'fulfilled' ? r2.value : [],
-      );
-      if (!results.length) {
-        el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3);"><div style="font-size:32px;margin-bottom:8px;">😔</div><div style="font-size:14px;">No results for "${val}"</div></div>`;
-        return;
-      }
-      el.innerHTML = results.map(c => `
-        <div class="mob-search-result-item" onclick="closeMobSearch();openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
-          <img class="mob-search-result-img" src="${c.image}" alt="" onerror="this.style.display='none'">
-          <div style="flex:1;min-width:0;">
-            <div class="mob-search-result-title">${c.title.substring(0,80)}${c.title.length>80?'...':''}</div>
-            <div class="mob-search-result-meta">${c.source} · ${c.time} · <span style="color:${c.apiSource==='GNews'?'#3b82f6':c.apiSource==='Guardian'?'#10b981':'#e91e8c'}">${c.apiSource}</span></div>
-          </div>
-        </div>`).join('');
-    } catch(e) {
-      el.innerHTML = `<div style="padding:24px;color:var(--text3);text-align:center;">Search failed. Check connection.</div>`;
-    }
-  }, 500);
-}
-
-// Sync breaking banner to mobile
-function syncMobBreaking(title) {
-  const b = document.getElementById('mobBreakingBanner');
-  const t = document.getElementById('mobBreakingText');
-  if (b && t) { t.textContent = title; b.classList.add('show'); }
-}
-
-
-
-
-
-
-
-
-
-// Swipe to close modals on mobile
-let touchStartY = 0;
-document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, {passive:true});
-document.addEventListener('touchend', e => {
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  if (dy > 80) {
-    // Swipe down — close open modals
-    if (document.getElementById('readerOverlay').classList.contains('open')) closeReader();
-    else if (document.getElementById('analysisOverlay').classList.contains('open')) closeAnalysis();
-    else if (document.getElementById('prefsModalOverlay').classList.contains('open')) closePrefsModal();
-    else if (document.getElementById('alertModalOverlay').classList.contains('open')) closeAlertModal();
-  }
-}, {passive:true});
-
-// Close mobile search on Escape
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && document.getElementById('mobSearchPage').classList.contains('open')) closeMobSearch();
-});
-
-// Viewport height fix for mobile browsers (address bar)
-function setVH() {
-  document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px');
-}
-setVH();
-window.addEventListener('resize', setVH);
-
 </script>
 </body>
 </html>
