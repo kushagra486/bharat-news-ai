@@ -9,7 +9,6 @@
 <title>Bharat News AI — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
@@ -321,322 +320,27 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .notif-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:6px;right:6px;animation:breakingPulse 2s infinite}
 
 /* ── MOBILE ── */
-
-/* ══════════════════════════════════════════
-   LAPTOP / DESKTOP  ≥ 1024px  — 3 column
-   ══════════════════════════════════════════ */
-@media(min-width:1024px){
-  :root{--sidebar-w:240px;--right-w:320px}
-  .mob-header{display:none!important}
-  .mob-bottom-nav{display:none!important}
-  .sidebar{display:flex}
-  .right-panel{display:block}
-  .feed{max-width:680px;padding:24px}
-  .topbar{padding:12px 24px}
-  .card-img-wrap{height:240px}
-}
-
-/* ══════════════════════════════════════════
-   TABLET  768px – 1023px  — 2 column
-   ══════════════════════════════════════════ */
-@media(min-width:768px) and (max-width:1023px){
-  :root{--sidebar-w:68px;--right-w:0px}
-  .mob-header{display:none!important}
-  .mob-bottom-nav{display:none!important}
-  .sidebar{width:68px;padding:16px 8px;display:flex}
-  .logo-text,.nav-item>span:not(.nav-icon),.nav-label,.nav-badge{display:none}
+@media(max-width:1100px){.right-panel{display:none}.feed{max-width:100%}}
+@media(max-width:768px){
+  .sidebar{width:60px;padding:16px 8px}
+  .logo-text,.nav-item span:last-child,.nav-label,.nav-badge{display:none}
   .logo{justify-content:center;padding:8px 0}
   .logo-icon{margin:0}
-  .nav-item{justify-content:center;padding:12px 0}
-  .right-panel{display:none}
-  .main{margin-left:68px}
-  .feed{max-width:100%;padding:20px}
-  .topbar{padding:10px 20px;gap:12px}
-  .search-wrap{width:200px}
-  .card-img-wrap{height:220px}
-  .topbar-tabs .tab-btn{padding:6px 10px;font-size:12px}
+  .nav-item{justify-content:center;padding:10px 0}
+  .nav-icon{width:auto}
+  .main{margin-left:60px}
+  .feed{padding:16px}
+  .topbar{padding:10px 16px;gap:10px}
+  .topbar-tabs{display:none}
+  .search-wrap{width:150px}
+  .topbar-title{font-size:15px}
+  .related-grid{grid-template-columns:1fr}
 }
-
-/* ══════════════════════════════════════════
-   MOBILE  < 768px  — full-screen app
-   ══════════════════════════════════════════ */
-@media(max-width:767px){
-
-  /* Hide all desktop chrome */
-  .sidebar,
-  .right-panel,
-  .topbar,
-  .breaking-banner{display:none!important}
-
-  /* App shell */
-  .app{flex-direction:column}
-  .main{margin-left:0;display:flex;flex-direction:column;min-height:100vh}
-  .content{flex-direction:column;flex:1}
-  .feed{padding:0;max-width:100%;padding-top:56px;padding-bottom:64px}
-
-  /* ── Mobile Header ── */
-  .mob-header{
-    display:flex!important;
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    height:56px;
-    background:var(--surface);
-    border-bottom:1px solid var(--border);
-    align-items:center;
-    padding:0 16px;
-    gap:10px;
-  }
-  .mob-header-logo{
-    font-size:18px;font-weight:900;
-    background:var(--grad);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    background-clip:text;flex:1;
-  }
-  .mob-header-btn{
-    width:36px;height:36px;border-radius:50%;
-    border:none;background:transparent;
-    color:var(--text2);font-size:20px;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-  }
-  .mob-header-btn:active{background:var(--surface2)}
-
-  /* ── Sector chips sticky below header ── */
-  .sector-scroll{
-    position:sticky;top:56px;z-index:90;
-    background:var(--bg);
-    padding:8px 12px;
-    margin-bottom:0;
-    border-bottom:1px solid var(--border);
-  }
-  .sector-chip{font-size:11px;padding:5px 11px}
-
-  /* ── Stories ── */
-  .stories-row{
-    padding:12px 14px 10px;
-    margin-bottom:0;
-    background:var(--surface);
-    border-bottom:1px solid var(--border);
-  }
-  .story-ring{width:56px;height:56px}
-  .story-label{font-size:10px;max-width:56px}
-
-  /* ── Cards — full bleed borderless ── */
-  .news-card{
-    border-radius:0;
-    border-left:none;border-right:none;border-top:none;
-    margin-bottom:6px;
-  }
-  .news-card:first-child{border-top:1px solid var(--border)}
-  .card-img-wrap{height:210px}
-  .card-body{padding:12px 14px}
-  .card-title{font-size:15px;line-height:1.35}
-  .card-summary{-webkit-line-clamp:2;font-size:13px}
-  .card-header{padding:10px 14px 8px}
-  .card-actions{padding:8px 14px 10px;gap:2px}
-  .action-btn{padding:6px 8px;font-size:12px;gap:4px}
-  .action-btn span{font-size:15px}
-  .card-tags{gap:4px;margin-top:8px}
-  .tag{font-size:10px;padding:2px 7px}
-
-  /* ── Load more ── */
-  .load-more-btn{border-radius:0;margin:0;border-left:none;border-right:none}
-
-  /* ── Modals slide up from bottom ── */
-  .analysis-overlay,.reader-overlay{align-items:flex-end;padding:0}
-  .analysis-modal,.reader-modal{
-    border-radius:20px 20px 0 0;
-    max-height:93vh;
-    width:100%;max-width:100%;
-    margin:0;
-  }
-  .reader-hero{height:190px;border-radius:20px 20px 0 0}
-  .reader-content{padding:18px}
-  .reader-title{font-size:20px}
-  .modal-title{font-size:17px;padding-right:36px}
-  .related-grid{grid-template-columns:1fr 1fr}
-
-  /* ── Story viewer ── */
-  .story-headline{font-size:21px}
-  .story-snippet{font-size:13px}
-  .story-cta-btn{padding:9px 18px;font-size:13px}
-
-  /* ── Cluster card ── */
-  .cluster-card{border-radius:0;margin-bottom:6px}
-  .cluster-item-img{width:52px;height:40px}
-
-  /* ── Bottom Nav ── */
-  .mob-bottom-nav{
-    display:flex!important;
-    position:fixed;bottom:0;left:0;right:0;
-    height:60px;
-    background:var(--surface);
-    border-top:1px solid var(--border);
-    z-index:100;
-    padding-bottom:env(safe-area-inset-bottom,0px);
-  }
-  .mob-nav-btn{
-    flex:1;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    gap:3px;border:none;background:transparent;
-    color:var(--text3);cursor:pointer;
-    font-family:inherit;padding:6px 0;
-    transition:color .15s;
-  }
-  .mob-nav-btn.active{color:var(--accent)}
-  .mob-nav-icon{font-size:21px;line-height:1}
-  .mob-nav-label{font-size:10px;font-weight:600}
-
-  /* ── Search on mobile ── */
-  .search-wrap{display:none}
-  .theme-btn{display:none}
-
-  /* ── Research / explore feed on mobile ── */
-  #feedArea{padding-left:0;padding-right:0}
-}
-
-
-/* ══ PROFILE ══════════════════════════════════════ */
-.profile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0}
-.profile-overlay.open{display:flex}
-@media(min-width:768px){.profile-overlay{align-items:center;padding:20px}}
-
-.profile-sheet{
-  background:var(--surface);border-radius:24px 24px 0 0;
-  width:100%;max-width:680px;max-height:93vh;
-  overflow-y:auto;position:relative;
-}
-@media(min-width:768px){.profile-sheet{border-radius:20px;max-height:88vh}}
-
-.profile-hero{
-  background:linear-gradient(135deg,#1a0a2e 0%,#0a1528 50%,#0a1a10 100%);
-  padding:28px 24px 0;position:relative;overflow:hidden;
-}
-.profile-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(233,30,140,.18),transparent 60%),radial-gradient(ellipse at 80% 30%,rgba(59,130,246,.15),transparent 60%);pointer-events:none}
-
-.profile-avatar-row{display:flex;align-items:flex-end;gap:16px;position:relative;z-index:1}
-.p-avatar{
-  width:80px;height:80px;border-radius:50%;
-  background:var(--grad);display:flex;align-items:center;justify-content:center;
-  font-size:32px;font-weight:900;color:#fff;
-  border:3px solid var(--bg);cursor:pointer;
-  position:relative;overflow:hidden;flex-shrink:0;transition:transform .2s;
-}
-.p-avatar:hover{transform:scale(1.04)}
-.p-avatar img{width:100%;height:100%;object-fit:cover}
-.p-avatar-edit{
-  position:absolute;inset:0;background:rgba(0,0,0,.45);
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .2s;font-size:22px;
-}
-.p-avatar:hover .p-avatar-edit{opacity:1}
-
-.p-name-col{flex:1;min-width:0;padding-bottom:14px}
-.p-name{font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.p-handle{font-size:13px;color:rgba(255,255,255,.5);margin-top:2px}
-.p-badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
-.p-badge.verified{background:rgba(59,130,246,.2);color:#3b82f6;border:1px solid rgba(59,130,246,.3)}
-.p-badge.local{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
-
-.p-stats{display:flex;background:rgba(0,0,0,.3);border-radius:0;margin-top:16px}
-.p-stat{flex:1;text-align:center;padding:12px 6px;cursor:pointer;transition:background .15s;border-right:1px solid rgba(255,255,255,.06)}
-.p-stat:last-child{border-right:none}
-.p-stat:hover{background:rgba(255,255,255,.05)}
-.p-stat-n{font-size:18px;font-weight:800;color:#fff}
-.p-stat-l{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.7px;margin-top:1px}
-
-.p-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2}
-.p-tab{flex:1;padding:12px 6px;border:none;background:transparent;color:var(--text3);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
-.p-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
-
-.p-section{padding:18px 20px;border-bottom:1px solid var(--border)}
-.p-section:last-child{border-bottom:none}
-.p-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:12px}
-
-.p-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:480px){.p-grid{grid-template-columns:1fr}}
-.p-field{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 13px}
-.p-field-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
-.p-field-value{font-size:13px;font-weight:500;color:var(--text)}
-.p-field-value.empty{color:var(--text3);font-style:italic}
-
-.p-edit-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;display:block}
-.p-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 13px;outline:none;margin-bottom:12px;transition:border-color .2s}
-.p-input:focus{border-color:var(--accent2)}
-.p-input::placeholder{color:var(--text3)}
-.p-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 13px;outline:none;resize:vertical;min-height:72px;margin-bottom:12px;transition:border-color .2s}
-.p-textarea:focus{border-color:var(--accent2)}
-
-.p-save-btn{width:100%;padding:12px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:6px}
-.p-save-btn:hover{opacity:.9}
-.p-save-btn:disabled{opacity:.5;cursor:not-allowed}
-
-.p-sector-chip{padding:6px 13px;border-radius:20px;border:1px solid;background:transparent;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-
-.p-articles-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border)}
-@media(min-width:600px){.p-articles-grid{grid-template-columns:1fr 1fr 1fr 1fr}}
-.p-article-thumb{aspect-ratio:1;overflow:hidden;background:var(--surface2);cursor:pointer;position:relative}
-.p-article-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
-.p-article-thumb:hover img{transform:scale(1.06)}
-.p-article-thumb-overlay{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.7));opacity:0;transition:opacity .2s;display:flex;align-items:flex-end;padding:6px}
-.p-article-thumb:hover .p-article-thumb-overlay{opacity:1}
-.p-article-thumb-title{font-size:9px;font-weight:600;color:#fff;line-height:1.3}
-
-.p-empty{text-align:center;padding:40px 20px;color:var(--text3)}
-.p-empty-icon{font-size:36px;margin-bottom:8px}
-.p-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(0,0,0,.4);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;backdrop-filter:blur(4px)}
-.p-close:hover{background:rgba(0,0,0,.7)}
-
-.pw-bar{height:3px;border-radius:2px;margin-top:5px;margin-bottom:12px;transition:all .3s;background:#2a2a2a}
-
 </style>
 </head>
 <body>
 
 <!-- TOAST CONTAINER -->
-
-<!-- ══ MOBILE HEADER ══ -->
-<div class="mob-header" id="mobHeader" style="display:none;">
-  <div class="mob-header-logo">Bharat News AI</div>
-  <button class="mob-header-btn" onclick="handleSearch(document.getElementById('mobSearchInp')?.value||'')" title="Search">🔍</button>
-  <button class="mob-header-btn" onclick="toggleTheme()" id="mobThemeBtn">🌙</button>
-</div>
-
-<!-- ══ MOBILE BOTTOM NAV ══ -->
-<div class="mob-bottom-nav" id="mobBottomNav" style="display:none;">
-  <button class="mob-nav-btn active" id="mbn-feed" onclick="mobNav('feed',this)">
-    <span class="mob-nav-icon">🏠</span>
-    <span class="mob-nav-label">Home</span>
-  </button>
-  <button class="mob-nav-btn" id="mbn-india" onclick="mobNav('india',this)">
-    <span class="mob-nav-icon">🇮🇳</span>
-    <span class="mob-nav-label">India</span>
-  </button>
-  <button class="mob-nav-btn" id="mbn-stories" onclick="openStory(0)">
-    <span class="mob-nav-icon">▶️</span>
-    <span class="mob-nav-label">Stories</span>
-  </button>
-  <button class="mob-nav-btn" id="mbn-bookmarks" onclick="mobNav('bookmarks',this)">
-    <span class="mob-nav-icon">🔖</span>
-    <span class="mob-nav-label">Saved</span>
-  </button>
-  <button class="mob-nav-btn" id="mbn-profile" onclick="openProfile()">
-    <span class="mob-nav-icon">👤</span>
-    <span class="mob-nav-label">Profile</span>
-  </button>
-  <button class="mob-nav-btn" id="mbn-research" onclick="mobNav('research',this)">
-    <span class="mob-nav-icon">🔬</span>
-    <span class="mob-nav-label">Research</span>
-  </button>
-</div>
-
-
-<!-- ══ PROFILE OVERLAY ══ -->
-<div class="profile-overlay" id="profileOverlay" onclick="if(event.target===this)closeProfile()">
-  <div class="profile-sheet" id="profileSheet">
-    <button class="p-close" onclick="closeProfile()">✕</button>
-    <div id="profileContent"></div>
-  </div>
-</div>
-
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- STORY VIEWER -->
@@ -766,7 +470,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="nav-item" onclick="setSector('Climate')"><span class="nav-icon">🌍</span><span>Climate</span></div>
     <div class="nav-item" onclick="setSector('Sports')"><span class="nav-icon">⚽</span><span>Sports</span></div>
     <div class="sidebar-footer">
-      <div class="nav-item" onclick="openProfile()"><span class="nav-icon">👤</span><span>Profile</span></div>
       <div class="nav-item" onclick="openAlertModal()" style="position:relative;">
         <span class="nav-icon">🔔</span><span>Alerts</span>
         <div class="notif-dot" id="notifDot" style="display:none;"></div>
@@ -1311,14 +1014,13 @@ function toggleFavSector(s, btn) {
 async function callAI(prompt, system='You are a world-class news analyst. Be concise, insightful, and accurate.') {
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000); // 8s timeout
+    const _t = setTimeout(()=>ctrl.abort(), 8000);
     const r = await fetch(GROQ_BASE, {
-      method:'POST',
-      signal: ctrl.signal,
+      method:'POST', signal:ctrl.signal,
       headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'application/json'},
       body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:system},{role:'user',content:prompt}],max_tokens:1200,temperature:.7})
     });
-    clearTimeout(timer);
+    clearTimeout(_t);
     if (!r.ok) { const e=await r.json().catch(()=>({})); showToast('⚠️ AI: '+(e?.error?.message||r.status)); return null; }
     const d = await r.json();
     return d.choices?.[0]?.message?.content||null;
@@ -1565,8 +1267,8 @@ async function renderFeed(overrideCards=null) {
 
   // Clustering
   let clusters = null;
-  if (prefs.clustering === true && cards.length>=5 && !overrideCards) {
-    try { clusters = await generateClusters(cards); } catch(e) { clusters = null; }
+  if (prefs.clustering && cards.length>=5 && !overrideCards) {
+    clusters = await generateClusters(cards);
   }
 
   let html = '';
@@ -1587,93 +1289,84 @@ async function renderFeed(overrideCards=null) {
   document.getElementById('loadMoreBtn').style.display = 'flex';
 }
 
-function renderCard(card) {
-  var isLiked      = likes.includes(card.id);
-  var isBookmarked = bookmarks.includes(card.id);
-  var isRead       = readItems.includes(card.id);
-  var sectorColor  = SECTOR_COLORS[card.sector] || '#9333ea';
-  var icon         = SECTOR_EMOJIS[card.sector] || '📰';
-  var apiSrc       = card.apiSource || 'News';
-  var rt           = prefs.readTime !== false ? readingTime(card.summary) : '';
-  var safeCard     = JSON.stringify(card).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-
-  var srcColor = apiSrc==='GNews' ? '#3b82f6' : apiSrc==='NewsData' ? '#e91e8c' : apiSrc==='Guardian' ? '#10b981' : '#ef4444';
-  var srcBg    = apiSrc==='GNews' ? 'rgba(59,130,246,.15)' : apiSrc==='NewsData' ? 'rgba(233,30,140,.15)' : apiSrc==='Guardian' ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.15)';
-
-  var tagsHtml  = (card.tags||[]).slice(0,3).map(function(t){ return '<span class="tag">#'+t+'</span>'; }).join('');
-  var rtHtml    = rt ? '<span class="reading-time">📖 '+rt+'</span>' : '';
-  var readHtml  = isRead ? '<span style="font-size:10px;color:var(--text3);">✓ Read</span>' : '';
-  var breakHtml = card.breaking ? '<div class="card-img-breaking">🔴 BREAKING</div>' : '';
-
-  return (
-    '<div class="news-card fade-in">' +
-      '<div class="card-header">' +
-        '<div class="source-avatar">' + (card.sourceIcon||'📰') + '</div>' +
-        '<div class="source-info">' +
-          '<div class="source-name">' + (card.source||'News') + ' <span class="verified">✓</span></div>' +
-          '<div class="source-meta">' +
-            '<span>' + (card.time||'') + '</span><span>•</span>' +
-            rtHtml +
-            '<span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:'+srcBg+';color:'+srcColor+';">' + apiSrc + '</span>' +
-            readHtml +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="card-img-wrap" onclick="openReader(' + safeCard + ')">' +
-        '<img class="card-img" src="' + (card.image||'') + '" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">' +
-        '<div class="card-img-fallback" style="display:none;background:' + sectorColor + '22;">' + icon + '</div>' +
-        '<div class="card-img-overlay"></div>' +
-        '<div class="card-img-sector" style="color:' + sectorColor + ';">' + icon + ' ' + (card.sector||'') + '</div>' +
-        breakHtml +
-      '</div>' +
-      '<div class="card-body" onclick="openReader(' + safeCard + ')">' +
-        '<div class="card-title" style="' + (isRead?'opacity:.7':'') + '">' + (card.title||'No title') + '</div>' +
-        '<div class="card-summary">' + (card.summary||'') + '</div>' +
-        '<div class="card-tags">' + tagsHtml + '</div>' +
-      '</div>' +
-      '<div class="card-actions">' +
-        '<button class="action-btn ' + (isLiked?'liked':'') + '" onclick="toggleLike('' + card.id + '')">' +
-          '<span>' + (isLiked?'❤️':'🤍') + '</span>' + (isLiked?'Liked':'Like') +
-        '</button>' +
-        '<button class="action-btn" onclick="openReader(' + safeCard + ')">' +
-          '<span>📖</span>Read' +
-        '</button>' +
-        '<button class="action-btn" onclick="analyzeNews(' + safeCard + ')">' +
-          '<span>🧠</span>Analyse' +
-        '</button>' +
-        '<button class="action-btn" onclick="shareAsImage(' + safeCard + ')">' +
-          '<span>📸</span>Share' +
-        '</button>' +
-        '<button class="action-btn ' + (isBookmarked?'bookmarked':'') + ' action-sep" onclick="toggleBookmark('' + card.id + '')">' +
-          '<span>' + (isBookmarked?'🔖':'📌') + '</span>' +
-        '</button>' +
-      '</div>' +
-    '</div>'
-  );
-}
-
-
 function renderCluster(cluster, cards) {
-  var itemsHtml = cards.map(function(c) {
-    var safe = JSON.stringify(c).replace(/"/g,'&quot;');
-    var img  = c.image || '';
-    var title = (c.title||'').substring(0,90)+(c.title&&c.title.length>90?'...':'');
-    return '<div class="cluster-item" onclick="openReader('+safe+')">' +
-      '<img class="cluster-item-img" src="'+img+'" alt="" onerror="this.style.display='none'">' +
-      '<div>' +
-        '<div class="cluster-item-title">'+title+'</div>' +
-        '<div class="cluster-item-source">'+(c.source||'')+' · '+(c.time||'')+'</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-  return '<div class="cluster-card fade-in">' +
-    '<div class="cluster-label">🗂️ Story Cluster · AI Grouped <span class="ai-badge">AI</span></div>' +
-    '<div class="cluster-headline">'+(cluster.cluster||'')+'</div>' +
-    '<div style="font-size:12px;color:var(--text2);margin-bottom:10px;">'+(cluster.summary||'')+'</div>' +
-    '<div class="cluster-articles">'+itemsHtml+'</div>' +
-  '</div>';
+  return `<div class="cluster-card fade-in">
+    <div class="cluster-label">🗂️ Story Cluster · AI Grouped <span class="ai-badge">AI</span></div>
+    <div class="cluster-headline">${cluster.cluster}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">${cluster.summary||''}</div>
+    <div class="cluster-articles">
+      ${cards.map(c=>`
+        <div class="cluster-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+          <img class="cluster-item-img" src="${c.image}" alt="" onerror="this.style.display='none'">
+          <div>
+            <div class="cluster-item-title">${c.title.substring(0,90)}${c.title.length>90?'...':''}</div>
+            <div class="cluster-item-source">${c.source} · ${c.time} · <span style="color:${c.apiSource==='Guardian'?'#10b981':c.apiSource==='GNews'?'#3b82f6':'#e91e8c'}">${c.apiSource}</span></div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
 }
 
+function renderCard(card) {
+  const isLiked      = likes.includes(card.id);
+  const isBookmarked = bookmarks.includes(card.id);
+  const isRead       = readItems.includes(card.id);
+  const sectorColor  = SECTOR_COLORS[card.sector]||'#9333ea';
+  const rt           = prefs.readTime!==false ? readingTime(card.summary) : '';
+  const sourceColor  = card.apiSource==='GNews'?'#3b82f6':card.apiSource==='NewsData'?'#e91e8c':card.apiSource==='Guardian'?'#10b981':'#ef4444';
+  const sourceBg     = card.apiSource==='GNews'?'rgba(59,130,246,.15)':card.apiSource==='NewsData'?'rgba(233,30,140,.15)':card.apiSource==='Guardian'?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)';
+
+  return `<div class="news-card fade-in ${isRead?'':''}">
+    <div class="card-header">
+      <div class="source-avatar">${card.sourceIcon||'📰'}</div>
+      <div class="source-info">
+        <div class="source-name">${card.source} <span class="verified">✓</span></div>
+        <div class="source-meta">
+          <span>${card.time}</span>
+          <span>•</span>
+          ${rt ? `<span class="reading-time">📖 ${rt}</span>` : ''}
+          <span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:${sourceBg};color:${sourceColor};">${card.apiSource}</span>
+          ${isRead?'<span style="font-size:10px;color:var(--text3);">✓ Read</span>':''}
+        </div>
+      </div>
+    </div>
+
+    <div class="card-img-wrap" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+      <img class="card-img" src="${card.image}" alt="${card.imageAlt||card.title}" loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="card-img-fallback" style="display:none;background:${card.color}22;">${SECTOR_EMOJIS[card.sector]||'📰'}</div>
+      <div class="card-img-overlay"></div>
+      <div class="card-img-sector" style="color:${sectorColor};">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      ${card.breaking?'<div class="card-img-breaking">🔴 BREAKING</div>':''}
+    </div>
+
+    <div class="card-body" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+      <div class="card-title" style="${isRead?'opacity:.7':''};">${card.title}</div>
+      <div class="card-summary">${card.summary}</div>
+      <div class="card-tags">
+        ${(card.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="action-btn ${isLiked?'liked':''}" onclick="toggleLike('${card.id}')">
+        <span>${isLiked?'❤️':'🤍'}</span>${isLiked?'Liked':'Like'}
+      </button>
+      <button class="action-btn" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>📖</span>Read
+      </button>
+      <button class="action-btn" onclick="analyzeNews(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>🧠</span>Analyse
+      </button>
+      <button class="action-btn" onclick="shareAsImage(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>📸</span>Share
+      </button>
+      <button class="action-btn ${isBookmarked?'bookmarked':''} action-sep" onclick="toggleBookmark('${card.id}')">
+        <span>${isBookmarked?'🔖':'📌'}</span>
+      </button>
+    </div>
+  </div>`;
+}
 
 function renderRightPanel() {
   // Trending — live from fetched data
@@ -2031,8 +1724,8 @@ function toggleTheme() {
   html.setAttribute('data-theme', isDark?'light':'dark');
   document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️';
   localStorage.setItem('pa_theme', isDark?'light':'dark');
-  const tb=document.querySelector('.topbar'); if(tb) tb.style.background=isDark?'rgba(248,249,250,.95)':'rgba(10,10,10,.95)';
-  syncMobTheme();
+  // Update topbar bg
+  document.querySelector('.topbar').style.background = isDark ? 'rgba(248,249,250,.95)' : 'rgba(10,10,10,.95)';
 }
 
 // ══════════════════════════════════════════════════
@@ -2067,55 +1760,24 @@ function updateLastFetchedBadge() {
 // ══════════════════════════════════════════════════
 function getFallbackNews(sector) {
   const fb={
-    Tech:[
-      {title:"OpenAI Unveils GPT-5 with Unprecedented Reasoning",description:"OpenAI's latest model demonstrates human-level performance on complex reasoning tasks, marking a significant milestone in AI.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'TechCrunch',pubDate:'2025-06-12 08:00:00',link:'#'},
-      {title:"Google DeepMind Releases AlphaFold 3",description:"DeepMind protein structure prediction now covers complex molecules, accelerating pharmaceutical research globally.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'Nature',pubDate:'2025-06-12 06:00:00',link:'#'},
-      {title:"Microsoft Acquires AI Startup for $12.7 Billion",description:"Microsoft expands its AI portfolio with a landmark acquisition, challenging OpenAI's dominance in enterprise AI.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'Reuters',pubDate:'2025-06-11 09:00:00',link:'#'},
-      {title:"Quantum Computing Reaches 1000-Qubit Milestone",description:"IBM new quantum processor achieves a practical threshold where quantum computers outperform classical supercomputers.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'Wired',pubDate:'2025-06-11 07:00:00',link:'#'},
-    ],
-    Finance:[
-      {title:"Fed Signals Three Rate Cuts in 2025 Amid Cooling Inflation",description:"Federal Reserve Chair signals dovish pivot as core PCE drops to 2.1%, closest to 2% target since 2021.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'Bloomberg',pubDate:'2025-06-12 07:00:00',link:'#'},
-      {title:"Bitcoin Crosses $100K as BlackRock ETF Sees Record Inflows",description:"BTC crosses $100,000 as institutional demand surges with BlackRock iShares Bitcoin ETF recording $8.3 billion single-day inflow.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'CoinDesk',pubDate:'2025-06-12 05:00:00',link:'#'},
-      {title:"India GDP Growth Hits 8.4% Driven by Manufacturing Boom",description:"India overtakes Japan as world 4th largest economy as Q3 GDP surprises at 8.4% with manufacturing expanding 11.2%.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'Economic Times',pubDate:'2025-06-11 06:00:00',link:'#'},
-      {title:"Sensex Crosses 80,000 Points for First Time",description:"Indian stock markets hit a historic milestone as foreign institutional investors pour capital into emerging market equities.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'Mint',pubDate:'2025-06-11 04:00:00',link:'#'},
-    ],
-    Health:[
-      {title:"mRNA Cancer Vaccine Shows 90% Response Rate in Trials",description:"Moderna personalized mRNA cancer vaccine demonstrates 89.6% overall response rate in Phase III melanoma trial.",image_url:SECTOR_FALLBACK_IMAGES.Health,source_name:'NEJM',pubDate:'2025-06-11 10:00:00',link:'#'},
-      {title:"WHO Declares New Pandemic Preparedness Framework",description:"World Health Organization adopts binding treaty on pandemic prevention with 196 member states establishing global surveillance.",image_url:SECTOR_FALLBACK_IMAGES.Health,source_name:'WHO',pubDate:'2025-06-11 08:00:00',link:'#'},
-      {title:"World First Lab-Grown Organ Transplant Declared Success",description:"Surgeons at Johns Hopkins report full organ function one year after transplanting a bioengineered kidney grown from stem cells.",image_url:SECTOR_FALLBACK_IMAGES.Health,source_name:'Lancet',pubDate:'2025-06-10 11:00:00',link:'#'},
-    ],
-    Science:[
-      {title:"James Webb Telescope Detects Possible Biosignature on K2-18b",description:"Astronomers find dimethyl sulfide in exoplanet atmosphere, a potential sign of biological activity never seen outside Earth.",image_url:SECTOR_FALLBACK_IMAGES.Science,source_name:'Nature',pubDate:'2025-06-11 14:00:00',link:'#'},
-      {title:"CERN Scientists Confirm Evidence of New Fifth Fundamental Force",description:"Physicists at CERN report 5.2-sigma evidence for a new particle interaction that challenges the Standard Model of physics.",image_url:SECTOR_FALLBACK_IMAGES.Science,source_name:'Science',pubDate:'2025-06-11 12:00:00',link:'#'},
-      {title:"SpaceX Starship Completes First Crewed Lunar Flyby",description:"SpaceX Starship successfully completes a crewed lunar flyby with six astronauts, first humans beyond LEO since Apollo 17.",image_url:SECTOR_FALLBACK_IMAGES.Science,source_name:'NASA',pubDate:'2025-06-10 09:00:00',link:'#'},
-    ],
-    Politics:[
-      {title:"G20 Summit Reaches Historic AI Governance Agreement",description:"World leaders sign landmark pact on responsible AI development with binding commitments on safety, transparency and accountability.",image_url:SECTOR_FALLBACK_IMAGES.Politics,source_name:'Reuters',pubDate:'2025-06-11 16:00:00',link:'#'},
-      {title:"EU Parliament Passes Landmark AI Liability Directive",description:"European Parliament passes comprehensive legislation making AI developers liable for harm caused by their systems.",image_url:SECTOR_FALLBACK_IMAGES.Politics,source_name:'Politico',pubDate:'2025-06-11 14:00:00',link:'#'},
-      {title:"India and US Sign Strategic Technology Partnership",description:"The two nations announce a landmark deal covering semiconductors, AI and space collaboration worth $100 billion.",image_url:SECTOR_FALLBACK_IMAGES.Politics,source_name:'The Hindu',pubDate:'2025-06-10 15:00:00',link:'#'},
-    ],
-    Climate:[
-      {title:"Solar Power Surpasses Coal in Global Electricity Generation",description:"IEA data confirms solar PV panels generated more electricity than coal globally, a historic milestone for clean energy.",image_url:SECTOR_FALLBACK_IMAGES.Climate,source_name:'Guardian',pubDate:'2025-06-10 12:00:00',link:'#'},
-      {title:"Amazon Rainforest Records Lowest Deforestation in 15 Years",description:"Brazil INPE reports 62% reduction in Amazon deforestation following new enforcement policies and carbon credit schemes.",image_url:SECTOR_FALLBACK_IMAGES.Climate,source_name:'BBC Earth',pubDate:'2025-06-09 10:00:00',link:'#'},
-      {title:"2024 Confirmed Hottest Year in 125,000 Years",description:"Global temperatures exceeded 1.5C threshold for an entire calendar year for the first time in recorded human history.",image_url:SECTOR_FALLBACK_IMAGES.Climate,source_name:'IPCC',pubDate:'2025-06-09 08:00:00',link:'#'},
-    ],
-    Sports:[
-      {title:"Champions League Final: Real Madrid Win on Penalties",description:"Real Madrid edge Manchester City 5-4 on penalties after a 1-1 draw in an electrifying Wembley final watched by 500 million.",image_url:SECTOR_FALLBACK_IMAGES.Sports,source_name:'ESPN',pubDate:'2025-06-12 01:00:00',link:'#'},
-      {title:"India Beat Australia in ICC World Cup Final",description:"Team India lifts the ICC World Cup trophy in a nail-biting final, ending a decade-long wait for cricket biggest prize.",image_url:SECTOR_FALLBACK_IMAGES.Sports,source_name:'Cricinfo',pubDate:'2025-06-11 20:00:00',link:'#'},
-      {title:"Neeraj Chopra Breaks Javelin World Record",description:"India golden boy throws 92.94m to break the world record, cementing his status as the greatest javelin thrower of his generation.",image_url:SECTOR_FALLBACK_IMAGES.Sports,source_name:'TOI Sports',pubDate:'2025-06-10 18:00:00',link:'#'},
-    ],
+    Tech:[{title:"OpenAI Unveils GPT-5",description:"OpenAI's model achieves human-level reasoning.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'TechCrunch',pubDate:'2025-06-12 08:00:00',link:'#'},{title:"Google DeepMind Releases AlphaFold 3",description:"Protein prediction now covers complex molecules.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'Nature',pubDate:'2025-06-12 06:00:00',link:'#'}],
+    Finance:[{title:"Fed Signals Rate Cuts",description:"Federal Reserve signals dovish pivot as inflation cools.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'Bloomberg',pubDate:'2025-06-12 07:00:00',link:'#'},{title:"Bitcoin Hits $100K",description:"BTC crosses $100K as institutional demand surges.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'CoinDesk',pubDate:'2025-06-12 05:00:00',link:'#'}],
+    Health:[{title:"mRNA Cancer Vaccine 90% Success",description:"Moderna's vaccine shows 89.6% efficacy in Phase III.",image_url:SECTOR_FALLBACK_IMAGES.Health,source_name:'NEJM',pubDate:'2025-06-11 10:00:00',link:'#'}],
+    Science:[{title:"JWST Finds Biosignature on Exoplanet",description:"Dimethyl sulfide detected in K2-18b atmosphere.",image_url:SECTOR_FALLBACK_IMAGES.Science,source_name:'Nature',pubDate:'2025-06-11 14:00:00',link:'#'}],
+    Politics:[{title:"G20 AI Governance Pact Signed",description:"World leaders agree on responsible AI framework.",image_url:SECTOR_FALLBACK_IMAGES.Politics,source_name:'Reuters',pubDate:'2025-06-11 16:00:00',link:'#'}],
+    Climate:[{title:"Solar Surpasses Coal Globally",description:"IEA confirms solar now generates more than coal.",image_url:SECTOR_FALLBACK_IMAGES.Climate,source_name:'Guardian',pubDate:'2025-06-10 12:00:00',link:'#'}],
+    Sports:[{title:"Champions League Final Drama",description:"Real Madrid edge past Manchester City on penalties.",image_url:SECTOR_FALLBACK_IMAGES.Sports,source_name:'ESPN',pubDate:'2025-06-12 01:00:00',link:'#'}],
     India:[{title:"India GDP Growth Hits 8.4%",description:"India overtakes Japan as world's 4th largest economy.",image_url:SECTOR_FALLBACK_IMAGES.India,source_name:'Economic Times',pubDate:'2025-06-12 09:00:00',link:'#'}],
-    All:[{title:"Top World Stories Today",description:"Stay updated with the latest across all sectors.",image_url:SECTOR_FALLBACK_IMAGES.All,source_name:'Bharat News AI',pubDate:'2025-06-12 00:00:00',link:'#'}],
+    All:[],
   };
-    // For 'All' sector, merge all sectors into one feed
   if (sector === 'All') {
-    const all = [];
-    ['Tech','Finance','Health','Science','Politics','Climate','Sports','India'].forEach(function(s) {
+    var all = [];
+    ['Tech','Finance','Health','Science','Politics','Climate','Sports','India'].forEach(function(s){
       (fb[s]||[]).forEach(function(a,i){ all.push(newsdataToCard(a,s,i)); });
     });
     return all;
   }
-  return (fb[sector]||fb.Tech).map((a,i)=>newsdataToCard(a,sector,i));
+  return (fb[sector]||fb.Tech).map(function(a,i){ return newsdataToCard(a,sector,i); });
 }
 
 // ══════════════════════════════════════════════════
@@ -2174,16 +1836,17 @@ async function init() {
   // Set alert dot if alerts exist
   if (alertKws.length) document.getElementById('notifDot').style.display='block';
 
-  // Show fallback content IMMEDIATELY — never an empty feed
+  // Show fallback immediately — never a blank feed
   newsData = getFallbackNews('All');
-  const sectors_fb = ['Tech','Finance','Health','Science','Politics','Climate','Sports'];
-  sectors_fb.forEach(function(s){ newsCache[s] = getFallbackNews(s); });
   renderFeed();
-  updateStoriesFromNews();
 
-  // Fetch live data in background and replace
-  fetchNews('All').then(function(live){ if(live&&live.length){newsData=live;renderFeed();updateLastFetchedBadge();} }).catch(function(){});
-  fetchAllSectors().then(function(){ renderFeed(); renderRightPanel(); updateLastFetchedBadge(); }).catch(function(){});
+  // Live fetch in background
+  fetchNews('All').then(function(live){
+    if(live && live.length){ newsData=live; renderFeed(); updateLastFetchedBadge(); }
+  }).catch(function(){});
+  fetchAllSectors().then(function(){
+    renderFeed(); renderRightPanel(); updateLastFetchedBadge();
+  }).catch(function(){});
 
   // Generate AI briefing
   generateDailyBriefing();
@@ -2202,385 +1865,7 @@ async function init() {
   }, 15*60*1000);
 }
 
-
-// ══════════════════════════════════════════════════
-// SUPABASE (background sync only — no auth/login)
-// ══════════════════════════════════════════════════
-const SB_URL = 'https://hrfubpludaeicffjmuok.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZnVicGx1ZGFlaWNmZmptdW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyOTQsImV4cCI6MjA5Njg1NDI5NH0.cMzCkgMLSU1cxTw6vXpd7I_E2chCgys3neBLqawhSCQ';
-let _sb = null;
-function getSB() {
-  if (!_sb && typeof supabase !== 'undefined') {
-    _sb = supabase.createClient(SB_URL, SB_KEY);
-  }
-  return _sb;
-}
-
-// ── LOCAL PROFILE (always available, no login needed) ─────────────────────
-const PROFILE_KEY = 'bna_profile';
-let profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || JSON.stringify({
-  name: '',
-  handle: '',
-  bio: '',
-  profession: '',
-  location: '',
-  dob: '',
-  website: '',
-  avatar_url: '',
-  avatar_initials: 'B',
-  sectors: [],
-  theme: 'dark',
-  device_id: 'dev_' + Math.random().toString(36).slice(2,10),
-}));
-
-function saveProfile(updates) {
-  Object.assign(profile, updates);
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-  // Background sync to Supabase (fire and forget)
-  const sb = getSB();
-  if (sb && profile.device_id) {
-    sb.from('profiles').upsert({
-      id: profile.device_id,
-      ...profile,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'id' }).then(() => {}).catch(() => {});
-  }
-}
-
-function getInitials(name) {
-  const parts = (name || '').split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return (name || 'B')[0].toUpperCase();
-}
-
-// ══════════════════════════════════════════════════
-// PROFILE UI
-// ══════════════════════════════════════════════════
-let profileTab = 'info';
-
-function openProfile() {
-  document.getElementById('profileOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  renderProfile();
-}
-
-function closeProfile() {
-  document.getElementById('profileOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function switchPTab(tab, btn) {
-  profileTab = tab;
-  document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  document.querySelectorAll('.p-tab-content').forEach(c => c.classList.remove('active'));
-  const el = document.getElementById('ptab-' + tab);
-  if (el) el.classList.add('active');
-}
-
-function renderProfile() {
-  const el = document.getElementById('profileContent');
-  const initials = profile.avatar_initials || getInitials(profile.name) || 'B';
-  const savedCount = bookmarks.length;
-  const likedCount = likes.length;
-  const readCount  = readItems.length;
-  const alertCount = alertKws.length;
-  const joinedStr  = profile.joined_at
-    ? new Date(profile.joined_at).toLocaleDateString('en-IN', {month:'long', year:'numeric'})
-    : new Date().toLocaleDateString('en-IN', {month:'long', year:'numeric'});
-
-  const sectorChips = ['Tech','Finance','Health','Science','Politics','Climate','Sports'].map(s => {
-    const sel = (profile.sectors || []).includes(s);
-    const col = SECTOR_COLORS[s] || '#9333ea';
-    return '<button class="p-sector-chip" onclick="togglePSector('' + s + '',this)" ' +
-      'style="border-color:' + col + ';' + (sel ? 'background:' + col + '22;color:' + col : 'color:var(--text3)') + '"' +
-      (sel ? ' data-sel="1"' : '') + '>' +
-      (SECTOR_EMOJIS[s] || '') + ' ' + s + '</button>';
-  }).join('');
-
-  const allCards = [...Object.values(newsCache).flat(), ...newsData];
-  const seen = new Set();
-
-  function thumbs(ids) {
-    const cards = (ids || []).map(id => allCards.find(c => c.id === id))
-      .filter(c => c && !seen.has(c.id) && seen.add(c.id));
-    if (!cards.length) return '<div class="p-empty"><div class="p-empty-icon">📭</div><div style="font-size:13px;color:var(--text2);">Nothing here yet</div></div>';
-    return '<div class="p-articles-grid">' + cards.map(function(c) {
-      const safe = JSON.stringify(c).split('"').join('&quot;');
-      return '<div class="p-article-thumb" onclick="closeProfile();openReader(' + safe + ')">' +
-        '<img src="' + (c.image || '') + '" loading="lazy" onerror="this.style.display='none'">' +
-        '<div class="p-article-thumb-overlay"><div class="p-article-thumb-title">' + (c.title || '').substring(0,50) + '</div></div>' +
-        '</div>';
-    }).join('') + '</div>';
-  }
-
-  el.innerHTML =
-    // ── HERO ──
-    '<div class="profile-hero">' +
-      '<div class="profile-avatar-row">' +
-        '<div class="p-avatar" onclick="changeAvatar()">' +
-          (profile.avatar_url
-            ? '<img src="' + profile.avatar_url + '" onerror="this.style.display='none'">'
-            : '<span>' + initials + '</span>') +
-          '<div class="p-avatar-edit">📷</div>' +
-        '</div>' +
-        '<div class="p-name-col">' +
-          '<div class="p-name">' +
-            (profile.name || 'Your Name') +
-            ' <span class="p-badge local">📱 Local Profile</span>' +
-          '</div>' +
-          (profile.handle ? '<div class="p-handle">@' + profile.handle + '</div>' : '') +
-          (profile.profession ? '<div class="p-handle">💼 ' + profile.profession + '</div>' : '') +
-          (profile.location  ? '<div class="p-handle">📍 ' + profile.location  + '</div>' : '') +
-        '</div>' +
-      '</div>' +
-      '<div class="p-stats">' +
-        '<div class="p-stat" onclick="closeProfile();setView('bookmarks')">' +
-          '<div class="p-stat-n">' + savedCount + '</div><div class="p-stat-l">Saved</div></div>' +
-        '<div class="p-stat"><div class="p-stat-n">' + likedCount + '</div><div class="p-stat-l">Liked</div></div>' +
-        '<div class="p-stat"><div class="p-stat-n">' + readCount  + '</div><div class="p-stat-l">Read</div></div>' +
-        '<div class="p-stat" onclick="openAlertModal();closeProfile()">' +
-          '<div class="p-stat-n">' + alertCount + '</div><div class="p-stat-l">Alerts</div></div>' +
-      '</div>' +
-    '</div>' +
-
-    // ── TABS ──
-    '<div class="p-tabs">' +
-      '<button class="p-tab' + (profileTab==='info'?' active':'') + '" onclick="switchPTab('info',this)">👤 Info</button>' +
-      '<button class="p-tab' + (profileTab==='saved'?' active':'') + '" onclick="switchPTab('saved',this)">🔖 Saved</button>' +
-      '<button class="p-tab' + (profileTab==='activity'?' active':'') + '" onclick="switchPTab('activity',this)">📊 Activity</button>' +
-      '<button class="p-tab' + (profileTab==='edit'?' active':'') + '" onclick="switchPTab('edit',this)">✏️ Edit</button>' +
-    '</div>' +
-
-    // ── INFO TAB ──
-    '<div class="p-tab-content' + (profileTab==='info'?' active':'') + '" id="ptab-info">' +
-      '<div class="p-section">' +
-        '<div class="p-section-title">Personal Details</div>' +
-        '<div class="p-grid">' +
-          ['Full Name|' + profile.name,
-           'Handle|' + (profile.handle ? '@'+profile.handle : ''),
-           'Profession|' + profile.profession,
-           'Location|' + profile.location,
-           'Date of Birth|' + (profile.dob ? new Date(profile.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : ''),
-           'Website|' + profile.website,
-          ].map(function(pair) {
-            const parts = pair.split('|');
-            const label = parts[0], val = parts[1] || '';
-            const isLink = label === 'Website' && val;
-            return '<div class="p-field"><div class="p-field-label">' + label + '</div>' +
-              '<div class="p-field-value' + (val ? '' : ' empty') + '">' +
-                (isLink ? '<a href="' + val + '" target="_blank" style="color:var(--accent5);text-decoration:none;">' + val.replace('https://','') + '</a>' : (val || 'Not set')) +
-              '</div></div>';
-          }).join('') +
-        '</div>' +
-      '</div>' +
-      (profile.bio ? '<div class="p-section"><div class="p-section-title">Bio</div><div style="font-size:14px;color:var(--text2);line-height:1.7;">' + profile.bio + '</div></div>' : '') +
-      '<div class="p-section">' +
-        '<div class="p-section-title">Favourite Sectors</div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:8px;">' +
-          ((profile.sectors && profile.sectors.length)
-            ? profile.sectors.map(function(s){ const col=SECTOR_COLORS[s]||'#9333ea'; return '<span style="padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;background:'+col+'22;color:'+col+';border:1px solid '+col+'44;">'+(SECTOR_EMOJIS[s]||'')+' '+s+'</span>'; }).join('')
-            : '<span style="color:var(--text3);font-size:13px;">None selected — tap Edit to add</span>') +
-        '</div>' +
-      '</div>' +
-      '<div class="p-section" style="border-bottom:none;">' +
-        '<div class="p-section-title">Device Info</div>' +
-        '<div class="p-grid">' +
-          '<div class="p-field"><div class="p-field-label">Profile Type</div><div class="p-field-value">📱 Local Device</div></div>' +
-          '<div class="p-field"><div class="p-field-label">Data Sync</div><div class="p-field-value" style="color:var(--accent4);">🟢 Supabase</div></div>' +
-          '<div class="p-field"><div class="p-field-label">Using Since</div><div class="p-field-value">' + joinedStr + '</div></div>' +
-          '<div class="p-field"><div class="p-field-label">Device ID</div><div class="p-field-value" style="font-size:11px;font-family:monospace;">' + (profile.device_id || '—').substring(0,12) + '…</div></div>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-
-    // ── SAVED TAB ──
-    '<div class="p-tab-content' + (profileTab==='saved'?' active':'') + '" id="ptab-saved">' +
-      '<div style="padding:16px 20px 0;"><div class="p-section-title" style="margin-bottom:12px;">Bookmarked Articles</div></div>' +
-      thumbs(bookmarks) +
-    '</div>' +
-
-    // ── ACTIVITY TAB ──
-    '<div class="p-tab-content' + (profileTab==='activity'?' active':'') + '" id="ptab-activity">' +
-      '<div class="p-section">' +
-        '<div class="p-section-title">Reading Stats</div>' +
-        '<div class="p-grid">' +
-          [['📖','Articles Read',readCount,'#3b82f6'],
-           ['❤️','Liked',likedCount,'#e91e8c'],
-           ['🔖','Bookmarked',savedCount,'#f59e0b'],
-           ['🔔','Alerts Set',alertCount,'#10b981']].map(function(row) {
-            return '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;">' +
-              '<div style="font-size:26px;">' + row[0] + '</div>' +
-              '<div style="font-size:22px;font-weight:800;color:' + row[3] + ';margin:4px 0;">' + row[2] + '</div>' +
-              '<div style="font-size:11px;color:var(--text3);">' + row[1] + '</div></div>';
-          }).join('') +
-        '</div>' +
-      '</div>' +
-      '<div class="p-section" style="border-bottom:none;">' +
-        '<div class="p-section-title">Recently Read</div>' +
-        thumbs(readItems.slice(-12).reverse()) +
-      '</div>' +
-    '</div>' +
-
-    // ── EDIT TAB ──
-    '<div class="p-tab-content' + (profileTab==='edit'?' active':'') + '" id="ptab-edit">' +
-      '<div class="p-section">' +
-        '<div class="p-section-title">Edit Profile</div>' +
-        '<label class="p-edit-label">Full Name</label>' +
-        '<input class="p-input" id="pe-name" value="' + (profile.name||'') + '" placeholder="Your name">' +
-        '<label class="p-edit-label">Username / Handle</label>' +
-        '<input class="p-input" id="pe-handle" value="' + (profile.handle||'') + '" placeholder="yourhandle (no @)">' +
-        '<label class="p-edit-label">Bio</label>' +
-        '<textarea class="p-textarea" id="pe-bio" placeholder="Tell us about yourself...">' + (profile.bio||'') + '</textarea>' +
-        '<label class="p-edit-label">Profession</label>' +
-        '<input class="p-input" id="pe-profession" value="' + (profile.profession||'') + '" placeholder="e.g. Engineer, Student...">' +
-        '<label class="p-edit-label">Location</label>' +
-        '<input class="p-input" id="pe-location" value="' + (profile.location||'') + '" placeholder="e.g. Lucknow, India">' +
-        '<label class="p-edit-label">Date of Birth</label>' +
-        '<input class="p-input" id="pe-dob" type="date" value="' + (profile.dob||'') + '" style="color-scheme:dark;">' +
-        '<label class="p-edit-label">Website</label>' +
-        '<input class="p-input" id="pe-website" value="' + (profile.website||'') + '" placeholder="https://yoursite.com">' +
-        '<label class="p-edit-label">Favourite Sectors</label>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;" id="pe-sectors">' + sectorChips + '</div>' +
-        '<div id="pe-error" style="font-size:12px;color:#ef4444;margin-bottom:10px;min-height:14px;"></div>' +
-        '<button class="p-save-btn" id="pe-save" onclick="doSaveProfile()">💾 Save Profile</button>' +
-      '</div>' +
-      '<div class="p-section" style="border-bottom:none;">' +
-        '<div class="p-section-title">Danger Zone</div>' +
-        '<div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Clear all locally stored data.</div>' +
-        '<button onclick="clearProfileData()" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.05);color:#ef4444;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">🗑️ Clear All Local Data</button>' +
-      '</div>' +
-    '</div>';
-}
-
-function togglePSector(s, btn) {
-  btn.dataset.sel = btn.dataset.sel === '1' ? '' : '1';
-  const sel = btn.dataset.sel === '1';
-  const col = SECTOR_COLORS[s] || '#9333ea';
-  btn.style.background = sel ? col + '22' : 'transparent';
-  btn.style.color      = sel ? col : 'var(--text3)';
-}
-
-function doSaveProfile() {
-  const btn    = document.getElementById('pe-save');
-  const errEl  = document.getElementById('pe-error');
-  const name   = (document.getElementById('pe-name')?.value || '').trim();
-  const handle = (document.getElementById('pe-handle')?.value || '').trim().replace(/^@/,'');
-  const bio    = (document.getElementById('pe-bio')?.value || '').trim();
-  const profession = (document.getElementById('pe-profession')?.value || '').trim();
-  const location   = (document.getElementById('pe-location')?.value || '').trim();
-  const dob        = document.getElementById('pe-dob')?.value || '';
-  const website    = (document.getElementById('pe-website')?.value || '').trim();
-  const sectors    = [...document.querySelectorAll('#pe-sectors [data-sel="1"]')]
-    .map(b => b.textContent.trim().replace(/[^\w\s]/g,'').trim().split(/\s+/).pop());
-
-  if (!name) { errEl.textContent = 'Name is required.'; return; }
-
-  btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;"></span> Saving...';
-
-  saveProfile({
-    name, handle, bio, profession, location,
-    dob: dob || null, website, sectors,
-    avatar_initials: getInitials(name),
-    joined_at: profile.joined_at || new Date().toISOString(),
-  });
-
-  btn.disabled = false; btn.innerHTML = '💾 Save Profile';
-  errEl.textContent = '';
-  showToast('✅ Profile saved!');
-  renderProfile();
-}
-
-function changeAvatar() {
-  const inp = document.createElement('input');
-  inp.type = 'file'; inp.accept = 'image/*';
-  inp.onchange = async function(e) {
-    const file = e.target.files[0]; if (!file) return;
-    if (file.size > 3 * 1024 * 1024) { showToast('⚠️ Image must be under 3MB'); return; }
-    showToast('📤 Uploading photo...');
-    try {
-      const sb = getSB();
-      if (sb) {
-        const ext  = file.name.split('.').pop();
-        const path = 'avatars/' + profile.device_id + '.' + ext;
-        const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
-        if (error) throw error;
-        const { data } = sb.storage.from('avatars').getPublicUrl(path);
-        saveProfile({ avatar_url: data.publicUrl });
-        showToast('✅ Photo updated!');
-      } else {
-        // Fallback: base64 in localStorage
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          saveProfile({ avatar_url: ev.target.result });
-          showToast('✅ Photo updated (local)!');
-          renderProfile();
-        };
-        reader.readAsDataURL(file);
-        return;
-      }
-    } catch(err) { showToast('⚠️ Upload failed: ' + err.message); return; }
-    renderProfile();
-  };
-  inp.click();
-}
-
-function clearProfileData() {
-  if (!confirm('Clear all bookmarks, likes, read history and preferences?')) return;
-  bookmarks = []; likes = []; readItems = []; alertKws = [];
-  ['pa_bookmarks','pa_likes','pa_read','pa_alerts'].forEach(k => localStorage.removeItem(k));
-  renderFeed();
-  showToast('🗑️ Data cleared');
-  renderProfile();
-}
-
-// Keyboard close
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && document.getElementById('profileOverlay').classList.contains('open')) closeProfile();
-});
-// Swipe down to close on mobile
-(function(){
-  let sy = 0;
-  document.addEventListener('touchstart', function(e){ sy = e.touches[0].clientY; }, {passive:true});
-  document.addEventListener('touchend', function(e){
-    if (e.changedTouches[0].clientY - sy > 80 &&
-        document.getElementById('profileOverlay').classList.contains('open')) closeProfile();
-  }, {passive:true});
-})();
-
 init();
-
-// ── MOBILE NAV ────────────────────────────────────
-function mobNav(view, btn) {
-  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  setView(view);
-}
-
-// ── SYNC MOBILE THEME BTN ─────────────────────────
-function syncMobTheme() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const btn = document.getElementById('mobThemeBtn');
-  if (btn) btn.textContent = isDark ? '🌙' : '☀️';
-}
-
-
-
-// Show mobile UI on small screens, desktop UI on large
-function applyLayout() {
-  const isMobile = window.innerWidth < 768;
-  const mobH = document.getElementById('mobHeader');
-  const mobN = document.getElementById('mobBottomNav');
-  if (mobH) mobH.style.display = isMobile ? 'flex' : 'none';
-  if (mobN) mobN.style.display = isMobile ? 'flex' : 'none';
-  syncMobTheme();
-}
-
-window.addEventListener('resize', applyLayout);
-document.addEventListener('DOMContentLoaded', applyLayout);
-// Also call after init
-// applyLayout called after init via direct call below
-
 </script>
 </body>
 </html>
