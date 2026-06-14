@@ -337,148 +337,43 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   .related-grid{grid-template-columns:1fr}
 }
 
-/* ══ LOGIN PAGE ══ */
-.login-page{
-  position:fixed;inset:0;z-index:999;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-  transition:opacity .4s,transform .4s;
-}
-.login-page.hiding{opacity:0;transform:scale(.97);pointer-events:none}
-.login-box{
-  width:100%;max-width:420px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:40px 36px;
-  box-shadow:0 24px 80px rgba(0,0,0,.6);
-  position:relative;overflow:hidden;
-}
-.login-box::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(233,30,140,.2),transparent 70%);
-  pointer-events:none;
-}
-.login-logo-wrap{text-align:center;margin-bottom:28px}
-.login-logo-img{max-width:200px;height:auto;max-height:70px;object-fit:contain}
-.login-tagline{font-size:12px;color:var(--text3);margin-top:6px;letter-spacing:.5px}
-.login-tabs{display:flex;gap:0;background:var(--surface2);border-radius:10px;padding:3px;margin-bottom:24px}
-.login-tab{
-  flex:1;padding:8px;border:none;background:transparent;
-  color:var(--text3);font-size:13px;font-weight:600;
-  font-family:inherit;cursor:pointer;border-radius:8px;transition:all .2s;
-}
-.login-tab.active{background:var(--bg);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.4)}
-.login-field{margin-bottom:14px}
-.login-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:5px}
-.login-input{
-  width:100%;background:var(--surface2);border:1px solid var(--border2);
-  border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;
-  padding:11px 14px;outline:none;transition:border-color .2s,box-shadow .2s;
-}
-.login-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(147,51,234,.12)}
-.login-input::placeholder{color:var(--text3)}
-.login-btn{
-  width:100%;padding:12px;border-radius:10px;border:none;
-  background:linear-gradient(135deg,#e91e8c,#9333ea);
-  color:#fff;font-size:15px;font-weight:700;font-family:inherit;
-  cursor:pointer;transition:opacity .15s,transform .1s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-top:4px;
-}
-.login-btn:hover{opacity:.92;transform:translateY(-1px)}
-.login-btn:active{transform:translateY(0)}
-.login-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.login-divider{
-  display:flex;align-items:center;gap:12px;margin:16px 0;
-  color:var(--text3);font-size:12px;
-}
-.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.login-guest-btn{
-  width:100%;padding:11px;border-radius:10px;
-  border:1px solid var(--border2);background:var(--surface2);
-  color:var(--text2);font-size:14px;font-weight:600;font-family:inherit;
-  cursor:pointer;transition:all .15s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.login-guest-btn:hover{border-color:var(--accent2);color:var(--text)}
-.login-err{font-size:12px;color:#ef4444;margin-bottom:10px;min-height:16px;text-align:center}
-.login-footer{text-align:center;margin-top:20px;font-size:11px;color:var(--text3)}
-.pw-strength{height:3px;border-radius:2px;margin-top:-10px;margin-bottom:12px;transition:all .3s;background:var(--border)}
-.login-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
-.login-feature{
-  background:var(--surface2);border:1px solid var(--border);border-radius:10px;
-  padding:10px 12px;display:flex;align-items:center;gap:8px;
-}
-.login-feature-icon{font-size:18px}
-.login-feature-text{font-size:11px;color:var(--text2);font-weight:500;line-height:1.3}
-
+/* LP */
+.lp{position:fixed;inset:0;z-index:9999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;padding:20px}
+.lp-box{width:100%;max-width:400px;background:#111;border:1px solid #2a2a2a;border-radius:20px;padding:36px 32px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.lp-logo{text-align:center;margin-bottom:6px}
+.lp-logo img{max-width:180px;height:60px;object-fit:contain}
+.lp-tag{text-align:center;font-size:12px;color:#666;margin-bottom:20px}
+.lp-tabs{display:flex;background:#1a1a1a;border-radius:10px;padding:3px;margin-bottom:18px;gap:3px}
+.lp-tab{flex:1;padding:8px;border:none;background:transparent;color:#666;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border-radius:8px;transition:all .2s}
+.lp-tab.active{background:#0a0a0a;color:#f5f5f5;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.lp-lbl{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:5px}
+.lp-inp{width:100%;background:#1a1a1a;border:1px solid #333;border-radius:10px;color:#f5f5f5;font-family:inherit;font-size:14px;padding:11px 14px;outline:none;margin-bottom:14px;transition:border-color .2s;box-sizing:border-box}
+.lp-inp:focus{border-color:#9333ea;box-shadow:0 0 0 3px rgba(147,51,234,.1)}
+.lp-inp::placeholder{color:#444}
+.lp-btn{width:100%;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,#e91e8c,#9333ea);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:12px}
+.lp-btn:hover{opacity:.9}
+.lp-or{display:flex;align-items:center;gap:10px;color:#444;font-size:12px;margin-bottom:12px}
+.lp-or::before,.lp-or::after{content:'';flex:1;height:1px;background:#2a2a2a}
+.lp-ghost{width:100%;padding:11px;border-radius:10px;border:1px solid #333;background:#1a1a1a;color:#aaa;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.lp-ghost:hover{border-color:#9333ea;color:#f5f5f5}
+.lp-err{font-size:12px;color:#ef4444;text-align:center;min-height:16px;margin-bottom:8px}
+.lp-foot{text-align:center;font-size:11px;color:#444;margin-top:18px}
 </style>
 </head>
 <body>
 
 <!-- TOAST CONTAINER -->
 
-<!-- ══ LOGIN PAGE ══ -->
-<div class="login-page" id="loginPage">
-  <div class="login-box">
-    <div class="login-logo-wrap">
-      <img class="login-logo-img" src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" alt="BharatNews.ai" onerror="this.outerHTML='<div style=font-size:24px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#9333ea);-webkit-background-clip:text;-webkit-text-fill-color:transparent>BharatNews.ai</div>'">
-      <div class="login-tagline">🇮🇳 Live AI-Powered News Intelligence</div>
-    </div>
-
-    <div class="login-features">
-      <div class="login-feature"><div class="login-feature-icon">📰</div><div class="login-feature-text">4 Live News Sources</div></div>
-      <div class="login-feature"><div class="login-feature-icon">🧠</div><div class="login-feature-text">Groq AI Analysis</div></div>
-      <div class="login-feature"><div class="login-feature-icon">🇮🇳</div><div class="login-feature-text">India-First Coverage</div></div>
-      <div class="login-feature"><div class="login-feature-icon">⚡</div><div class="login-feature-text">Real-Time Updates</div></div>
-    </div>
-
-    <div class="login-tabs">
-      <button class="login-tab active" id="ltab-login" onclick="switchLoginTab('login')">Sign In</button>
-      <button class="login-tab" id="ltab-signup" onclick="switchLoginTab('signup')">Create Account</button>
-    </div>
-
-    <!-- SIGN IN -->
-    <div id="loginForm">
-      <div class="login-err" id="loginErr"></div>
-      <div class="login-field">
-        <label class="login-label">Name</label>
-        <input class="login-input" id="loginName" placeholder="Enter your name" autocomplete="name">
-      </div>
-      <button class="login-btn" onclick="doLogin()">
-        <span>🚀</span> Enter BharatNews.ai
-      </button>
-      <div class="login-divider">or</div>
-      <button class="login-guest-btn" onclick="doGuest()">
-        👤 Continue as Guest
-      </button>
-    </div>
-
-    <!-- SIGN UP -->
-    <div id="signupForm" style="display:none">
-      <div class="login-err" id="signupErr"></div>
-      <div class="login-field">
-        <label class="login-label">Full Name</label>
-        <input class="login-input" id="signupName" placeholder="Your full name" autocomplete="name">
-      </div>
-      <div class="login-field">
-        <label class="login-label">Profession (optional)</label>
-        <input class="login-input" id="signupProfession" placeholder="e.g. Student, Engineer, Journalist...">
-      </div>
-      <button class="login-btn" onclick="doSignup()">
-        <span>✨</span> Create Account
-      </button>
-      <div class="login-divider">or</div>
-      <button class="login-guest-btn" onclick="doGuest()">
-        👤 Continue as Guest
-      </button>
-    </div>
-
-    <div class="login-footer">🔒 No passwords · Data stays on your device · 100% free</div>
-  </div>
+<!-- LP -->
+<div class="lp" id="loginPage">
+ <div class="lp-box">
+  <div class="lp-logo"><img src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" onerror="this.outerHTML='<div style=font-weight:900;font-size:22px;color:#e91e8c>BharatNews.ai</div>'"></div>
+  <div class="lp-tag">Live AI-Powered News for India</div>
+  <div class="lp-tabs"><button class="lp-tab active" id="lt-in" onclick="lpTab('in')">Sign In</button><button class="lp-tab" id="lt-up" onclick="lpTab('up')">Sign Up</button></div>
+  <div id="lp-in"><div class="lp-err" id="lp-in-err"></div><label class="lp-lbl">Your Name</label><input class="lp-inp" id="lp-in-name" placeholder="Enter your name"><button class="lp-btn" onclick="lpLogin()">Enter BharatNews.ai</button><div class="lp-or">or</div><button class="lp-ghost" onclick="lpGuest()">Continue as Guest</button></div>
+  <div id="lp-up" style="display:none"><div class="lp-err" id="lp-up-err"></div><label class="lp-lbl">Full Name</label><input class="lp-inp" id="lp-up-name" placeholder="Your full name"><label class="lp-lbl">Profession</label><input class="lp-inp" id="lp-up-prof" placeholder="e.g. Student, Engineer..."><button class="lp-btn" onclick="lpSignup()">Create Account</button><div class="lp-or">or</div><button class="lp-ghost" onclick="lpGuest()">Continue as Guest</button></div>
+  <div class="lp-foot">No passwords - On your device - Free</div>
+ </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
@@ -582,7 +477,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="logo" onclick="setView('feed')">
-      <img src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" alt="BharatNews.ai" style="width:180px;height:auto;max-height:55px;object-fit:contain" onerror="this.outerHTML='<b style=color:#e91e8c>BN.ai</b>'">
+      <img src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" alt="BN.ai" style="width:170px;height:auto;max-height:52px;object-fit:contain" onerror="this.outerHTML='<b>BN.ai</b>'">
     </div>
     <div class="nav-item active" id="nav-feed" onclick="setView('feed')">
       <span class="nav-icon">🏠</span><span>Feed</span>
@@ -695,13 +590,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 const GNEWS_KEY     = window.GNEWS_KEY     || '5b1fe697fb6dd50a5f9abbcd0515eece';
 const NEWSDATA_KEY  = window.NEWSDATA_KEY  || 'pub_38d8830b430242eb9f2a43de56dd9566';
 const GUARDIAN_KEY  = window.GUARDIAN_KEY  || '33e49fef-8260-4a36-9797-f943fa3bbb13';
-// NewsAPI removed (browser-blocked) — using NewsData as 4th source
+const NEWSAPI_KEY   = window.NEWSAPI_KEY   || '420794cf664d4ef3adf2d1fb47668f25';
 const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy','b3FYYyDPHNQvPX0jiii1S7k0fJkJ'].join('');
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
 const NEWSDATA_BASE = 'https://newsdata.io/api/1';
 const GUARDIAN_BASE = 'https://content.guardianapis.com';
-
+const NEWSAPI_BASE  = 'https://newsapi.org/v2';
 const GROQ_BASE     = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SECTOR_TO_GNEWS    = {All:'general',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'nation',Climate:'world',Sports:'sports'};
@@ -864,14 +759,1129 @@ async function fetchFromGuardian(sector, page=1) {
   return {cards:d.response.results.map((a,i)=>guardianToCard(a,sector,i)), totalPages:d.response.pages||1};
 }
 async function fetchFromNewsAPI(sector) {
-  // NewsAPI blocks browsers — use NewsData.io as 4th source instead
-  try {
-    var cat = SECTOR_TO_NEWSDATA[sector]||'top';
-    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
-    var r = await fetch(NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&language=en&category='+cat+'&size=8',{signal:ac.signal});
-    if(!r.ok) return [];
-    var d = await r.json();
-    return (d.results||[]).map(function(a,i){return newsdataToCard(a,sector,i+100);});
-  } catch(e){ return []; }
+  try{var cat=SECTOR_TO_NEWSDATA[sector]||'top';var ac=new AbortController();setTimeout(function(){ac.abort();},8000);var r=await fetch(NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&language=en&category='+cat+'&size=8',{signal:ac.signal});if(!r.ok)return[];var d=await r.json();return(d.results||[]).map(function(a,i){return newsdataToCard(a,sector,i+100);});}catch(e){return[];}
 }
 
+async function searchNewsAPI(q) {
+  const r = await fetch(`${NEWSAPI_BASE}/everything?apiKey=${NEWSAPI_KEY}&q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=20`);
+  if(!r.ok) throw new Error(`NewsAPI search ${r.status}`);
+  const d = await r.json();
+  if(d.status!=='ok') throw new Error('NewsAPI search: empty');
+  return d.articles.map((a,i)=>newsapiToCard(a,'All',i)).filter(Boolean);
+}
+async function searchGNews(q) {
+  const r = await fetch(`${GNEWS_BASE}/search?q=${encodeURIComponent(q)}&lang=en&max=10&apikey=${GNEWS_KEY}`);
+  if(!r.ok) throw new Error(`GNews search ${r.status}`);
+  const d = await r.json();
+  return (d.articles||[]).map((a,i)=>gnewsToCard(a,'All',i));
+}
+
+// ══════════════════════════════════════════════════
+// MERGE & DEDUPE
+// ══════════════════════════════════════════════════
+function mergeSources(...arrays) {
+  const seen = new Set(), merged = [];
+  const maxLen = Math.max(...arrays.map(a=>a.length));
+  for (let i=0; i<maxLen; i++) {
+    for (const arr of arrays) {
+      const card = arr[i];
+      if (!card) continue;
+      const key = card.title.substring(0,40).toLowerCase().replace(/[^a-z0-9]/g,'');
+      if (!seen.has(key)) { seen.add(key); merged.push(card); }
+    }
+  }
+  return merged;
+}
+
+// ══════════════════════════════════════════════════
+// COMBINED FETCH
+// ══════════════════════════════════════════════════
+async function fetchNews(sector='All', force=false, silent=false) {
+  const TTL = 15*60*1000;
+  if (!force && newsCache[sector] && (Date.now()-(lastFetch[sector]||0))<TTL) return newsCache[sector];
+
+  if(!silent) updateSourceBadge('fetching');
+
+  const [g,nd,gu,na] = await Promise.allSettled([
+    fetchFromGNews(sector),
+    fetchFromNewsData(sector).then(r=>r.cards),
+    fetchFromGuardian(sector).then(r=>r.cards),
+    fetchFromNewsAPI(sector),
+  ]);
+
+  const gc = g.status==='fulfilled'?g.value:[];
+  const nc = nd.status==='fulfilled'?nd.value:[];
+  const guc= gu.status==='fulfilled'?gu.value:[];
+  const nac= na.status==='fulfilled'?na.value:[];
+
+  console.log(`[Bharat News AI] ${sector}: GNews=${gc.length} NewsData=${nc.length} Guardian=${guc.length} NewsAPI=${nac.length}`);
+
+  let merged;
+  if (!gc.length&&!nc.length&&!guc.length&&!nac.length) {
+    merged = getFallbackNews(sector);
+    updateSourceBadge('fallback');
+  } else {
+    merged = mergeSources(gc,nc,guc,nac);
+    const parts = [];
+    if(gc.length) parts.push(`GNews(${gc.length})`);
+    if(nc.length) parts.push(`NewsData(${nc.length})`);
+    if(guc.length) parts.push(`Guardian(${guc.length})`);
+    if(nac.length) parts.push(`NewsAPI(${nac.length})`);
+    updateSourceBadge('live', parts.join(' · '));
+  }
+
+  newsCache[sector] = merged;
+  lastFetch[sector] = Date.now();
+  if (sector==='All') newsData = merged;
+
+  // Check alerts
+  checkAlerts(merged);
+  // Check breaking
+  checkBreaking(merged);
+
+  showFeedLoader(false);
+  return merged;
+}
+
+async function fetchAllSectors() {
+  const all = ['Tech','Finance','Health','Science','Politics','Climate','Sports'];
+  await Promise.allSettled(all.map(function(s){return fetchNews(s,false,true);}));
+  newsData = Object.values(newsCache).flat().slice(0,80);
+  updateStoriesFromNews();
+}
+
+async function fetchIndia() {
+  try {
+    const {cards} = await fetchFromNewsDataIndia();
+    newsCache['India'] = cards;
+    lastFetch['India'] = Date.now();
+    showFeedLoader(false);
+    return cards;
+  } catch(e) {
+    showFeedLoader(false);
+    return getFallbackNews('All');
+  }
+}
+
+// ══════════════════════════════════════════════════
+// LOAD MORE (PAGINATION)
+// ══════════════════════════════════════════════════
+let loadMorePage = {guardian:1, newsdata:null};
+
+async function loadMore() {
+  const btn = document.getElementById('loadMoreBtn');
+  const spinner = document.getElementById('loadMoreSpinner');
+  const txt = document.getElementById('loadMoreText');
+  spinner.style.display='inline-block'; txt.textContent='Loading...';
+
+  try {
+    loadMorePage.guardian++;
+    const [g,nd,gu] = await Promise.allSettled([
+      fetchFromGNews(state.currentSector),
+      fetchFromNewsData(state.currentSector, loadMorePage.newsdata).then(r=>{loadMorePage.newsdata=r.nextPage;return r.cards;}),
+      fetchFromGuardian(state.currentSector, loadMorePage.guardian).then(r=>r.cards),
+    ]);
+    const newCards = mergeSources(
+      g.status==='fulfilled'?g.value:[],
+      nd.status==='fulfilled'?nd.value:[],
+      gu.status==='fulfilled'?gu.value:[],
+    );
+    // Append to existing cache
+    const existing = newsCache[state.currentSector]||[];
+    const existingIds = new Set(existing.map(c=>c.id));
+    const fresh = newCards.filter(c=>!existingIds.has(c.id));
+    newsCache[state.currentSector] = [...existing,...fresh];
+    if(state.currentSector==='All') newsData = newsCache['All'];
+    renderFeed();
+    showToast(`✅ Loaded ${fresh.length} more articles`);
+  } catch(e) {
+    showToast('⚠️ Could not load more');
+  }
+  spinner.style.display='none'; txt.textContent='⬇️ Load More Articles';
+}
+
+// ══════════════════════════════════════════════════
+// LIVE SEARCH
+// ══════════════════════════════════════════════════
+let searchTimer = null;
+async function handleSearch(val) {
+  const clear = document.getElementById('searchClear');
+  clear.style.display = val ? 'block' : 'none';
+
+  clearTimeout(searchTimer);
+  if (!val.trim()) { renderFeed(); return; }
+
+  searchTimer = setTimeout(async () => {
+    try {
+      const [r1,r2] = await Promise.allSettled([
+        searchNewsAPI(val),
+        searchGNews(val),
+      ]);
+      const results = mergeSources(
+        r1.status==='fulfilled'?r1.value:[],
+        r2.status==='fulfilled'?r2.value:[],
+      );
+      renderFeed(results);
+      showToast(`🔍 ${results.length} results for "${val}"`);
+    } catch(e) {
+      const filtered = (newsData||[]).filter(c=>c.title.toLowerCase().includes(val.toLowerCase())||c.summary.toLowerCase().includes(val.toLowerCase()));
+      renderFeed(filtered);
+    }
+    showFeedLoader(false);
+  }, 600);
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').style.display='none';
+  renderFeed();
+}
+
+// ══════════════════════════════════════════════════
+// BREAKING NEWS DETECTOR
+// ══════════════════════════════════════════════════
+let shownBreaking = new Set();
+function checkBreaking(articles) {
+  const b = articles.find(a=>a.breaking && !shownBreaking.has(a.id));
+  if (!b) return;
+  shownBreaking.add(b.id);
+  const banner = document.getElementById('breakingBanner');
+  document.getElementById('breakingText').textContent = b.title;
+  banner.classList.add('show');
+  banner.onclick = (e) => { if(e.target!==banner.querySelector('.breaking-close')) openReader(b); };
+}
+
+// ══════════════════════════════════════════════════
+// KEYWORD ALERTS
+// ══════════════════════════════════════════════════
+function checkAlerts(articles) {
+  if (!alertKws.length) return;
+  for (const article of articles) {
+    const t = (article.title+' '+article.summary).toLowerCase();
+    for (const kw of alertKws) {
+      if (t.includes(kw.toLowerCase())) {
+        const alreadyShown = JSON.parse(localStorage.getItem('pa_alert_shown')||'[]');
+        if (alreadyShown.includes(article.id)) continue;
+        alreadyShown.push(article.id);
+        localStorage.setItem('pa_alert_shown', JSON.stringify(alreadyShown.slice(-100)));
+        showToast(`🔔 Alert: "${kw}" — ${article.title.substring(0,50)}...`);
+        if (Notification.permission==='granted') {
+          new Notification(`Bharat News AI Alert: ${kw}`, {body:article.title, icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="%23e91e8c"/><text x="18" y="26" font-size="20" text-anchor="middle" fill="white">B</text></svg>'});
+        }
+      }
+    }
+  }
+}
+
+function openAlertModal() {
+  if (Notification.permission==='default') Notification.requestPermission();
+  renderAlertsList();
+  document.getElementById('alertModalOverlay').classList.add('open');
+}
+function closeAlertModal(e) {
+  if (!e||e.target.id==='alertModalOverlay') document.getElementById('alertModalOverlay').classList.remove('open');
+}
+function addAlert() {
+  const inp = document.getElementById('alertKeywordInput');
+  const kw = inp.value.trim();
+  if (!kw||alertKws.includes(kw)) return;
+  alertKws.push(kw);
+  localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
+  inp.value='';
+  renderAlertsList();
+  const dot = document.getElementById('notifDot');
+  if(dot) dot.style.display='block';
+  showToast(`🔔 Alert set for "${kw}"`);
+}
+function removeAlert(kw) {
+  alertKws = alertKws.filter(k=>k!==kw);
+  localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
+  renderAlertsList();
+}
+function renderAlertsList() {
+  const el = document.getElementById('alertsList');
+  if (!alertKws.length) { el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">No alerts yet. Add keywords below.</div>'; return; }
+  el.innerHTML = alertKws.map(k=>`
+    <div class="alert-item">
+      <span class="alert-keyword">🔔 ${k}</span>
+      <button class="alert-remove" onclick="removeAlert('${k}')">✕</button>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// PREFERENCES
+// ══════════════════════════════════════════════════
+function openPrefsModal() {
+  // Render sector chips
+  const el = document.getElementById('prefSectorChips');
+  el.innerHTML = sectors.filter(s=>s!=='All').map(s=>`
+    <button class="pref-chip ${prefs.favSectors?.includes(s)?'selected':''}" onclick="toggleFavSector('${s}',this)">
+      ${SECTOR_EMOJIS[s]} ${s}
+    </button>`).join('');
+  // Set toggles
+  document.getElementById('prefIndia').checked    = !!prefs.showIndia;
+  document.getElementById('prefCluster').checked  = !!prefs.clustering;
+  document.getElementById('prefAutoStory').checked= !!prefs.autoStory;
+  document.getElementById('prefReadTime').checked = prefs.readTime!==false;
+  document.getElementById('prefsModalOverlay').classList.add('open');
+}
+function closePrefsModal(e) {
+  if (!e||e.target.id==='prefsModalOverlay') document.getElementById('prefsModalOverlay').classList.remove('open');
+}
+function toggleFavSector(s, btn) {
+  if (!prefs.favSectors) prefs.favSectors=[];
+  if (prefs.favSectors.includes(s)) { prefs.favSectors=prefs.favSectors.filter(x=>x!==s); btn.classList.remove('selected'); }
+  else { prefs.favSectors.push(s); btn.classList.add('selected'); }
+  savePref('favSectors', prefs.favSectors);
+}
+
+// ══════════════════════════════════════════════════
+// GROQ AI
+// ══════════════════════════════════════════════════
+async function callAI(prompt, system='You are a world-class news analyst. Be concise, insightful, and accurate.') {
+  try {
+    const _ac=new AbortController();setTimeout(function(){_ac.abort();},8000);
+    const r = await fetch(GROQ_BASE, {signal:_ac.signal,
+      method:'POST',
+      headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:system},{role:'user',content:prompt}],max_tokens:1200,temperature:.7})
+    });
+    if (!r.ok) { const e=await r.json().catch(()=>({})); showToast('⚠️ AI: '+(e?.error?.message||r.status)); return null; }
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content||null;
+  } catch(e) { console.error(e); return null; }
+}
+
+async function generateDailyBriefing() {
+  const el = document.getElementById('dailyBriefing');
+  el.innerHTML = '<span class="spinner"></span> Generating with Groq...';
+  const tops = newsData.slice(0,6).map(n=>n.title).join('\n');
+  const r = await callAI(`Today's headlines:\n${tops}\n\nWrite a sharp 3-sentence daily intelligence briefing synthesising the biggest trends. Be analytical and insightful.`,'You are a senior intelligence analyst. Be concise and sharp.');
+  el.textContent = r || '⚡ Connect Groq to generate briefing.';
+}
+
+// AI Story Clustering
+async function generateClusters(articles) {
+  if (!prefs.clustering||articles.length<5) return null;
+  const titles = articles.slice(0,15).map((a,i)=>`${i}: ${a.title}`).join('\n');
+  const r = await callAI(
+    `News articles:\n${titles}\n\nGroup these into 2-3 story clusters (related articles about the same event/topic). Return ONLY valid JSON, no markdown:\n[{"cluster":"Cluster name","indices":[0,1,2],"summary":"One sentence"}]`,
+    'You are a news editor. Return only valid JSON array.'
+  );
+  if (!r) return null;
+  try {
+    const clean = r.replace(/```json\n?|```\n?/g,'').trim();
+    return JSON.parse(clean);
+  } catch(e) { return null; }
+}
+
+// ══════════════════════════════════════════════════
+// ARTICLE READER (Feature #2)
+// ══════════════════════════════════════════════════
+function openReader(card) {
+  state.currentCard = card;
+  markRead(card.id);
+  const el = document.getElementById('readerContent');
+  const sectorColor = SECTOR_COLORS[card.sector]||'#9333ea';
+  const rt = readingTime(card.summary+' '+card.content);
+
+  el.innerHTML = `
+    ${card.image
+      ? `<img class="reader-hero" src="${card.image}" alt="${card.imageAlt||''}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="reader-hero-fallback" style="display:none;">${SECTOR_EMOJIS[card.sector]||'📰'}</div>`
+      : `<div class="reader-hero-fallback">${SECTOR_EMOJIS[card.sector]||'📰'}</div>`
+    }
+    <div class="reader-content">
+      <div class="reader-sector" style="color:${sectorColor}">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      <div class="reader-title">${card.title}</div>
+      <div class="reader-meta">
+        <div class="reader-source-chip">${card.sourceIcon} ${card.source}</div>
+        <div class="reader-source-chip">🕐 ${card.time}</div>
+        <div class="reader-source-chip">📖 ${rt}</div>
+        <div class="reader-source-chip" style="color:${card.apiSource==='GNews'?'#3b82f6':card.apiSource==='NewsData'?'#e91e8c':card.apiSource==='Guardian'?'#10b981':'#ef4444'}">${card.apiSource}</div>
+      </div>
+
+      <!-- TTS Bar (Feature #14) -->
+      <div class="tts-bar" id="ttsBar">
+        <button class="tts-play" id="ttsPlayBtn" onclick="toggleTTS('${card.id}')">▶</button>
+        <div class="tts-progress" onclick="seekTTS(event,this)">
+          <div class="tts-fill" id="ttsFill"></div>
+        </div>
+        <span class="tts-time" id="ttsTime">0:00</span>
+        <select class="tts-speed" id="ttsSpeed" onchange="setTTSSpeed(this.value)">
+          <option value="0.8">0.8×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.25">1.25×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+        </select>
+      </div>
+
+      <div class="reader-body">
+        <p>${card.summary}</p>
+        ${card.content && card.content!==card.summary ? `<p>${card.content.replace(/\[.*?\]/g,'').trim()}</p>` : ''}
+        <p style="color:var(--text3);font-size:13px;font-style:italic;">This summary is AI-curated from ${card.source}. Read the full article for complete coverage.</p>
+      </div>
+
+      <div class="reader-actions">
+        <a href="${card.articleUrl}" target="_blank" class="reader-btn primary" style="text-decoration:none;">
+          🔗 Read Full Article on ${card.source}
+        </a>
+        <button class="reader-btn secondary" onclick="closeReader();analyzeNews(state.currentCard)">
+          🧠 AI Deep Analysis
+        </button>
+        <button class="reader-btn secondary" onclick="shareAsImage(state.currentCard)">
+          📸 Share as Image
+        </button>
+        <button class="reader-btn secondary" onclick="toggleBookmark(state.currentCard.id);this.textContent=bookmarks.includes(state.currentCard.id)?'🔖 Saved':'📌 Save'">
+          ${bookmarks.includes(card.id)?'🔖 Saved':'📌 Save'}
+        </button>
+      </div>
+    </div>`;
+
+  document.getElementById('readerOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeReader() {
+  document.getElementById('readerOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  stopTTS();
+}
+function closeReaderOnBg(e) { if(e.target.id==='readerOverlay') closeReader(); }
+
+// ══════════════════════════════════════════════════
+// TTS — Text to Speech (Feature #14)
+// ══════════════════════════════════════════════════
+let ttsInterval = null;
+function toggleTTS(cardId) {
+  const card = [...Object.values(newsCache).flat(),...newsData].find(c=>c.id===cardId)||state.currentCard;
+  if (!card) return;
+  if (state.ttsPlaying) { stopTTS(); return; }
+  const text = `${card.title}. ${card.summary}. ${card.content||''}`;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = parseFloat(document.getElementById('ttsSpeed')?.value||1);
+  utter.lang = 'en-US';
+  const totalWords = text.split(/\s+/).length;
+  let wordIdx = 0;
+  utter.onboundary = (e) => {
+    if (e.name==='word') { wordIdx++; updateTTSProgress(wordIdx/totalWords); }
+  };
+  utter.onend = () => { stopTTS(); updateTTSProgress(1); };
+  state.ttsUtterance = utter;
+  state.ttsPlaying = true;
+  window.speechSynthesis.speak(utter);
+  document.getElementById('ttsPlayBtn').textContent = '⏸';
+  // Time counter
+  let secs=0;
+  ttsInterval = setInterval(()=>{ secs++; const m=Math.floor(secs/60),s=secs%60; const el=document.getElementById('ttsTime'); if(el) el.textContent=`${m}:${s.toString().padStart(2,'0')}`; },1000);
+}
+function stopTTS() {
+  window.speechSynthesis.cancel();
+  state.ttsPlaying=false;
+  state.ttsUtterance=null;
+  clearInterval(ttsInterval);
+  const btn=document.getElementById('ttsPlayBtn');
+  if(btn) btn.textContent='▶';
+}
+function setTTSSpeed(val) { if(state.ttsUtterance) state.ttsUtterance.rate=parseFloat(val); }
+function updateTTSProgress(pct) { const el=document.getElementById('ttsFill'); if(el) el.style.width=(pct*100)+'%'; }
+function seekTTS(e,bar) { const pct=e.offsetX/bar.offsetWidth; updateTTSProgress(pct); }
+
+// ══════════════════════════════════════════════════
+// SHARE AS IMAGE (Feature #8)
+// ══════════════════════════════════════════════════
+async function shareAsImage(card) {
+  if (!card) card = state.currentCard;
+  if (!card) return;
+  showToast('📸 Generating share image...');
+  // Build a temporary styled div and capture it
+  const div = document.createElement('div');
+  div.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:600px;background:#111;border-radius:16px;overflow:hidden;font-family:Inter,sans-serif;';
+  div.innerHTML = `
+    <div style="position:relative;">
+      <img src="${card.image}" style="width:100%;height:300px;object-fit:cover;display:block;" crossorigin="anonymous">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.8));"></div>
+      <div style="position:absolute;bottom:16px;left:16px;right:16px;">
+        <div style="font-size:11px;font-weight:700;color:#e91e8c;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">${card.sector}</div>
+        <div style="font-size:20px;font-weight:800;color:#fff;line-height:1.3;">${card.title}</div>
+      </div>
+    </div>
+    <div style="padding:20px;">
+      <div style="font-size:13px;color:#aaa;line-height:1.6;margin-bottom:16px;">${card.summary.substring(0,200)}...</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:12px;color:#666;">${card.source} · ${card.time}</div>
+        <div style="font-size:14px;font-weight:800;background:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Bharat News AI</div>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+  try {
+    const canvas = await html2canvas(div, {useCORS:true, allowTaint:true, scale:2, backgroundColor:'#111'});
+    div.remove();
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download=`Bharat News AI-${card.sector}-${Date.now()}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('✅ Image saved!');
+    });
+  } catch(e) { div.remove(); showToast('⚠️ Share image failed'); }
+}
+
+// ══════════════════════════════════════════════════
+// READ STATE (Feature #4 complement)
+// ══════════════════════════════════════════════════
+function markRead(id) {
+  if (!readItems.includes(id)) {
+    readItems.push(id);
+    localStorage.setItem('pa_read', JSON.stringify(readItems.slice(-200)));
+  }
+}
+
+// ══════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ══════════════════════════════════════════════════
+function renderSectors() {
+  const el = document.getElementById('sectorChips');
+  const allSectors = [...sectors];
+  if (prefs.showIndia) allSectors.push('India');
+  el.innerHTML = allSectors.map(s=>`
+    <button class="sector-chip ${s===state.currentSector?'active':''} ${s==='India'?'india-chip':''}" onclick="setSector('${s}')">
+      ${SECTOR_EMOJIS[s]||'📰'} ${s}
+    </button>`).join('');
+}
+
+function renderStories() {
+  const el = document.getElementById('storiesRow');
+  el.innerHTML = storiesData.map((s,i)=>`
+    <div class="story-item" onclick="openStory(${i})">
+      <div class="story-ring ${readItems.includes('story-'+i)?'viewed':''}">
+        <div class="story-avatar">
+          <img src="${s.image||SECTOR_FALLBACK_IMAGES[s.sector]}" alt="${s.sector}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--bg);" onerror="this.parentElement.textContent='${SECTOR_EMOJIS[s.sector]||'📰'}'">
+        </div>
+      </div>
+      <div class="story-label">${s.sector}</div>
+    </div>`).join('');
+}
+
+async function renderFeed(overrideCards=null) {
+  const el = document.getElementById('newsFeed');
+  let cards = overrideCards || (state.currentSector!=='All' ? (newsCache[state.currentSector]||[]) : newsData);
+
+  if (state.view==='bookmarks') {
+    cards = [...Object.values(newsCache).flat(),...newsData].filter(c=>bookmarks.includes(c.id));
+    const seen=new Set(); cards=cards.filter(c=>{ if(seen.has(c.id)) return false; seen.add(c.id); return true; });
+    if (!cards.length) { el.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔖</div><div class="empty-state-title">No saved articles</div><div style="font-size:13px;color:var(--text3);">Bookmark articles to read later.</div></div>`; document.getElementById('loadMoreBtn').style.display='none'; return; }
+  }
+
+  if (state.feedMode==='hindi') {
+    try { cards = await fetchFromNewsDataHindi(); } catch(e) { showToast('⚠️ Hindi feed unavailable'); }
+  }
+
+  if (!overrideCards) {
+    if (state.feedMode==='trending') cards = [...cards].sort(()=>Math.random()-.5);
+    if (state.feedMode==='ai-picks') cards = cards.filter(c=>prefs.favSectors?.includes(c.sector));
+  }
+
+  if (!cards.length) {
+    el.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No articles found</div><div style="font-size:13px;color:var(--text3);">Try a different sector or search term.</div></div>`;
+    document.getElementById('loadMoreBtn').style.display='none';
+    return;
+  }
+
+  // Clustering
+  let clusters = null;
+  if (prefs.clustering && cards.length>=5 && !overrideCards) {
+    clusters = await generateClusters(cards);
+  }
+
+  let html = '';
+
+  // Render clusters first if available
+  if (clusters&&clusters.length) {
+    for (const cluster of clusters) {
+      const clusterCards = cluster.indices.map(i=>cards[i]).filter(Boolean);
+      if (clusterCards.length<2) continue;
+      html += renderCluster(cluster, clusterCards);
+    }
+    html += '<div style="font-size:12px;color:var(--text3);text-align:center;margin:8px 0 16px;font-weight:500;">— More Stories —</div>';
+  }
+
+  // Render remaining cards
+  html += cards.map(card=>renderCard(card)).join('');
+  el.innerHTML = html;
+  document.getElementById('loadMoreBtn').style.display = 'flex';
+}
+
+function renderCluster(cluster, cards) {
+  return `<div class="cluster-card fade-in">
+    <div class="cluster-label">🗂️ Story Cluster · AI Grouped <span class="ai-badge">AI</span></div>
+    <div class="cluster-headline">${cluster.cluster}</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">${cluster.summary||''}</div>
+    <div class="cluster-articles">
+      ${cards.map(c=>`
+        <div class="cluster-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+          <img class="cluster-item-img" src="${c.image}" alt="" onerror="this.style.display='none'">
+          <div>
+            <div class="cluster-item-title">${c.title.substring(0,90)}${c.title.length>90?'...':''}</div>
+            <div class="cluster-item-source">${c.source} · ${c.time} · <span style="color:${c.apiSource==='Guardian'?'#10b981':c.apiSource==='GNews'?'#3b82f6':'#e91e8c'}">${c.apiSource}</span></div>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderCard(card) {
+  const isLiked      = likes.includes(card.id);
+  const isBookmarked = bookmarks.includes(card.id);
+  const isRead       = readItems.includes(card.id);
+  const sectorColor  = SECTOR_COLORS[card.sector]||'#9333ea';
+  const rt           = prefs.readTime!==false ? readingTime(card.summary) : '';
+  const sourceColor  = card.apiSource==='GNews'?'#3b82f6':card.apiSource==='NewsData'?'#e91e8c':card.apiSource==='Guardian'?'#10b981':'#ef4444';
+  const sourceBg     = card.apiSource==='GNews'?'rgba(59,130,246,.15)':card.apiSource==='NewsData'?'rgba(233,30,140,.15)':card.apiSource==='Guardian'?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)';
+
+  return `<div class="news-card fade-in ${isRead?'':''}">
+    <div class="card-header">
+      <div class="source-avatar">${card.sourceIcon||'📰'}</div>
+      <div class="source-info">
+        <div class="source-name">${card.source} <span class="verified">✓</span></div>
+        <div class="source-meta">
+          <span>${card.time}</span>
+          <span>•</span>
+          ${rt ? `<span class="reading-time">📖 ${rt}</span>` : ''}
+          <span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:${sourceBg};color:${sourceColor};">${card.apiSource}</span>
+          ${isRead?'<span style="font-size:10px;color:var(--text3);">✓ Read</span>':''}
+        </div>
+      </div>
+    </div>
+
+    <div class="card-img-wrap" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+      <img class="card-img" src="${card.image}" alt="${card.imageAlt||card.title}" loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="card-img-fallback" style="display:none;background:${card.color}22;">${SECTOR_EMOJIS[card.sector]||'📰'}</div>
+      <div class="card-img-overlay"></div>
+      <div class="card-img-sector" style="color:${sectorColor};">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      ${card.breaking?'<div class="card-img-breaking">🔴 BREAKING</div>':''}
+    </div>
+
+    <div class="card-body" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+      <div class="card-title" style="${isRead?'opacity:.7':''};">${card.title}</div>
+      <div class="card-summary">${card.summary}</div>
+      <div class="card-tags">
+        ${(card.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="card-actions">
+      <button class="action-btn ${isLiked?'liked':''}" onclick="toggleLike('${card.id}')">
+        <span>${isLiked?'❤️':'🤍'}</span>${isLiked?'Liked':'Like'}
+      </button>
+      <button class="action-btn" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>📖</span>Read
+      </button>
+      <button class="action-btn" onclick="analyzeNews(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>🧠</span>Analyse
+      </button>
+      <button class="action-btn" onclick="shareAsImage(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
+        <span>📸</span>Share
+      </button>
+      <button class="action-btn ${isBookmarked?'bookmarked':''} action-sep" onclick="toggleBookmark('${card.id}')">
+        <span>${isBookmarked?'🔖':'📌'}</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderRightPanel() {
+  // Trending — live from fetched data
+  const trending = document.getElementById('trendingList');
+  const allCards = Object.values(newsCache).flat();
+  const trendingCards = allCards.sort(()=>Math.random()-.5).slice(0,6);
+  trending.innerHTML = trendingCards.length
+    ? trendingCards.map((c,i)=>`
+        <div class="trending-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+          <div class="trending-rank">${String(i+1).padStart(2,'0')}</div>
+          <div class="trending-info">
+            <div class="trending-title">${c.title.substring(0,55)}${c.title.length>55?'...':''}</div>
+            <div class="trending-meta">${c.source} · ${c.time}</div>
+          </div>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:12px;">Loading trends...</div>';
+
+  // Markets (simulated — real would need Alpha Vantage)
+  const markets = [
+    {symbol:'BTC',price:'$67,240',change:'+2.8%',up:true},
+    {symbol:'S&P',price:'6,018',change:'+1.2%',up:true},
+    {symbol:'GOLD',price:'$2,341',change:'-0.4%',up:false},
+    {symbol:'NIFTY',price:'23,850',change:'+0.9%',up:true},
+    {symbol:'SENSEX',price:'78,400',change:'+0.7%',up:true},
+    {symbol:'OIL',price:'$79.40',change:'-1.1%',up:false},
+  ];
+  document.getElementById('marketGrid').innerHTML = markets.map(m=>`
+    <div class="market-card">
+      <div class="market-symbol">${m.symbol}</div>
+      <div class="market-price">${m.price}</div>
+      <div class="market-change ${m.up?'up':'down'}">${m.change}</div>
+    </div>`).join('');
+
+  // Sources
+  document.getElementById('sourcesList').innerHTML = [
+    {name:'GNews',icon:'📰',desc:'Global headlines',url:'https://gnews.io'},
+    {name:'NewsData.io',icon:'📡',desc:'India + Breaking',url:'https://newsdata.io'},
+    {name:'The Guardian',icon:'🟢',desc:'Premium journalism',url:'https://theguardian.com'},
+    {name:'NewsAPI.org',icon:'🔴',desc:'100+ sources',url:'https://newsapi.org'},
+  ].map(s=>`
+    <a class="source-chip-link" href="${s.url}" target="_blank">
+      ${s.icon} <span><strong>${s.name}</strong> · ${s.desc}</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--accent5);">🟢 Live</span>
+    </a>`).join('');
+}
+
+// ══════════════════════════════════════════════════
+// STORY VIEWER
+// ══════════════════════════════════════════════════
+function openStory(index) {
+  state.storyIndex = index;
+  updateStoryView();
+  document.getElementById('storyViewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  markRead('story-'+index);
+  startStoryTimer();
+}
+
+function updateStoryView() {
+  const s = storiesData[state.storyIndex];
+  if (!s) { closeStory(); return; }
+  const img = s.image||SECTOR_FALLBACK_IMAGES[s.sector];
+  document.getElementById('storyBgImg').src = img;
+  document.getElementById('storyIcon').src   = img;
+  document.getElementById('storySourceName').textContent = s.source;
+  document.getElementById('storyTime').textContent = s.time;
+  document.getElementById('storyCategory').textContent = s.sector;
+  document.getElementById('storyHeadline').textContent = s.headline;
+  document.getElementById('storySnippet').textContent = s.snippet;
+  const prog = document.getElementById('storyProgress');
+  prog.innerHTML = storiesData.map((_,i)=>`
+    <div class="story-prog-bar">
+      <div class="story-prog-fill ${i<state.storyIndex?'complete':''}" id="prog-${i}"></div>
+    </div>`).join('');
+}
+
+let progressInterval = null;
+function startStoryTimer() {
+  clearInterval(progressInterval);
+  const fill = document.getElementById(`prog-${state.storyIndex}`);
+  if (!fill) return;
+  let w=0;
+  progressInterval = setInterval(()=>{
+    w += 100/60;
+    if(fill) fill.style.width=Math.min(w,100)+'%';
+    if(w>=100) { clearInterval(progressInterval); nextStory(); }
+  },100);
+}
+
+function nextStory() { clearInterval(progressInterval); state.storyIndex++; if(state.storyIndex>=storiesData.length){closeStory();return;} updateStoryView(); startStoryTimer(); }
+function prevStory() { clearInterval(progressInterval); state.storyIndex=Math.max(0,state.storyIndex-1); updateStoryView(); startStoryTimer(); }
+function closeStory() { clearInterval(progressInterval); document.getElementById('storyViewer').classList.remove('open'); document.body.style.overflow=''; }
+function openFromStory() { const s=storiesData[state.storyIndex]; closeStory(); const match=Object.values(newsCache).flat().find(n=>n.sector===s.sector); if(match) setTimeout(()=>openReader(match),300); }
+
+function updateStoriesFromNews() {
+  const sects = ['Tech','Finance','Health','Science','Sports','Politics','Climate','India'];
+  const newS = [];
+  for (const s of sects) {
+    const cached = newsCache[s];
+    if (cached?.[0]) {
+      const a = cached[0];
+      newS.push({sector:s,icon:SECTOR_EMOJIS[s],source:a.source,time:a.time,headline:a.title,snippet:(a.summary||'').substring(0,100)+'...',color:SECTOR_COLORS[s],image:a.image||SECTOR_FALLBACK_IMAGES[s]});
+    }
+  }
+  if (newS.length) { storiesData.length=0; newS.forEach(s=>storiesData.push(s)); renderStories(); }
+}
+
+// ══════════════════════════════════════════════════
+// AI ANALYSIS MODAL
+// ══════════════════════════════════════════════════
+async function analyzeNews(card) {
+  state.currentCard = card;
+  const overlay = document.getElementById('analysisOverlay');
+  const content = document.getElementById('analysisContent');
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+  const sectorColor = SECTOR_COLORS[card.sector]||'#9333ea';
+
+  // Show loading
+  content.innerHTML = `
+    <div style="position:relative;width:100%;height:200px;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      <img src="${card.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.8));"></div>
+    </div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:16px;padding-right:40px;">${card.title}</div>
+    <div style="text-align:center;padding:40px 20px;color:var(--text3);">
+      <div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:${sectorColor};"></div>
+      <div style="font-size:14px;font-weight:600;color:var(--text2);">⚡ Analysing with Groq Llama 3.3 70B...</div>
+      <div style="font-size:11px;margin-top:4px;">Generating summary · sentiment · timeline · insights</div>
+    </div>`;
+
+  const prompt = `Analyse this news article:\n\nTITLE: ${card.title}\nSUMMARY: ${card.summary}\nSOURCE: ${card.source}\nSECTOR: ${card.sector}\n\nReturn ONLY valid JSON (no markdown):\n{"summary":"2-3 sentence executive summary","sentiment":{"positive":40,"neutral":35,"negative":25},"keyPoints":["point 1","point 2","point 3","point 4"],"timeline":[{"date":"period","event":"what happened"},{"date":"period","event":"what happened"},{"date":"period","event":"what happened"}],"implications":"2 sentences on broader implications","watchFor":"What to watch in next 30 days"}`;
+
+  const result = await callAI(prompt,'You are a world-class investigative journalist. Return only valid JSON.');
+  let analysis = null;
+  if (result) {
+    try { analysis = JSON.parse(result.replace(/```json\n?|```\n?/g,'').trim()); } catch(e) { analysis={summary:result,keyPoints:[],timeline:[],sentiment:{positive:50,neutral:30,negative:20}}; }
+  }
+
+  const sent = analysis?.sentiment||{positive:50,neutral:30,negative:20};
+  const relatedCards = Object.values(newsCache).flat().filter(n=>n.id!==card.id&&n.sector===card.sector).slice(0,4);
+
+  content.innerHTML = `
+    <div style="position:relative;width:100%;height:220px;border-radius:12px;overflow:hidden;margin-bottom:20px;">
+      <img src="${card.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.75));"></div>
+      <div style="position:absolute;bottom:12px;left:14px;display:flex;gap:6px;flex-wrap:wrap;">
+        ${(card.tags||[]).map(t=>`<span style="padding:3px 9px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-radius:20px;font-size:11px;color:#fff;font-weight:600;">#${t}</span>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:10px;padding-right:40px;line-height:1.3;">${card.title}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+      <div class="modal-source-chip">${card.sourceIcon} ${card.source}</div>
+      <div class="modal-source-chip">🕐 ${card.time}</div>
+      <div class="modal-source-chip" style="color:${sectorColor};">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
+      <div class="modal-source-chip">📖 ${readingTime(card.summary)}</div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">📝 AI Summary <span class="ai-badge">GROQ</span></div>
+      <div class="summary-box" style="border-left-color:${sectorColor};">${analysis?.summary||card.summary}</div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">🎯 Key Points <span class="ai-badge">AI</span></div>
+      <div class="key-points">
+        ${analysis?.keyPoints?.length ? analysis.keyPoints.map((p,i)=>`
+          <div class="key-point"><span class="kp-icon">${['🎯','📌','⚡','🔍'][i%4]}</span><span>${p}</span></div>`).join('')
+          : '<div class="key-point"><span class="kp-icon">📌</span><span>AI analysis complete</span></div>'}
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">📊 Sentiment Analysis</div>
+      <div class="sentiment-bar">
+        <div class="sentiment-seg" style="flex:${sent.positive};background:#10b981;"></div>
+        <div class="sentiment-seg" style="flex:${sent.neutral};background:#6b7280;"></div>
+        <div class="sentiment-seg" style="flex:${sent.negative};background:#ef4444;"></div>
+      </div>
+      <div class="sentiment-labels">
+        <span style="color:#10b981;">✅ Positive ${sent.positive}%</span>
+        <span style="color:#6b7280;">➖ Neutral ${sent.neutral}%</span>
+        <span style="color:#ef4444;">❌ Negative ${sent.negative}%</span>
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-title">📅 Timeline <span class="ai-badge">AI</span></div>
+      <ul class="timeline-list">
+        ${analysis?.timeline?.length ? analysis.timeline.map((t,i)=>`
+          <li class="timeline-item">
+            <div class="timeline-dot">${i+1}</div>
+            <div class="timeline-content">
+              <div class="timeline-date">${t.date}</div>
+              <div class="timeline-text">${t.event}</div>
+            </div>
+          </li>`).join('')
+          : `<li class="timeline-item"><div class="timeline-dot">1</div><div class="timeline-content"><div class="timeline-date">Today</div><div class="timeline-text">${card.title}</div></div></li>`}
+      </ul>
+    </div>
+
+    ${analysis?.implications ? `
+    <div class="ai-section">
+      <div class="ai-section-title">🌐 Broader Implications <span class="ai-badge">AI</span></div>
+      <div class="summary-box" style="border-left-color:#f59e0b;">${analysis.implications}</div>
+    </div>` : ''}
+
+    ${analysis?.watchFor ? `
+    <div class="ai-section">
+      <div class="ai-section-title">👁️ Watch For <span class="ai-badge">AI</span></div>
+      <div class="summary-box" style="border-left-color:#10b981;">${analysis.watchFor}</div>
+    </div>` : ''}
+
+    <div class="ai-section">
+      <div class="ai-section-title">📡 Sources</div>
+      <div class="sources-list">
+        ${(card.references||[card.source]).map(r=>`
+          <div class="source-chip-link"><span>📰</span><strong>${r}</strong><span style="margin-left:auto;font-size:11px;color:var(--text3);">Referenced</span></div>`).join('')}
+      </div>
+    </div>
+
+    ${relatedCards.length ? `
+    <div class="ai-section">
+      <div class="ai-section-title">🔗 Related Stories</div>
+      <div class="related-grid">
+        ${relatedCards.map(r=>`
+          <div class="related-card" onclick="closeAnalysis();setTimeout(()=>openReader(${JSON.stringify(r).replace(/"/g,'&quot;')}),300)">
+            <div style="width:100%;height:80px;border-radius:6px;overflow:hidden;margin-bottom:7px;background:var(--surface3);">
+              <img src="${r.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+            </div>
+            <div class="related-card-title">${r.title.substring(0,60)}${r.title.length>60?'...':''}</div>
+            <div class="related-card-source">${r.source} · ${r.time}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+      <button class="btn-grad" onclick="closeAnalysis();openReader(state.currentCard)">📖 Read Article</button>
+      <button class="btn-grad" style="background:var(--surface2);color:var(--text2);border:1px solid var(--border2);" onclick="shareAsImage(state.currentCard)">📸 Share Image</button>
+      <a href="${card.articleUrl}" target="_blank" class="btn-grad" style="text-decoration:none;">🔗 Full Source</a>
+    </div>`;
+}
+
+function closeAnalysis() { document.getElementById('analysisOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function closeModalOnBg(e) { if(e.target.id==='analysisOverlay') closeAnalysis(); }
+
+// ══════════════════════════════════════════════════
+// RESEARCH VIEW
+// ══════════════════════════════════════════════════
+async function renderResearchView() {
+  const el = document.getElementById('newsFeed');
+  el.innerHTML = `
+    <div class="ai-insight-box" style="margin-bottom:16px;">
+      <div class="ai-insight-title">🔬 Deep Research Mode — Powered by Groq ⚡</div>
+      <div class="ai-insight-text">Ask any question. Gets context from today's live articles + Groq AI analysis. Results in under 2 seconds.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+      <input class="alert-input" id="researchInput" placeholder="e.g. What is driving AI regulation globally?" style="flex:1;margin-bottom:0;" onkeydown="if(event.key==='Enter')doResearch()">
+      <button class="btn-grad" onclick="doResearch()">🔍 Research</button>
+    </div>
+    <div id="researchResult"></div>
+    <div class="ai-section-title" style="margin:20px 0 12px;">📚 All Sectors</div>
+    ${sectors.filter(s=>s!=='All').map(s=>{
+      const cards2=(newsCache[s]||[]).slice(0,3);
+      return `<div style="margin-bottom:20px;">
+        <div style="font-size:14px;font-weight:700;color:${SECTOR_COLORS[s]};margin-bottom:8px;">${SECTOR_EMOJIS[s]} ${s}</div>
+        ${cards2.map(c=>`
+          <div class="trending-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+            <div style="width:56px;height:42px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--surface2);">
+              <img src="${c.image}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">
+            </div>
+            <div class="trending-info">
+              <div class="trending-title">${c.title.substring(0,70)}${c.title.length>70?'...':''}</div>
+              <div class="trending-meta">${c.source} · ${c.time} · ${c.apiSource}</div>
+            </div>
+          </div>`).join('')}
+      </div>`;
+    }).join('')}`;
+}
+
+async function doResearch() {
+  const q = document.getElementById('researchInput').value.trim();
+  if (!q) return;
+  const el = document.getElementById('researchResult');
+  el.innerHTML = `<div class="summary-box"><span class="spinner"></span> Researching: "${q}"...</div>`;
+  const context = Object.values(newsCache).flat().slice(0,12).map(n=>`• ${n.title}: ${n.summary}`).join('\n');
+  const result = await callAI(
+    `Research question: "${q}"\n\nContext from today's live news:\n${context}\n\nProvide a comprehensive, well-structured research analysis. Use **bold** for headings. Cover: key findings, context, multiple perspectives, data points, implications.`,
+    'You are a world-class research analyst. Be thorough, structured, and cite sources.'
+  );
+  if (result) {
+    el.innerHTML=`<div class="ai-section"><div class="ai-section-title">🔬 Research Results <span class="ai-badge">GROQ</span></div><div class="summary-box" style="border-left-color:var(--accent2);white-space:pre-wrap;line-height:1.8;">${result.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div></div>`;
+  } else {
+    el.innerHTML=`<div class="summary-box" style="border-left-color:#ef4444;">Research failed. Check API key.</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════════════════
+function toggleLike(id) {
+  if(likes.includes(id)) likes=likes.filter(l=>l!==id); else likes.push(id);
+  localStorage.setItem('pa_likes',JSON.stringify(likes));
+  renderFeed();
+}
+function toggleBookmark(id) {
+  if(bookmarks.includes(id)) bookmarks=bookmarks.filter(b=>b!==id); else bookmarks.push(id);
+  localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));
+  document.getElementById('bookmarkCount').textContent=bookmarks.length||'0';
+  renderFeed();
+}
+
+async function setSector(s) {
+  state.currentSector = s;
+  renderSectors();
+  document.getElementById('topbarTitle').textContent = s==='All'?'🗞️ Daily Intelligence Feed':`${SECTOR_EMOJIS[s]} ${s} News`;
+  if (s==='India') {
+    const cards = await fetchIndia();
+    newsCache['India']=cards;
+    renderFeed();
+  } else {
+    const articles = await fetchNews(s);
+    if(s!=='All') newsCache[s]=articles; else newsData=articles;
+    renderFeed();
+  }
+  updateLastFetchedBadge();
+}
+
+function setView(v) {
+  state.view=v;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-'+v)?.classList.add('active');
+  const titles={feed:'🗞️ Daily Intelligence Feed',india:'🇮🇳 India News',explore:'🔍 Explore Topics',research:'🔬 Deep Research',bookmarks:'🔖 Saved Articles'};
+  document.getElementById('topbarTitle').textContent=titles[v]||'🗞️ News Feed';
+  if(v==='research') renderResearchView();
+  else if(v==='india') setSector('India');
+  else if(v==='explore'){state.currentSector='All';renderSectors();renderFeed();}
+  else renderFeed();
+}
+
+function setFeedMode(m,btn) {
+  state.feedMode=m;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(m==='hindi') {renderFeed();return;}
+  renderFeed();
+}
+
+// ══════════════════════════════════════════════════
+// THEME TOGGLE (Feature #16)
+// ══════════════════════════════════════════════════
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme', isDark?'light':'dark');
+  document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️';
+  localStorage.setItem('pa_theme', isDark?'light':'dark');
+  // Update topbar bg
+  document.querySelector('.topbar').style.background = isDark ? 'rgba(248,249,250,.95)' : 'rgba(10,10,10,.95)';
+}
+
+// ══════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════
+function showFeedLoader(show) { /* disabled */ }
+function updateSourceBadge(s, detail='') {
+  const el=document.getElementById('sourceBadge');
+  if(!el) return;
+  if(s==='fetching'){el.innerHTML='<span class="spinner" style="width:10px;height:10px;border-width:1.5px;"></span> Fetching...';el.style.color='var(--text3)';}
+  else if(s==='live'){el.innerHTML=`🟢 Live · ${detail}`;el.style.color='var(--accent4)';}
+  else{el.innerHTML='🟡 Demo mode';el.style.color='var(--accent3)';}
+}
+
+function updateLastFetchedBadge() {
+  const el=document.getElementById('lastUpdated');
+  if(!el) return;
+  el.textContent=`🔄 ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}`;
+}
+
+// ══════════════════════════════════════════════════
+// FALLBACK DATA
+// ══════════════════════════════════════════════════
+function getFallbackNews(sector) {
+  const fb={
+    Tech:[{title:"OpenAI Unveils GPT-5",description:"OpenAI's model achieves human-level reasoning.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'TechCrunch',pubDate:'2025-06-12 08:00:00',link:'#'},{title:"Google DeepMind Releases AlphaFold 3",description:"Protein prediction now covers complex molecules.",image_url:SECTOR_FALLBACK_IMAGES.Tech,source_name:'Nature',pubDate:'2025-06-12 06:00:00',link:'#'}],
+    Finance:[{title:"Fed Signals Rate Cuts",description:"Federal Reserve signals dovish pivot as inflation cools.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'Bloomberg',pubDate:'2025-06-12 07:00:00',link:'#'},{title:"Bitcoin Hits $100K",description:"BTC crosses $100K as institutional demand surges.",image_url:SECTOR_FALLBACK_IMAGES.Finance,source_name:'CoinDesk',pubDate:'2025-06-12 05:00:00',link:'#'}],
+    Health:[{title:"mRNA Cancer Vaccine 90% Success",description:"Moderna's vaccine shows 89.6% efficacy in Phase III.",image_url:SECTOR_FALLBACK_IMAGES.Health,source_name:'NEJM',pubDate:'2025-06-11 10:00:00',link:'#'}],
+    Science:[{title:"JWST Finds Biosignature on Exoplanet",description:"Dimethyl sulfide detected in K2-18b atmosphere.",image_url:SECTOR_FALLBACK_IMAGES.Science,source_name:'Nature',pubDate:'2025-06-11 14:00:00',link:'#'}],
+    Politics:[{title:"G20 AI Governance Pact Signed",description:"World leaders agree on responsible AI framework.",image_url:SECTOR_FALLBACK_IMAGES.Politics,source_name:'Reuters',pubDate:'2025-06-11 16:00:00',link:'#'}],
+    Climate:[{title:"Solar Surpasses Coal Globally",description:"IEA confirms solar now generates more than coal.",image_url:SECTOR_FALLBACK_IMAGES.Climate,source_name:'Guardian',pubDate:'2025-06-10 12:00:00',link:'#'}],
+    Sports:[{title:"Champions League Final Drama",description:"Real Madrid edge past Manchester City on penalties.",image_url:SECTOR_FALLBACK_IMAGES.Sports,source_name:'ESPN',pubDate:'2025-06-12 01:00:00',link:'#'}],
+    India:[{title:"India GDP Growth Hits 8.4%",description:"India overtakes Japan as world's 4th largest economy.",image_url:SECTOR_FALLBACK_IMAGES.India,source_name:'Economic Times',pubDate:'2025-06-12 09:00:00',link:'#'}],
+    All:[],
+  };
+  if(sector==='All'){var _m=[];['Tech','Finance','Health','Science','Politics','Climate','Sports','India'].forEach(function(s){(fb[s]||[]).forEach(function(a,i){_m.push(newsdataToCard(a,s,i));});});return _m;}
+  return (fb[sector]||fb.Tech).map(function(a,i){return newsdataToCard(a,sector,i);});
+}
+
+// ══════════════════════════════════════════════════
+// PWA MANIFEST (Feature #15)
+// ══════════════════════════════════════════════════
+function installPWA() {
+  const manifest = {
+    name:'Bharat News AI — Daily Intelligence',short_name:'Bharat News AI',description:'AI-powered daily news with Groq',
+    start_url:'.',display:'standalone',background_color:'#0a0a0a',theme_color:'#0a0a0a',
+    icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="%23e91e8c"/><text x="96" y="140" font-size="110" text-anchor="middle" fill="white" font-weight="900">B</text></svg>',sizes:'192x192',type:'image/svg+xml'}]
+  };
+  const blob = new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  document.getElementById('manifestLink').href=url;
+}
+
+// Service Worker registration
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE='bharatnewsai-v1';
+    self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['/']))));
+    self.addEventListener('fetch',e=>e.respondWith(
+      caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline',{status:503})))
+    ));`;
+  const swBlob = new Blob([swCode],{type:'application/javascript'});
+  const swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+
+// ══════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if (e.key==='Escape') { closeAnalysis(); closeReader(); closeStory(); closeAlertModal(); closePrefsModal(); }
+  if (e.key==='ArrowRight'&&document.getElementById('storyViewer').classList.contains('open')) nextStory();
+  if (e.key==='ArrowLeft'&&document.getElementById('storyViewer').classList.contains('open')) prevStory();
+  if ((e.ctrlKey||e.metaKey)&&e.key==='k') { document.getElementById('searchInput').focus(); e.preventDefault(); }
+  if ((e.ctrlKey||e.metaKey)&&e.key==='d') { toggleTheme(); e.preventDefault(); }
+});
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+async function init() {
+  // Restore theme
+  const savedTheme = localStorage.getItem('pa_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',savedTheme);
+  document.getElementById('themeBtn').textContent = savedTheme==='dark'?'🌙':'☀️';
+
+  installPWA();
+  renderSectors();
+  renderStories();
+  renderRightPanel();
+  document.getElementById('bookmarkCount').textContent = bookmarks.length||'0';
+
+  // Set alert dot if alerts exist
+  if (alertKws.length) document.getElementById('notifDot').style.display='block';
+
+  newsData=getFallbackNews('All');renderFeed();
+  fetchNews('All',false,true).then(function(l){if(l&&l.length){newsData=l;renderFeed();updateLastFetchedBadge();}}).catch(function(){});
+  fetchAllSectors().then(function(){renderFeed();renderRightPanel();updateLastFetchedBadge();}).catch(function(){});
+
+  // Generate AI briefing
+  generateDailyBriefing();
+
+  // Auto-story if pref set
+  if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
+
+  // Auto-refresh every 15 min
+  setInterval(async()=>{
+    const r=await fetchNews(state.currentSector,true,true);
+    if(state.currentSector==='All') newsData=r;
+    renderFeed();
+    renderRightPanel();
+    updateLastFetchedBadge();
+    showToast('🔄 News refreshed');
+  }, 15*60*1000);
+}
+
+var currentUser=null;
+(function(){var u=JSON.parse(localStorage.getItem('bna_user')||'null');if(u){currentUser=u;var pg=document.getElementById('loginPage');if(pg)pg.style.display='none';}})();
+function lpTab(t){document.getElementById('lp-in').style.display=t==='in'?'block':'none';document.getElementById('lp-up').style.display=t==='up'?'block':'none';document.getElementById('lt-in').classList.toggle('active',t==='in');document.getElementById('lt-up').classList.toggle('active',t==='up');}
+function lpLogin(){var n=(document.getElementById('lp-in-name').value||'').trim();var e=document.getElementById('lp-in-err');if(!n){e.textContent='Please enter your name.';return;}e.textContent='';var k='bna_u_'+n.toLowerCase().replace(/\s+/g,'_');var x=JSON.parse(localStorage.getItem(k)||'null');currentUser=x||{name:n,handle:k,profession:'',avatar_initials:n[0].toUpperCase(),joined:new Date().toISOString(),isGuest:false};localStorage.setItem('bna_user',JSON.stringify(currentUser));lpHide();showToast('Welcome, '+n.split(' ')[0]+'!');}
+function lpSignup(){var n=(document.getElementById('lp-up-name').value||'').trim();var p=(document.getElementById('lp-up-prof').value||'').trim();var e=document.getElementById('lp-up-err');if(!n){e.textContent='Please enter your name.';return;}e.textContent='';var k='bna_u_'+n.toLowerCase().replace(/\s+/g,'_');currentUser={name:n,handle:k,profession:p,avatar_initials:n[0].toUpperCase(),joined:new Date().toISOString(),isGuest:false};localStorage.setItem(k,JSON.stringify(currentUser));localStorage.setItem('bna_user',JSON.stringify(currentUser));lpHide();showToast('Welcome, '+n.split(' ')[0]+'!');}
+function lpGuest(){currentUser={name:'Guest',handle:'guest',avatar_initials:'G',joined:new Date().toISOString(),isGuest:true};localStorage.setItem('bna_user',JSON.stringify(currentUser));lpHide();}
+function lpHide(){var pg=document.getElementById('loginPage');if(!pg)return;pg.style.transition='opacity .35s,transform .35s';pg.style.opacity='0';pg.style.transform='scale(.97)';setTimeout(function(){pg.style.display='none';},360);}
+function logout(){localStorage.removeItem('bna_user');location.reload();}
+function openProfile(){if(!currentUser){var pg=document.getElementById('loginPage');if(pg){pg.style.display='flex';pg.style.opacity='1';pg.style.transform='';}return;}var ov=document.getElementById('profOv');if(!ov){ov=document.createElement('div');ov.id='profOv';ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-end;justify-content:center;';ov.onclick=function(e){if(e.target===ov)closeProfile();};ov.innerHTML='<div id="profSh" style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative;"><button onclick="closeProfile()" style="position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,0,0,.5);color:#fff;cursor:pointer;font-size:16px;z-index:2;">x</button><div id="profCt"></div></div>';document.body.appendChild(ov);}ov.style.display='flex';document.body.style.overflow='hidden';renderProf();}
+function closeProfile(){var ov=document.getElementById('profOv');if(ov)ov.style.display='none';document.body.style.overflow='';}
+function renderProf(){var el=document.getElementById('profCt');if(!el)return;var u=currentUser;var ini=u.avatar_initials||'?';el.innerHTML='<div style="background:linear-gradient(135deg,#1a0828,#0a1528);padding:24px 20px 0;"><div style="display:flex;align-items:flex-end;gap:14px;"><div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#e91e8c,#9333ea);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;border:3px solid #0a0a0a;flex-shrink:0;">'+ini+'</div><div style="flex:1;padding-bottom:12px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+u.name+'</div>'+(u.profession?'<div style="font-size:12px;color:rgba(255,255,255,.5);">'+u.profession+'</div>':'')+'<div style="font-size:12px;color:rgba(255,255,255,.4);">'+new Date(u.joined||Date.now()).toLocaleDateString('en-IN',{month:'long',year:'numeric'})+'</div></div></div><div style="display:flex;margin-top:16px;"><div style="flex:1;text-align:center;padding:10px 4px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+bookmarks.length+'</div><div style="font-size:10px;color:rgba(255,255,255,.4);">Saved</div></div><div style="flex:1;text-align:center;padding:10px 4px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+likes.length+'</div><div style="font-size:10px;color:rgba(255,255,255,.4);">Liked</div></div><div style="flex:1;text-align:center;padding:10px 4px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+readItems.length+'</div><div style="font-size:10px;color:rgba(255,255,255,.4);">Read</div></div></div></div><div style="padding:20px;"><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px;">Name</label><input id="pf-n" value="'+u.name+'" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:14px;padding:9px 12px;outline:none;margin-bottom:12px;box-sizing:border-box"><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px;">Profession</label><input id="pf-p" value="'+(u.profession||'')+'" placeholder="e.g. Student..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:14px;padding:9px 12px;outline:none;margin-bottom:16px;box-sizing:border-box"><button onclick="saveProfEdit()" style="width:100%;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,#e91e8c,#9333ea);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:12px;">Save</button><button onclick="logout()" style="width:100%;padding:10px;border-radius:9px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.05);color:#ef4444;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">Sign Out</button></div>';}
+function saveProfEdit(){if(!currentUser)return;var n=(document.getElementById('pf-n').value||'').trim();if(!n){showToast('Name required');return;}currentUser.name=n;currentUser.profession=(document.getElementById('pf-p').value||'').trim();currentUser.avatar_initials=n[0].toUpperCase();localStorage.setItem('bna_user',JSON.stringify(currentUser));showToast('Saved!');renderProf();}
+document.addEventListener('DOMContentLoaded',function(){var sb=document.querySelector('.sidebar');if(sb){var d=document.createElement('div');d.className='nav-item';d.style.marginTop='auto';d.innerHTML='<span class="nav-icon">&#128100;</span><span>Profile</span>';d.onclick=openProfile;sb.appendChild(d);}});
+
+init();
+</script>
+</body>
+</html>
