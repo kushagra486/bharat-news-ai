@@ -556,14 +556,29 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 const GNEWS_KEY     = window.GNEWS_KEY     || '5b1fe697fb6dd50a5f9abbcd0515eece';
 const NEWSDATA_KEY  = window.NEWSDATA_KEY  || 'pub_38d8830b430242eb9f2a43de56dd9566';
 const GUARDIAN_KEY  = window.GUARDIAN_KEY  || '33e49fef-8260-4a36-9797-f943fa3bbb13';
-const NEWSAPI_KEY   = window.NEWSAPI_KEY   || '420794cf664d4ef3adf2d1fb47668f25';
 const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy','b3FYYyDPHNQvPX0jiii1S7k0fJkJ'].join('');
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
 const NEWSDATA_BASE = 'https://newsdata.io/api/1';
 const GUARDIAN_BASE = 'https://content.guardianapis.com';
-const NEWSAPI_BASE  = 'https://newsapi.org/v2';
+
+// CORS proxy for sources that block direct browser requests
+const PROXY = 'https://api.allorigins.win/get?url=';
 const GROQ_BASE     = 'https://api.groq.com/openai/v1/chat/completions';
+
+// Fetch with timeout helper
+async function fetchWithTimeout(url, opts, ms=8000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const r = await fetch(url, { ...opts, signal: ctrl.signal });
+    clearTimeout(t);
+    return r;
+  } catch(e) {
+    clearTimeout(t);
+    throw e;
+  }
+}
 
 const SECTOR_TO_GNEWS    = {All:'general',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'nation',Climate:'world',Sports:'sports'};
 const SECTOR_TO_NEWSDATA = {All:'top',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'politics',Climate:'environment',Sports:'sports'};
@@ -683,7 +698,7 @@ function newsapiToCard(a, sector, i) {
 // ══════════════════════════════════════════════════
 async function fetchFromGNews(sector, page=1) {
   const cat = SECTOR_TO_GNEWS[sector]||'general';
-  const r = await fetch(`${GNEWS_BASE}/top-headlines?category=${cat}&lang=en&max=10&apikey=${GNEWS_KEY}`);
+  const r = await fetchWithTimeout(`${GNEWS_BASE}/top-headlines?category=${cat}&lang=en&max=10&apikey=${GNEWS_KEY}`, {}, 8000);
   if(!r.ok) throw new Error(`GNews ${r.status}`);
   const d = await r.json();
   if(!d.articles?.length) throw new Error('GNews: empty');
@@ -718,20 +733,45 @@ async function fetchFromNewsDataHindi() {
 }
 async function fetchFromGuardian(sector, page=1) {
   const sec = SECTOR_TO_GUARDIAN[sector]||'news';
-  const r = await fetch(`${GUARDIAN_BASE}/search?api-key=${GUARDIAN_KEY}&section=${sec}&show-fields=thumbnail,trailText&page-size=10&order-by=newest&page=${page}`);
+  const r = await fetchWithTimeout(`${GUARDIAN_BASE}/search?api-key=${GUARDIAN_KEY}&section=${sec}&show-fields=thumbnail,trailText&page-size=10&order-by=newest&page=${page}`, {}, 8000);
   if(!r.ok) throw new Error(`Guardian ${r.status}`);
   const d = await r.json();
   if(d.response?.status!=='ok'||!d.response?.results?.length) throw new Error('Guardian: empty');
   return {cards:d.response.results.map((a,i)=>guardianToCard(a,sector,i)), totalPages:d.response.pages||1};
 }
 async function fetchFromNewsAPI(sector) {
-  const cat = SECTOR_TO_NEWSAPI[sector]||'general';
-  const r = await fetch(`${NEWSAPI_BASE}/top-headlines?apiKey=${NEWSAPI_KEY}&category=${cat}&language=en&pageSize=10`);
-  if(!r.ok) throw new Error(`NewsAPI ${r.status}`);
-  const d = await r.json();
-  if(d.status!=='ok'||!d.articles?.length) throw new Error('NewsAPI: empty');
-  return d.articles.map((a,i)=>newsapiToCard(a,sector,i)).filter(Boolean);
+  // NewsAPI blocks browsers — use NewsData as second endpoint instead
+  const cat = SECTOR_TO_NEWSDATA[sector] || 'top';
+  try {
+    const url = NEWSDATA_BASE + '/latest?apikey=' + NEWSDATA_KEY + '&language=en&category=' + cat + '&size=8';
+    const r = await fetchWithTimeout(url, {}, 8000);
+    if (!r.ok) throw new Error('NewsData2 ' + r.status);
+    const d = await r.json();
+    if (d.status !== 'success') throw new Error('NewsData2 bad status');
+    return (d.results || []).map(function(a, i) {
+      return newsdataToCard(a, sector, i + 100);
+    });
+  } catch(e) {
+    console.warn('[NewsAPI2]', e.message);
+    // Fallback: try GNews search
+    try {
+      const q = sector === 'All' ? 'world news today' : sector + ' news';
+      const url2 = GNEWS_BASE + '/search?q=' + encodeURIComponent(q) + '&lang=en&max=8&apikey=' + GNEWS_KEY;
+      const r2 = await fetchWithTimeout(url2, {}, 8000);
+      if (!r2.ok) throw new Error('GNews2 ' + r2.status);
+      const d2 = await r2.json();
+      return (d2.articles || []).map(function(a, i) { return gnewsToCard(a, sector, i + 200); });
+    } catch(e2) {
+      console.warn('[GNews2]', e2.message);
+      return [];
+    }
+  }
 }
+
+
+
+
+
 async function searchNewsAPI(q) {
   const r = await fetch(`${NEWSAPI_BASE}/everything?apiKey=${NEWSAPI_KEY}&q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=20`);
   if(!r.ok) throw new Error(`NewsAPI search ${r.status}`);
@@ -785,7 +825,10 @@ async function fetchNews(sector='All', force=false) {
   const guc= gu.status==='fulfilled'?gu.value:[];
   const nac= na.status==='fulfilled'?na.value:[];
 
-  console.log(`[Bharat News AI] ${sector}: GNews=${gc.length} NewsData=${nc.length} Guardian=${guc.length} NewsAPI=${nac.length}`);
+  console.log('[Bharat News AI] ' + sector + ': GNews=' + gc.length + ' NewsData=' + nc.length + ' Guardian=' + guc.length + ' NewsAPI2=' + nac.length + ' total=' + (gc.length+nc.length+guc.length+nac.length));
+  if (gc.length===0 && nc.length===0 && guc.length===0 && nac.length===0) {
+    console.warn('[Bharat News AI] All APIs returned 0 articles for ' + sector);
+  }
 
   let merged;
   if (!gc.length&&!nc.length&&!guc.length&&!nac.length) {
