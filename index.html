@@ -2910,39 +2910,243 @@ async function doAskNewsHindi() {
 })();
 
 
+
 // ══ LIVE SCORES ══════════════════════════════════
 var _scoresData=[], _scoresFilter='all', _scoresTimer=null;
 
+// API keys (free tiers)
+var CRICAPI_KEY  = 'a52ea237-09e7-41c7-a2dd-cbdb531e96be';
+var SPORTSDB_KEY = '3';
+var FBDATA_KEY   = '9d8f4f18c7854b2cb2f10c7f8a5e6123'; // football-data.org free
+
 async function loadScoresView() {
   var el=document.getElementById('scoresContent');
-  if(el) el.innerHTML='<div class="scores-loading">⏳ Fetching live scores...</div>';
-  var res=await Promise.allSettled([fetchCricketScores(),fetchFootballScores(),fetchSportsNews()]);
-  _scoresData=[];
-  res.forEach(function(r){if(r.status==='fulfilled'&&r.value)_scoresData=_scoresData.concat(r.value);});
+  if(el) el.innerHTML='<div class="scores-loading"><div class="spinner" style="width:24px;height:24px;border-width:2px;border-top-color:var(--accent2);margin:0 auto 10px"></div>Fetching live scores...</div>';
+  
+  var res = await Promise.allSettled([
+    fetchESPNCricket(),
+    fetchCricAPILive(),
+    fetchTheSportsDBFootball(),
+    fetchESPNFootball(),
+  ]);
+  
+  _scoresData = [];
+  res.forEach(function(r){
+    if(r.status==='fulfilled' && r.value && r.value.length)
+      _scoresData = _scoresData.concat(r.value);
+  });
+  
+  // Deduplicate by team names
+  var seen = {};
+  _scoresData = _scoresData.filter(function(m){
+    var k = (m.t1+m.t2).toLowerCase().replace(/\s/g,'');
+    if(seen[k]) return false; seen[k]=1; return true;
+  });
+  
   renderScores();
-  if(_scoresTimer)clearInterval(_scoresTimer);
-  _scoresTimer=setInterval(function(){
-    if(document.getElementById('scoresPanel')&&document.getElementById('scoresPanel').style.display!=='none')loadScoresView();
-  },60000);
+  
+  if(_scoresTimer) clearInterval(_scoresTimer);
+  _scoresTimer = setInterval(function(){
+    var sp = document.getElementById('scoresPanel');
+    if(sp && sp.style.display !== 'none') loadScoresView();
+  }, 30000); // refresh every 30s for live scores
+}
+
+// ── ESPN Cricket (no key needed, works from browsers) ──
+async function fetchESPNCricket() {
+  var leagues = ['ind.1','odi','t20'];
+  var all = [];
+  for(var li=0; li<leagues.length; li++) {
+    try {
+      var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+      var r = await fetch(
+        'https://site.api.espn.com/apis/site/v2/sports/cricket/'+leagues[li]+'/scoreboard',
+        {signal:ac.signal, headers:{'Accept':'application/json'}}
+      );
+      if(!r.ok) continue;
+      var d = await r.json();
+      var events = d.events || [];
+      events.forEach(function(e){
+        var comp = e.competitions && e.competitions[0];
+        if(!comp) return;
+        var comps = comp.competitors || [];
+        var t1 = comps[0], t2 = comps[1];
+        var status = comp.status && comp.status.type;
+        var statusName = status && status.name;
+        all.push({
+          sport:'cricket', emoji:'🏏',
+          league: (e.league && e.league.abbreviation) || 'CRICKET',
+          t1: t1 && t1.team && t1.team.shortDisplayName || 'Team A',
+          t2: t2 && t2.team && t2.team.shortDisplayName || 'Team B',
+          s1: t1 && t1.score || null,
+          s2: t2 && t2.score || null,
+          detail1: t1 && t1.records && t1.records[0] && t1.records[0].summary || null,
+          detail2: t2 && t2.records && t2.records[0] && t2.records[0].summary || null,
+          status: statusName==='STATUS_IN_PROGRESS'?'live': statusName==='STATUS_FINAL'?'finished':'upcoming',
+          info: (status && status.description) || (e.name || '').slice(0,60),
+          winner: null,
+          url: e.links && e.links[0] && e.links[0].href || 'https://espn.com/cricket',
+          source: 'ESPN',
+        });
+      });
+    } catch(e) { continue; }
+  }
+  return all;
+}
+
+// ── CricAPI live matches ──────────────────────────
+async function fetchCricAPILive() {
+  try {
+    var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var r = await fetch(
+      'https://api.cricapi.com/v1/currentMatches?apikey='+CRICAPI_KEY+'&offset=0',
+      {signal:ac.signal}
+    );
+    if(!r.ok) return [];
+    var d = await r.json();
+    if(d.status !== 'success') return [];
+    return (d.data||[]).map(function(m){
+      var isLive = m.matchStarted && !m.matchEnded;
+      var isDone = m.matchEnded;
+      var t1name = m.teams && m.teams[0] || 'Team A';
+      var t2name = m.teams && m.teams[1] || 'Team B';
+      // Parse score
+      var s1=null, s2=null;
+      if(m.score && m.score.length) {
+        s1 = m.score[0] ? (m.score[0].r+'/'+m.score[0].w+' ('+m.score[0].o+')') : null;
+        s2 = m.score[1] ? (m.score[1].r+'/'+m.score[1].w+' ('+m.score[1].o+')') : null;
+      }
+      return {
+        sport:'cricket', emoji:'🏏',
+        league: (m.matchType||'CRICKET').toUpperCase().slice(0,10),
+        t1: t1name.slice(0,16), t2: t2name.slice(0,16),
+        s1: s1, s2: s2,
+        detail1: null, detail2: null,
+        status: isLive?'live': isDone?'finished':'upcoming',
+        info: m.status || (m.venue||'').slice(0,50),
+        winner: isDone && m.status ? m.status.slice(0,40) : null,
+        url: 'https://cricbuzz.com',
+        source: 'CricAPI',
+      };
+    });
+  } catch(e) { return []; }
+}
+
+// ── TheSportsDB — football events today ──────────
+async function fetchTheSportsDBFootball() {
+  try {
+    var today = new Date().toISOString().split('T')[0];
+    var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var r = await fetch(
+      'https://www.thesportsdb.com/api/v1/json/'+SPORTSDB_KEY+'/eventsday.php?d='+today+'&l=Indian%20Super%20League',
+      {signal:ac.signal}
+    );
+    if(!r.ok) return [];
+    var d = await r.json();
+    return (d.events||[]).map(function(e){
+      var homeScore = e.intHomeScore;
+      var awayScore = e.intAwayScore;
+      var isLive = e.strStatus==='Match Finished'?false:e.strStatus==='Not Started'?false:true;
+      var isDone = e.strStatus==='Match Finished';
+      return {
+        sport:'football', emoji:'⚽',
+        league: (e.strLeague||'ISL').slice(0,12),
+        t1: (e.strHomeTeam||'Home').slice(0,16),
+        t2: (e.strAwayTeam||'Away').slice(0,16),
+        s1: homeScore!==null&&homeScore!==undefined ? String(homeScore) : null,
+        s2: awayScore!==null&&awayScore!==undefined ? String(awayScore) : null,
+        detail1:null, detail2:null,
+        status: isLive?'live': isDone?'finished':'upcoming',
+        info: e.strVenue ? e.strVenue.slice(0,40) : (e.strTime||''),
+        winner: null,
+        url: e.strVideo||'https://thesportsdb.com',
+        source: 'TheSportsDB',
+      };
+    });
+  } catch(e) { return []; }
+}
+
+// ── ESPN Football (ISL, Indian Super League) ──────
+async function fetchESPNFootball() {
+  var leagues = ['isl','ind.1'];
+  var all = [];
+  for(var li=0; li<leagues.length; li++) {
+    try {
+      var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+      var r = await fetch(
+        'https://site.api.espn.com/apis/site/v2/sports/soccer/'+leagues[li]+'/scoreboard',
+        {signal:ac.signal}
+      );
+      if(!r.ok) continue;
+      var d = await r.json();
+      (d.events||[]).forEach(function(e){
+        var comp = e.competitions && e.competitions[0];
+        if(!comp) return;
+        var comps = comp.competitors||[];
+        var t1=comps.find(function(c){return c.homeAway==='home';})||comps[0];
+        var t2=comps.find(function(c){return c.homeAway==='away';})||comps[1];
+        var status = comp.status && comp.status.type;
+        all.push({
+          sport:'football', emoji:'⚽',
+          league: (e.league && e.league.abbreviation)||'FOOTBALL',
+          t1: t1&&t1.team&&t1.team.shortDisplayName||'Home',
+          t2: t2&&t2.team&&t2.team.shortDisplayName||'Away',
+          s1: t1&&t1.score||null,
+          s2: t2&&t2.score||null,
+          detail1:null,detail2:null,
+          status: status&&status.name==='STATUS_IN_PROGRESS'?'live':status&&status.name==='STATUS_FINAL'?'finished':'upcoming',
+          info: (status&&status.description)||'',
+          winner:null,
+          url: 'https://espn.com/soccer',
+          source:'ESPN',
+        });
+      });
+    } catch(e){ continue; }
+  }
+  return all;
 }
 
 function renderScores() {
   var el=document.getElementById('scoresContent'); if(!el)return;
   var data=_scoresFilter==='all'?_scoresData:_scoresData.filter(function(m){return m.sport===_scoresFilter;});
   data.sort(function(a,b){return({live:0,upcoming:1,finished:2}[a.status]||2)-({live:0,upcoming:1,finished:2}[b.status]||2);});
-  if(!data.length){el.innerHTML='<div class="scores-loading">No scores available right now.<br><small>Updates when matches are live</small></div>';return;}
+  if(!data.length){
+    el.innerHTML='<div class="scores-loading">'
+      +'<div style="font-size:32px;margin-bottom:10px">🏟️</div>'
+      +'<div style="font-weight:600;color:var(--text2);margin-bottom:6px">No '+(_scoresFilter==='all'?'':''+_scoresFilter+' ')+'matches right now</div>'
+      +'<div style="font-size:12px">Live scores appear here during active matches</div>'
+      +'<div style="font-size:11px;margin-top:8px;color:var(--text3)">Sources: CricAPI · ESPN · TheSportsDB</div>'
+      +'</div>';
+    return;
+  }
   el.innerHTML=data.map(function(m){
-    var sBadge=m.status==='live'?'<span class="match-status-live">LIVE</span>':m.status==='upcoming'?'<span class="match-status-upcoming">⏰ Upcoming</span>':'<span class="match-status-done">Finished</span>';
+    var sBadge=m.status==='live'
+      ?'<span class="match-status-live">LIVE</span>'
+      :m.status==='upcoming'
+      ?'<span class="match-status-upcoming">⏰ Upcoming</span>'
+      :'<span class="match-status-done">✅ Final</span>';
+    var srcBadge='<span style="font-size:9px;color:var(--text3);margin-left:auto;">'+m.source+'</span>';
     return '<div class="match-card" onclick="window.open(\''+m.url+'\',\'_blank\')">'
-      +'<div class="match-meta"><span class="match-sport-badge match-sport-'+m.sport+'">'+m.emoji+' '+m.league+'</span>'+sBadge+'</div>'
+      +'<div class="match-meta">'
+        +'<span class="match-sport-badge match-sport-'+m.sport+'">'+m.emoji+' '+m.league+'</span>'
+        +sBadge+srcBadge
+      +'</div>'
       +'<div class="match-teams">'
-        +'<div class="match-team"><div class="match-team-name">'+m.t1+'</div>'+(m.s1?'<div class="match-team-score">'+m.s1+'</div>':'')+'</div>'
-        +'<div class="match-vs">vs</div>'
-        +'<div class="match-team right"><div class="match-team-name">'+m.t2+'</div>'+(m.s2?'<div class="match-team-score">'+m.s2+'</div>':'')+'</div>'
+        +'<div class="match-team">'
+          +'<div class="match-team-name">'+m.t1+'</div>'
+          +(m.s1?'<div class="match-team-score">'+m.s1+'</div>':'')
+          +(m.detail1?'<div class="match-team-detail">'+m.detail1+'</div>':'')
+        +'</div>'
+        +'<div class="match-vs">'+(m.s1&&m.s2?'—':'vs')+'</div>'
+        +'<div class="match-team right">'
+          +'<div class="match-team-name">'+m.t2+'</div>'
+          +(m.s2?'<div class="match-team-score">'+m.s2+'</div>':'')
+          +(m.detail2?'<div class="match-team-detail">'+m.detail2+'</div>':'')
+        +'</div>'
       +'</div>'
       +(m.info?'<div class="match-info">'+m.info+'</div>':'')
       +(m.winner?'<div class="match-winner">🏆 '+m.winner+'</div>':'')
-      +'</div>';
+    +'</div>';
   }).join('');
 }
 
@@ -2953,68 +3157,6 @@ function filterScores(sport,btn){
   renderScores();
 }
 function refreshScores(){loadScoresView();showToast('↻ Refreshing scores...');}
-
-async function fetchCricketScores() {
-  try {
-    var ac=new AbortController();setTimeout(function(){ac.abort();},8000);
-    var r=await fetch(NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&q=cricket+live+score&language=en&country=in&size=6',{signal:ac.signal});
-    if(!r.ok)return[];
-    var d=await r.json();
-    return (d.results||[]).map(function(a,i){
-      var t=a.title||'',tl=t.toLowerCase();
-      var tm=t.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\s+(?:vs?\.?|beat|defeated)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
-      var sm=t.match(/(\d+\/\d+|\d+\s*runs?)/i);
-      return {sport:'cricket',emoji:'🏏',league:'CRICKET',
-        t1:tm?tm[1].slice(0,14):'India',t2:tm?tm[2].slice(0,14):'',
-        s1:sm?sm[0]:null,s2:null,
-        status:tl.includes('live')||tl.includes('ongoing')?'live':tl.includes('won')||tl.includes('beat')||tl.includes('defeated')?'finished':'upcoming',
-        info:t.slice(0,80),winner:null,url:a.link||'#'};
-    });
-  }catch(e){return[];}
-}
-
-async function fetchFootballScores() {
-  try {
-    var ac=new AbortController();setTimeout(function(){ac.abort();},8000);
-    var r=await fetch(GNEWS_BASE+'/search?q=football+match+score+india+ISL+EPL&lang=en&max=5&apikey='+GNEWS_KEY,{signal:ac.signal});
-    if(!r.ok)return[];
-    var d=await r.json();
-    return (d.articles||[]).map(function(a,i){
-      var t=a.title||'',tl=t.toLowerCase();
-      var tm=t.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\s+(\d+[-–]\d+)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i)
-           ||t.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\s+vs?\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
-      var sm=t.match(/(\d+)[-–](\d+)/);
-      return {sport:'football',emoji:'⚽',
-        league:tl.includes('isl')?'ISL':tl.includes('premier')||tl.includes('epl')?'EPL':tl.includes('champions')?'UCL':'FOOTBALL',
-        t1:tm?tm[1].slice(0,14):'Home',t2:tm?(sm?tm[3]||tm[2]:tm[2]).slice(0,14):'Away',
-        s1:sm?sm[1]:null,s2:sm?sm[2]:null,
-        status:tl.includes('live')?'live':sm?'finished':'upcoming',
-        info:a.source&&a.source.name?a.source.name+' · '+timeAgo(new Date(a.publishedAt)):'',
-        winner:null,url:a.url||'#'};
-    });
-  }catch(e){return[];}
-}
-
-async function fetchSportsNews() {
-  try {
-    var ac=new AbortController();setTimeout(function(){ac.abort();},8000);
-    var r=await fetch(NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&category=sports&country=in&language=en&size=8',{signal:ac.signal});
-    if(!r.ok)return[];
-    var d=await r.json();
-    return (d.results||[]).map(function(a,i){
-      var t=(a.title||''),tl=t.toLowerCase();
-      var sport=tl.includes('tennis')?'tennis':tl.includes('badminton')?'badminton':tl.includes('cricket')?'cricket':tl.includes('football')||tl.includes('soccer')?'football':'cricket';
-      var em={cricket:'🏏',football:'⚽',tennis:'🎾',badminton:'🏸'}[sport];
-      var tm=t.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)\s+(?:vs?\.?|beat|defeated)\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)?)/i);
-      return {sport:sport,emoji:em,league:'SPORTS',
-        t1:tm?tm[1].slice(0,14):t.slice(0,14),t2:tm?tm[2].slice(0,14):'',
-        s1:null,s2:null,
-        status:tl.includes('live')?'live':tl.includes('won')||tl.includes('beat')||tl.includes('defeated')?'finished':'upcoming',
-        info:t.slice(0,80),winner:null,url:a.link||'#'};
-    });
-  }catch(e){return[];}
-}
-
 // ══ STOCK NEWS ═══════════════════════════════════
 var _stockData=[], _stockFilter='all';
 
