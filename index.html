@@ -903,7 +903,7 @@ let bookmarks  = JSON.parse(localStorage.getItem('pa_bookmarks') || '[]');
 let likes      = JSON.parse(localStorage.getItem('pa_likes') || '[]');
 let readItems  = JSON.parse(localStorage.getItem('pa_read') || '[]');
 let alertKws   = JSON.parse(localStorage.getItem('pa_alerts') || '[]');
-let prefs      = JSON.parse(localStorage.getItem('pa_prefs') || JSON.stringify({showIndia:true,clustering:true,autoStory:false,readTime:true,favSectors:['Tech','Finance','Health']}));
+let prefs      = JSON.parse(localStorage.getItem('pa_prefs') || JSON.stringify({showIndia:true,clustering:false,autoStory:false,readTime:true,favSectors:['Tech','Finance','Health']}));
 let storiesData = [];
 
 const sectors = ['All','Tech','Finance','Health','Science','Politics','Climate','Sports'];
@@ -1310,11 +1310,15 @@ function toggleFavSector(s, btn) {
 // ══════════════════════════════════════════════════
 async function callAI(prompt, system='You are a world-class news analyst. Be concise, insightful, and accurate.') {
   try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000); // 8s timeout
     const r = await fetch(GROQ_BASE, {
       method:'POST',
+      signal: ctrl.signal,
       headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'application/json'},
       body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:system},{role:'user',content:prompt}],max_tokens:1200,temperature:.7})
     });
+    clearTimeout(timer);
     if (!r.ok) { const e=await r.json().catch(()=>({})); showToast('⚠️ AI: '+(e?.error?.message||r.status)); return null; }
     const d = await r.json();
     return d.choices?.[0]?.message?.content||null;
@@ -1561,8 +1565,8 @@ async function renderFeed(overrideCards=null) {
 
   // Clustering
   let clusters = null;
-  if (prefs.clustering && cards.length>=5 && !overrideCards) {
-    clusters = await generateClusters(cards);
+  if (prefs.clustering === true && cards.length>=5 && !overrideCards) {
+    try { clusters = await generateClusters(cards); } catch(e) { clusters = null; }
   }
 
   let html = '';
