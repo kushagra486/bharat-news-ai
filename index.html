@@ -358,6 +358,69 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .lp-ghost:hover{border-color:#9333ea;color:#f5f5f5}
 .lp-err{font-size:12px;color:#ef4444;text-align:center;min-height:16px;margin-bottom:8px}
 .lp-foot{text-align:center;font-size:11px;color:#444;margin-top:18px}
+
+/* ── PULSE DASHBOARD ── */
+.pulse-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;overflow-x:auto;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.pulse-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;flex-shrink:0;margin-right:4px}
+.pulse-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:transform .15s}
+.pulse-chip:hover{transform:scale(1.05)}
+.pulse-chip .pulse-bar-fill{height:3px;border-radius:2px;margin-top:2px;transition:width .5s}
+
+/* ── SWIPE HINT ── */
+.swipe-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10}
+.news-card{position:relative;overflow:hidden;touch-action:pan-y}
+
+/* ── ASK THE NEWS ── */
+.ask-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:400;display:none;align-items:flex-end;justify-content:center}
+.ask-overlay.open{display:flex}
+.ask-sheet{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:680px;padding:24px;max-height:80vh;overflow-y:auto}
+.ask-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px}
+.ask-sub{font-size:12px;color:var(--text3);margin-bottom:16px}
+.ask-input-row{display:flex;gap:10px;margin-bottom:16px}
+.ask-inp{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 14px;outline:none}
+.ask-inp:focus{border-color:var(--accent2)}
+.ask-btn{padding:11px 18px;border-radius:12px;border:none;background:var(--grad);color:#fff;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap}
+.ask-result{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;font-size:14px;color:var(--text2);line-height:1.7;min-height:60px}
+.ask-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.ask-chip{padding:6px 13px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s}
+.ask-chip:hover{border-color:var(--accent2);color:var(--text)}
+
+/* ── NEWS QUIZ ── */
+.quiz-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(10px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.quiz-overlay.open{display:flex}
+.quiz-box{background:var(--surface);border-radius:20px;width:100%;max-width:520px;padding:28px;max-height:90vh;overflow-y:auto}
+.quiz-q{font-size:17px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:20px}
+.quiz-opt{width:100%;text-align:left;padding:12px 16px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-family:inherit;font-size:14px;cursor:pointer;margin-bottom:8px;transition:all .15s}
+.quiz-opt:hover{border-color:var(--accent2);color:var(--text)}
+.quiz-opt.correct{background:rgba(16,185,129,.15);border-color:#10b981;color:#10b981}
+.quiz-opt.wrong{background:rgba(239,68,68,.15);border-color:#ef4444;color:#ef4444}
+.quiz-progress{height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .4s}
+.quiz-score{text-align:center;padding:20px 0}
+.quiz-score-num{font-size:48px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ── READING LISTS ── */
+.rl-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:400;display:none;align-items:flex-end;justify-content:center}
+.rl-overlay.open{display:flex}
+.rl-sheet{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:580px;padding:24px;max-height:85vh;overflow-y:auto}
+.rl-list-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.rl-list-item:hover{border-color:var(--accent2)}
+.rl-list-icon{font-size:24px}
+.rl-list-name{font-size:14px;font-weight:600;color:var(--text)}
+.rl-list-count{font-size:12px;color:var(--text3);margin-top:1px}
+.rl-new-btn{width:100%;padding:11px;border-radius:10px;border:1px dashed var(--border2);background:transparent;color:var(--text3);font-family:inherit;font-size:14px;cursor:pointer;transition:all .15s;margin-top:8px}
+.rl-new-btn:hover{border-color:var(--accent2);color:var(--text)}
+
+/* ── STORY SHARE ── */
+.story-share-canvas{border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+
+/* ── BIAS METER ── */
+.bias-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;margin-left:4px}
+.bias-L{background:rgba(59,130,246,.15);color:#3b82f6}
+.bias-C{background:rgba(16,185,129,.15);color:#10b981}
+.bias-R{background:rgba(239,68,68,.15);color:#ef4444}
+.bias-meter-bar{height:4px;border-radius:2px;background:linear-gradient(90deg,#3b82f6,#10b981,#ef4444);position:relative;margin:6px 0}
+.bias-indicator{width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid var(--bg);position:absolute;top:-2px;transform:translateX(-50%);transition:left .4s}
 </style>
 </head>
 <body>
@@ -376,6 +439,61 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
  </div>
 </div>
 
+
+<!-- ASK THE NEWS -->
+<div class="ask-overlay" id="askOverlay" onclick="if(event.target===this)closeAskNews()">
+  <div class="ask-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <div>
+        <div class="ask-title">💬 Ask the News</div>
+        <div class="ask-sub">Ask anything — AI answers using today's live articles</div>
+      </div>
+      <button onclick="closeAskNews()" style="border:none;background:transparent;color:var(--text3);font-size:20px;cursor:pointer;padding:0">✕</button>
+    </div>
+    <div class="ask-chips" id="askChips">
+      <div class="ask-chip" onclick="askQuestion('What are the biggest stories today?')">Today's top stories</div>
+      <div class="ask-chip" onclick="askQuestion('What happened in Indian politics today?')">Indian politics</div>
+      <div class="ask-chip" onclick="askQuestion('Any major tech announcements today?')">Tech news</div>
+      <div class="ask-chip" onclick="askQuestion('How are the markets performing?')">Markets</div>
+      <div class="ask-chip" onclick="askQuestion('Any health or science breakthroughs?')">Health & Science</div>
+    </div>
+    <div class="ask-input-row">
+      <input class="ask-inp" id="askInp" placeholder="e.g. What happened with the budget?" onkeydown="if(event.key==='Enter')doAskNews()">
+      <button class="ask-btn" onclick="doAskNews()">Ask ↗</button>
+    </div>
+    <div class="ask-result" id="askResult">Ask me anything about today's news...</div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="quiz-overlay" id="quizOverlay" onclick="if(event.target===this)closeQuiz()">
+  <div class="quiz-box" id="quizBox">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:16px;font-weight:800">🏆 Daily News Quiz</div>
+      <button onclick="closeQuiz()" style="border:none;background:transparent;color:var(--text3);font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" id="quizProg" style="width:0%"></div></div>
+    <div id="quizContent">
+      <div style="text-align:center;padding:30px;color:var(--text3)">
+        <div style="font-size:36px;margin-bottom:12px">🧠</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text2);margin-bottom:8px">5 questions from today's headlines</div>
+        <div style="font-size:13px;margin-bottom:20px">AI-generated from live news</div>
+        <button onclick="startQuiz()" style="padding:12px 28px;border-radius:12px;border:none;background:var(--grad);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer">Start Quiz</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- READING LISTS -->
+<div class="rl-overlay" id="rlOverlay" onclick="if(event.target===this)closeReadingLists()">
+  <div class="rl-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="font-size:17px;font-weight:800">🔖 Reading Lists</div>
+      <button onclick="closeReadingLists()" style="border:none;background:transparent;color:var(--text3);font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <div id="rlContent"></div>
+  </div>
+</div>
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- STORY VIEWER -->
@@ -491,6 +609,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div class="nav-item" id="nav-research" onclick="setView('research')">
       <span class="nav-icon">🔬</span><span>Research</span>
     </div>
+    <div class="nav-item" onclick="voiceBriefing()" title="Voice Briefing"><span class="nav-icon">🎙️</span><span>Briefing</span></div>
     <div class="nav-item" id="nav-bookmarks" onclick="setView('bookmarks')">
       <span class="nav-icon">🔖</span><span>Saved</span>
       <span class="nav-badge" id="bookmarkCount">0</span>
@@ -515,7 +634,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   <!-- MAIN -->
   <div class="main">
     <!-- BREAKING BANNER -->
-    <div class="breaking-banner" id="breakingBanner">
+    <div class="pulse-bar" id="pulseDash"><span class="pulse-title">📊 Pulse</span><span style="font-size:11px;color:var(--text3);">Loading...</span></div>
+<div class="breaking-banner" id="breakingBanner">
       <span class="breaking-label">BREAKING</span>
       <span class="breaking-text" id="breakingText"></span>
       <button class="breaking-close" onclick="document.getElementById('breakingBanner').classList.remove('show')">✕</button>
@@ -540,6 +660,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         <input type="text" placeholder="Search live news..." id="searchInput" oninput="handleSearch(this.value)">
         <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
       </div>
+      <button class="theme-btn" onclick="toggleHindi()" id="hindiBtn" title="Hindi/English" style="font-size:13px;font-weight:700;">हिं</button>
+      <button class="theme-btn" onclick="openAskNews()" title="Ask the News">💬</button>
+      <button class="theme-btn" onclick="openQuiz()" title="Daily Quiz">🏆</button>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
     </div>
 
@@ -600,11 +723,14 @@ const NEWSAPI_BASE  = 'https://newsapi.org/v2';
 const GROQ_BASE     = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SECTOR_TO_GNEWS    = {All:'general',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'nation',Climate:'world',Sports:'sports'};
-const SECTOR_TO_NEWSDATA = {All:'top',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'politics',Climate:'environment',Sports:'sports'};
+const SECTOR_TO_NEWSDATA = {
+  Mumbai:'india', Delhi:'india',All:'top',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'politics',Climate:'environment',Sports:'sports'};
 const SECTOR_TO_GUARDIAN = {All:'news',Tech:'technology',Finance:'business',Health:'society',Science:'science',Politics:'politics',Climate:'environment',Sports:'sport'};
 const SECTOR_TO_NEWSAPI  = {All:'general',Tech:'technology',Finance:'business',Health:'health',Science:'science',Politics:'general',Climate:'science',Sports:'sports'};
 
 const SECTOR_FALLBACK_IMAGES = {
+  Mumbai:'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=800&q=80',
+  Delhi:'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&q=80',
   Tech:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80',
   Finance:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80',
   Health:'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800&q=80',
@@ -643,7 +769,7 @@ let alertKws   = JSON.parse(localStorage.getItem('pa_alerts') || '[]');
 let prefs      = JSON.parse(localStorage.getItem('pa_prefs') || JSON.stringify({showIndia:true,clustering:false,autoStory:false,readTime:true,favSectors:['Tech','Finance','Health']}));
 let storiesData = [];
 
-const sectors = ['All','Tech','Finance','Health','Science','Politics','Climate','Sports'];
+const sectors = ['All','Tech','Finance','Health','Science','Politics','Climate','Sports','Mumbai','Delhi'];
 
 // ══════════════════════════════════════════════════
 // HELPERS
@@ -803,7 +929,7 @@ async function fetchNews(sector='All', force=false, silent=false) {
   if(!silent) updateSourceBadge('fetching');
 
   const [g,nd,gu,na] = await Promise.allSettled([
-    fetchFromGNews(sector),
+    sector==='Mumbai'||sector==='Delhi' ? fetchFromGNewsCity(sector) : fetchFromGNews(sector),
     fetchFromNewsData(sector).then(r=>r.cards),
     fetchFromGuardian(sector).then(r=>r.cards),
     fetchFromNewsAPI(sector),
@@ -1704,21 +1830,7 @@ function toggleBookmark(id) {
   renderFeed();
 }
 
-async function setSector(s) {
-  state.currentSector = s;
-  renderSectors();
-  document.getElementById('topbarTitle').textContent = s==='All'?'🗞️ Daily Intelligence Feed':`${SECTOR_EMOJIS[s]} ${s} News`;
-  if (s==='India') {
-    const cards = await fetchIndia();
-    newsCache['India']=cards;
-    renderFeed();
-  } else {
-    const articles = await fetchNews(s);
-    if(s!=='All') newsCache[s]=articles; else newsData=articles;
-    renderFeed();
-  }
-  updateLastFetchedBadge();
-}
+async 
 
 function setView(v) {
   state.view=v;
@@ -1880,6 +1992,474 @@ function closeProfile(){var ov=document.getElementById('profOv');if(ov)ov.style.
 function renderProf(){var el=document.getElementById('profCt');if(!el)return;var u=currentUser;var ini=u.avatar_initials||'?';el.innerHTML='<div style="background:linear-gradient(135deg,#1a0828,#0a1528);padding:24px 20px 0;"><div style="display:flex;align-items:flex-end;gap:14px;"><div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,#e91e8c,#9333ea);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;border:3px solid #0a0a0a;flex-shrink:0;">'+ini+'</div><div style="flex:1;padding-bottom:12px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+u.name+'</div>'+(u.profession?'<div style="font-size:12px;color:rgba(255,255,255,.5);">'+u.profession+'</div>':'')+'<div style="font-size:12px;color:rgba(255,255,255,.4);">'+new Date(u.joined||Date.now()).toLocaleDateString('en-IN',{month:'long',year:'numeric'})+'</div></div></div><div style="display:flex;margin-top:16px;"><div style="flex:1;text-align:center;padding:10px 4px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+bookmarks.length+'</div><div style="font-size:10px;color:rgba(255,255,255,.4);">Saved</div></div><div style="flex:1;text-align:center;padding:10px 4px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+likes.length+'</div><div style="font-size:10px;color:rgba(255,255,255,.4);">Liked</div></div><div style="flex:1;text-align:center;padding:10px 4px;"><div style="font-size:18px;font-weight:800;color:#fff;">'+readItems.length+'</div><div style="font-size:10px;color:rgba(255,255,255,.4);">Read</div></div></div></div><div style="padding:20px;"><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px;">Name</label><input id="pf-n" value="'+u.name+'" style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:14px;padding:9px 12px;outline:none;margin-bottom:12px;box-sizing:border-box"><label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px;">Profession</label><input id="pf-p" value="'+(u.profession||'')+'" placeholder="e.g. Student..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:inherit;font-size:14px;padding:9px 12px;outline:none;margin-bottom:16px;box-sizing:border-box"><button onclick="saveProfEdit()" style="width:100%;padding:11px;border-radius:9px;border:none;background:linear-gradient(135deg,#e91e8c,#9333ea);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:12px;">Save</button><button onclick="logout()" style="width:100%;padding:10px;border-radius:9px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.05);color:#ef4444;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;">Sign Out</button></div>';}
 function saveProfEdit(){if(!currentUser)return;var n=(document.getElementById('pf-n').value||'').trim();if(!n){showToast('Name required');return;}currentUser.name=n;currentUser.profession=(document.getElementById('pf-p').value||'').trim();currentUser.avatar_initials=n[0].toUpperCase();localStorage.setItem('bna_user',JSON.stringify(currentUser));showToast('Saved!');renderProf();}
 document.addEventListener('DOMContentLoaded',function(){var sb=document.querySelector('.sidebar');if(sb){var d=document.createElement('div');d.className='nav-item';d.style.marginTop='auto';d.innerHTML='<span class="nav-icon">&#128100;</span><span>Profile</span>';d.onclick=openProfile;sb.appendChild(d);}});
+
+
+// ══════════════════════════════════════════════════
+// FEATURE 1: NEWS PULSE DASHBOARD
+// ══════════════════════════════════════════════════
+function renderPulseDash() {
+  var el = document.getElementById('pulseDash');
+  if (!el) return;
+  var counts = {};
+  var allCards = Object.values(newsCache).flat().concat(newsData);
+  allCards.forEach(function(c){ if(c.sector && c.sector!=='All') counts[c.sector]=(counts[c.sector]||0)+1; });
+  var max = Math.max.apply(null, Object.values(counts).concat([1]));
+  var sorted = Object.keys(counts).sort(function(a,b){return counts[b]-counts[a];});
+  el.innerHTML = '<span class="pulse-title">&#128202; Pulse</span>'
+    + sorted.slice(0,8).map(function(s){
+        var pct = Math.round(counts[s]/max*100);
+        var col = SECTOR_COLORS[s]||'#9333ea';
+        var heat = pct > 70 ? '&#128308;' : pct > 40 ? '&#128992;' : '&#128994;';
+        return '<div class="pulse-chip" onclick="setSector(''+s+'')" style="border-color:'+col+'22;background:'+col+'11;color:'+col+';">'
+          + heat+' '+(SECTOR_EMOJIS[s]||'')+' '+s+' <b>'+counts[s]+'</b></div>';
+      }).join('');
+}
+
+function setSector(s) {
+  state.currentSector = s;
+  document.querySelectorAll('.sector-chip').forEach(function(b){
+    b.classList.toggle('active', b.dataset.sector===s);
+  });
+  if(newsCache[s] && newsCache[s].length){ renderFeed(); }
+  else { fetchNews(s,false,true).then(function(r){ if(r&&r.length){newsCache[s]=r;renderFeed();} }); }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 2: READING LISTS
+// ══════════════════════════════════════════════════
+var readingLists = JSON.parse(localStorage.getItem('bna_lists') || '{}');
+
+function openReadingLists() {
+  document.getElementById('rlOverlay').classList.add('open');
+  renderReadingLists();
+}
+function closeReadingLists() {
+  document.getElementById('rlOverlay').classList.remove('open');
+}
+function renderReadingLists() {
+  var el = document.getElementById('rlContent');
+  var lists = Object.keys(readingLists);
+  if (!lists.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);"><div style="font-size:36px;margin-bottom:10px;">&#128218;</div><div style="font-size:14px;">No reading lists yet.</div></div>';
+  } else {
+    el.innerHTML = lists.map(function(name){
+      var count = (readingLists[name]||[]).length;
+      return '<div class="rl-list-item" onclick="openList(''+name+'')">'
+        +'<div class="rl-list-icon">&#128218;</div>'
+        +'<div><div class="rl-list-name">'+name+'</div><div class="rl-list-count">'+count+' articles</div></div>'
+        +'<button onclick="event.stopPropagation();deleteList(''+name+'')" style="margin-left:auto;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:16px;">&#128465;</button>'
+        +'</div>';
+    }).join('');
+  }
+  el.innerHTML += '<button class="rl-new-btn" onclick="createList()">+ New List</button>';
+}
+function createList() {
+  var name = prompt('List name (e.g. "Budget 2025", "Tech Reads"):');
+  if (!name || !name.trim()) return;
+  readingLists[name.trim()] = [];
+  localStorage.setItem('bna_lists', JSON.stringify(readingLists));
+  renderReadingLists();
+  showToast('&#128218; List "'+name.trim()+'" created!');
+}
+function deleteList(name) {
+  if (!confirm('Delete "'+name+'"?')) return;
+  delete readingLists[name];
+  localStorage.setItem('bna_lists', JSON.stringify(readingLists));
+  renderReadingLists();
+}
+function openList(name) {
+  var ids = readingLists[name] || [];
+  var all = Object.values(newsCache).flat().concat(newsData);
+  var seen = {};
+  var cards = ids.map(function(id){return all.find(function(c){return c.id===id;});}).filter(function(c){if(!c||seen[c.id])return false;seen[c.id]=1;return true;});
+  closeReadingLists();
+  renderFeed(cards);
+  showToast('&#128218; '+name+' ('+cards.length+' articles)');
+}
+function addToList(cardId) {
+  var lists = Object.keys(readingLists);
+  if (!lists.length) { showToast('Create a reading list first (Bookmarks &#187; Lists)'); return; }
+  var name = lists.length===1 ? lists[0] : prompt('Add to list:
+'+lists.map(function(l,i){return (i+1)+'. '+l;}).join('
+')+'
+
+Enter name:');
+  if (!name || !readingLists[name]) return;
+  if (!readingLists[name].includes(cardId)) readingLists[name].push(cardId);
+  localStorage.setItem('bna_lists', JSON.stringify(readingLists));
+  showToast('Added to "'+name+'"');
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 3: VOICE BRIEFING
+// ══════════════════════════════════════════════════
+var voicePlaying = false;
+function voiceBriefing() {
+  if (voicePlaying) { window.speechSynthesis.cancel(); voicePlaying=false; showToast('&#9889; Briefing stopped'); return; }
+  var top = newsData.slice(0,5);
+  if (!top.length) { showToast('&#9888; No articles loaded yet'); return; }
+  var script = 'Good ' + (new Date().getHours()<12?'morning':new Date().getHours()<17?'afternoon':'evening') + '. Here are your top 5 news briefings from BharatNews.ai. ';
+  top.forEach(function(c,i){ script += 'Story '+(i+1)+'. '+c.title+'. '+c.summary+' Source: '+c.source+'. '; });
+  script += 'That is your briefing. Stay informed.';
+  var utt = new SpeechSynthesisUtterance(script);
+  utt.rate = 0.95; utt.pitch = 1.05; utt.lang = 'en-IN';
+  var voices = window.speechSynthesis.getVoices();
+  var indVoice = voices.find(function(v){return v.lang==='en-IN'||v.name.includes('India');});
+  if (indVoice) utt.voice = indVoice;
+  utt.onend = function(){ voicePlaying=false; showToast('&#9989; Briefing complete'); };
+  window.speechSynthesis.speak(utt);
+  voicePlaying = true;
+  showToast('&#127908; Playing voice briefing... (tap again to stop)');
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 4 & 16: CITY NEWS + CRICKET
+// City news handled via existing fetchNews with sector=Mumbai/Delhi
+// ══════════════════════════════════════════════════
+// City-specific fetch
+var SECTOR_TO_GNEWS_EXTRA = { Mumbai:'mumbai india', Delhi:'delhi india' };
+async function fetchFromGNewsCity(sector, page) {
+  if (sector==='Mumbai'||sector==='Delhi') {
+    try {
+      var q = SECTOR_TO_GNEWS_EXTRA[sector];
+      var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+      var r=await fetch(GNEWS_BASE+'/search?q='+encodeURIComponent(q)+'&lang=en&max=10&apikey='+GNEWS_KEY,{signal:ac.signal});
+      if(!r.ok) return [];
+      var d=await r.json();
+      return (d.articles||[]).map(function(a,i){return gnewsToCard(a,sector,i);});
+    } catch(e){return [];}
+  }
+  return fetchFromGNews(sector, page);
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 5 & 6: AUTO-SUMMARY (shown in card summary)
+// Already works via card.summary from APIs
+// Enhanced: fetch AI summary on card hover for long articles
+// ══════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════
+// FEATURE 7: BIAS METER
+// ══════════════════════════════════════════════════
+var biasCache = {};
+async function getBiasMeter(card) {
+  if (biasCache[card.id]) return biasCache[card.id];
+  var keywords = (card.title+' '+card.summary).toLowerCase();
+  // Simple heuristic bias detection (AI would be better but costs tokens)
+  var leftWords = ['progressive','climate change','inequality','marginalized','reform','welfare','regulation','immigrant'];
+  var rightWords = ['national security','border','traditional','free market','deregulation','sovereignty','conservative','patriot'];
+  var lScore = leftWords.filter(function(w){return keywords.includes(w);}).length;
+  var rScore = rightWords.filter(function(w){return keywords.includes(w);}).length;
+  var bias = lScore>rScore?'L':rScore>lScore?'R':'C';
+  var credibility = card.source && ['BBC','Reuters','Guardian','Associated Press','PTI'].some(function(s){return card.source.includes(s);}) ? 'High' : 'Medium';
+  var result = {bias:bias, credibility:credibility, lScore:lScore, rScore:rScore};
+  biasCache[card.id] = result;
+  return result;
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 8: ASK THE NEWS
+// ══════════════════════════════════════════════════
+function openAskNews() {
+  document.getElementById('askOverlay').classList.add('open');
+  document.getElementById('askInp').focus();
+}
+function closeAskNews() {
+  document.getElementById('askOverlay').classList.remove('open');
+}
+function askQuestion(q) {
+  document.getElementById('askInp').value = q;
+  doAskNews();
+}
+async function doAskNews() {
+  var q = (document.getElementById('askInp').value||'').trim();
+  if (!q) return;
+  var res = document.getElementById('askResult');
+  res.innerHTML = '<div style="display:flex;align-items:center;gap:10px;color:var(--text3);"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:var(--accent2);"></div> Searching today's news...</div>';
+  var context = Object.values(newsCache).flat().concat(newsData).slice(0,20)
+    .map(function(c){return '- '+c.title+' ('+c.source+'): '+c.summary;}).join('
+');
+  var prompt = 'Question: "'+q+'"
+
+Today's news context:
+'+context+'
+
+Answer the question using the news context above. Be concise, accurate, and cite sources. If the answer is not in the context, say so.';
+  try {
+    var answer = await callAI(prompt, 'You are a helpful news assistant for BharatNews.ai. Answer questions about current news concisely and accurately. Always cite which news source you are drawing from.');
+    res.innerHTML = '<div style="line-height:1.8;white-space:pre-wrap;">'+answer+'</div>'
+      +'<div style="margin-top:12px;font-size:11px;color:var(--text3);">&#129504; Powered by Groq Llama 3.3 70B · Based on '+Object.values(newsCache).flat().length+' live articles</div>';
+  } catch(e) {
+    res.textContent = 'Could not get answer. Check your connection.';
+  }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 9: STORY CONNECTOR (related articles across sessions)
+// ══════════════════════════════════════════════════
+function getRelatedArticles(card, limit) {
+  limit = limit || 4;
+  var all = Object.values(newsCache).flat().concat(newsData);
+  var keywords = (card.title+' '+card.summary).toLowerCase().split(/\W+/).filter(function(w){return w.length>4;});
+  return all.filter(function(c){
+    if (c.id===card.id) return false;
+    var text = (c.title+' '+c.summary).toLowerCase();
+    return keywords.filter(function(k){return text.includes(k);}).length >= 2;
+  }).slice(0,limit);
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 10: SWIPE GESTURES
+// ══════════════════════════════════════════════════
+(function(){
+  var startX=0, startY=0, el=null;
+  document.addEventListener('touchstart', function(e){
+    startX=e.touches[0].clientX; startY=e.touches[0].clientY;
+    el=e.target.closest('.news-card');
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(!el) return;
+    var dx=e.changedTouches[0].clientX-startX;
+    var dy=Math.abs(e.changedTouches[0].clientY-startY);
+    if(dy>50||Math.abs(dx)<60) return;
+    var cardId = el.querySelector('[data-id]') ? el.querySelector('[data-id]').dataset.id : null;
+    if(!cardId) return;
+    if(dx>60){ showToast('&#128278; Saved!'); if(!bookmarks.includes(cardId)){bookmarks.push(cardId);localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));} }
+    else if(dx<-60){ showToast('&#128683; Dismissed'); }
+  }, {passive:true});
+})();
+
+// ══════════════════════════════════════════════════
+// FEATURE 11: HINDI TOGGLE
+// ══════════════════════════════════════════════════
+var isHindi = false;
+function toggleHindi() {
+  isHindi = !isHindi;
+  var btn = document.getElementById('hindiBtn');
+  if (btn) btn.style.color = isHindi ? 'var(--accent)' : '';
+  if (isHindi) {
+    fetchFromNewsDataHindi().then(function(cards){
+      if(cards&&cards.length){ renderFeed(cards); showToast('&#127470;&#127475; Hindi feed loaded - '+cards.length+' articles'); }
+      else showToast('&#9888; Hindi articles unavailable right now');
+    }).catch(function(){showToast('&#9888; Hindi feed unavailable');});
+  } else {
+    renderFeed();
+    showToast('Switched to English feed');
+  }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 12: SHARE AS STORY (enhanced)
+// ══════════════════════════════════════════════════
+function shareAsStoryCard(card) {
+  var canvas = document.createElement('canvas');
+  canvas.width=1080; canvas.height=1920;
+  var ctx=canvas.getContext('2d');
+  // Gradient background
+  var grad = ctx.createLinearGradient(0,0,1080,1920);
+  var col = (SECTOR_COLORS[card.sector]||'#9333ea');
+  grad.addColorStop(0,'#0a0a0a'); grad.addColorStop(1,col+'44');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,1080,1920);
+  // Source badge
+  ctx.fillStyle=col; ctx.beginPath(); ctx.roundRect(80,120,300,60,30); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.font='bold 28px system-ui'; ctx.fillText(card.source||'News',110,160);
+  // Title
+  ctx.fillStyle='#ffffff'; ctx.font='bold 64px system-ui';
+  var words=card.title.split(' '); var line=''; var y=320; var maxW=920;
+  words.forEach(function(w){var test=line+w+' ';if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,80,y);line=w+' ';y+=80;}else{line=test;}});
+  ctx.fillText(line,80,y);
+  // Summary
+  ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='36px system-ui';
+  var sumWords=(card.summary||'').split(' '); var sLine=''; var sy=y+100;
+  sumWords.slice(0,30).forEach(function(w){var test=sLine+w+' ';if(ctx.measureText(test).width>920&&sLine){ctx.fillText(sLine,80,sy);sLine=w+' ';sy+=56;}else{sLine=test;}});
+  ctx.fillText(sLine,80,sy);
+  // Branding
+  ctx.fillStyle='rgba(255,255,255,.5)'; ctx.font='bold 42px system-ui';
+  ctx.fillText('BharatNews.ai',80,1820);
+  var link=document.createElement('a'); link.href=canvas.toDataURL('image/png');
+  link.download='bharatnewsai-story.png'; link.click();
+  showToast('&#128247; Story card downloaded!');
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 13: TIME CAPSULE
+// ══════════════════════════════════════════════════
+async function openTimeCapsule() {
+  var today = new Date();
+  var lastYear = new Date(today.getFullYear()-1, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+  showToast('&#9200; Loading news from '+lastYear+'...');
+  try {
+    var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var url = GUARDIAN_BASE+'/search?api-key='+GUARDIAN_KEY+'&from-date='+lastYear+'&to-date='+lastYear+'&show-fields=thumbnail,trailText&page-size=10&order-by=relevance';
+    var r = await fetch(url, {signal:ac.signal});
+    if(!r.ok) throw new Error(r.status);
+    var d = await r.json();
+    var cards = (d.response.results||[]).map(function(a,i){
+      return {
+        id:'tc-'+i, title:a.webTitle, summary:a.fields&&a.fields.trailText||'',
+        source:'The Guardian', sourceIcon:'&#128240;', image:a.fields&&a.fields.thumbnail||'',
+        sector:'All', time:'1 year ago', articleUrl:a.webUrl, apiSource:'Guardian',
+        tags:['timecapsule'], breaking:false
+      };
+    });
+    if(cards.length){ renderFeed(cards); showToast('&#9200; You are reading news from '+lastYear+'! ('+cards.length+' articles)'); }
+    else showToast('&#9888; No articles found for this date last year');
+  } catch(e){ showToast('&#9888; Time capsule unavailable: '+e.message); }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 14: DAILY NEWS QUIZ
+// ══════════════════════════════════════════════════
+var quizState = { questions:[], current:0, score:0, answered:false };
+
+function openQuiz() {
+  document.getElementById('quizOverlay').classList.add('open');
+}
+function closeQuiz() {
+  document.getElementById('quizOverlay').classList.remove('open');
+  quizState = { questions:[], current:0, score:0, answered:false };
+  document.getElementById('quizContent').innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);"><div style="font-size:36px;margin-bottom:12px;">&#129504;</div><div style="font-size:15px;font-weight:600;color:var(--text2);margin-bottom:8px;">5 questions from today's headlines</div><div style="font-size:13px;margin-bottom:20px;">AI-generated from live news</div><button onclick="startQuiz()" style="padding:12px 28px;border-radius:12px;border:none;background:var(--grad);color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer">Start Quiz</button></div>';
+  document.getElementById('quizProg').style.width='0%';
+}
+
+async function startQuiz() {
+  var el = document.getElementById('quizContent');
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);"><div class="spinner" style="width:32px;height:32px;border-width:3px;border-top-color:var(--accent2);margin:0 auto 14px;"></div><div>Generating quiz from today's news...</div></div>';
+  var headlines = newsData.slice(0,8).map(function(c){return c.title+' - '+c.source;}).join('
+');
+  var prompt = 'Create 5 multiple-choice quiz questions based on these news headlines. Return ONLY valid JSON array:
+[{"q":"question","opts":["A","B","C","D"],"ans":0,"fact":"brief explanation"}]
+Headlines:
+'+headlines;
+  try {
+    var raw = await callAI(prompt, 'You are a quiz generator. Return only valid JSON array of quiz questions, no other text.');
+    var cleaned = raw.replace(/```json
+?|```
+?/g,'').trim();
+    quizState.questions = JSON.parse(cleaned);
+    quizState.current=0; quizState.score=0;
+    showQuizQuestion();
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);">Could not generate quiz. Try again when more news is loaded.<br><br><button onclick="closeQuiz()" style="padding:10px 20px;border-radius:10px;border:none;background:var(--surface2);color:var(--text);cursor:pointer;">Close</button></div>';
+  }
+}
+
+function showQuizQuestion() {
+  var q = quizState.questions[quizState.current];
+  if (!q) return showQuizResult();
+  var pct = (quizState.current/quizState.questions.length*100);
+  document.getElementById('quizProg').style.width = pct+'%';
+  document.getElementById('quizContent').innerHTML =
+    '<div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Question '+(quizState.current+1)+' of '+quizState.questions.length+'</div>'
+    +'<div class="quiz-q">'+q.q+'</div>'
+    + q.opts.map(function(opt,i){
+        return '<button class="quiz-opt" onclick="answerQuiz('+i+')">'+(String.fromCharCode(65+i))+'. '+opt+'</button>';
+      }).join('');
+  quizState.answered = false;
+}
+
+function answerQuiz(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  var q = quizState.questions[quizState.current];
+  var correct = idx === q.ans;
+  if (correct) quizState.score++;
+  var btns = document.querySelectorAll('.quiz-opt');
+  btns.forEach(function(b,i){
+    if(i===q.ans) b.classList.add('correct');
+    else if(i===idx && !correct) b.classList.add('wrong');
+    b.disabled=true;
+  });
+  var factEl = document.createElement('div');
+  factEl.style.cssText='margin-top:12px;padding:12px;background:var(--surface2);border-radius:10px;font-size:13px;color:var(--text2);line-height:1.5';
+  factEl.textContent=(correct?'✅ Correct! ':'❌ Wrong! ')+q.fact;
+  document.getElementById('quizContent').appendChild(factEl);
+  var nextBtn = document.createElement('button');
+  nextBtn.style.cssText='width:100%;margin-top:12px;padding:11px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer';
+  nextBtn.textContent = quizState.current+1 < quizState.questions.length ? 'Next Question →' : 'See Results';
+  nextBtn.onclick = function(){ quizState.current++; showQuizQuestion(); };
+  document.getElementById('quizContent').appendChild(nextBtn);
+}
+
+function showQuizResult() {
+  document.getElementById('quizProg').style.width='100%';
+  var pct=Math.round(quizState.score/quizState.questions.length*100);
+  var msg=pct>=80?'&#127881; Excellent! You are well-informed!':pct>=60?'&#128077; Good job! Keep reading the news.':pct>=40?'&#128218; Not bad! Read more to improve.':'&#128241; Keep reading BharatNews.ai daily!';
+  document.getElementById('quizContent').innerHTML =
+    '<div class="quiz-score">'
+    +'<div class="quiz-score-num">'+quizState.score+'/'+quizState.questions.length+'</div>'
+    +'<div style="font-size:14px;color:var(--text2);margin-top:8px;">'+msg+'</div>'
+    +'<div style="margin-top:20px;display:flex;gap:10px;justify-content:center;">'
+    +'<button onclick="quizState={questions:[],current:0,score:0,answered:false};startQuiz()" style="padding:11px 20px;border-radius:10px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer">Play Again</button>'
+    +'<button onclick="closeQuiz()" style="padding:11px 20px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer">Close</button>'
+    +'</div></div>';
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 15: MARKETS WIDGET (enhanced)
+// ══════════════════════════════════════════════════
+async function fetchMarkets() {
+  try {
+    var symbols = ['^BSESN','^NSEI','USDINR=X','GOLDINR=X'];
+    var results = await Promise.allSettled(symbols.map(function(s){
+      var ac=new AbortController(); setTimeout(function(){ac.abort();},6000);
+      return fetch('https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1d&range=1d',{signal:ac.signal})
+        .then(function(r){return r.json();});
+    }));
+    var markets = [];
+    var names = ['Sensex','Nifty','USD/INR','Gold'];
+    results.forEach(function(r,i){
+      if(r.status==='fulfilled'){
+        var meta = r.value&&r.value.chart&&r.value.chart.result&&r.value.chart.result[0]&&r.value.chart.result[0].meta;
+        if(meta){ markets.push({name:names[i],price:meta.regularMarketPrice,change:meta.regularMarketChangePercent}); }
+      }
+    });
+    return markets;
+  } catch(e){ return []; }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 16: CRICKET LIVE SCORE
+// ══════════════════════════════════════════════════
+async function fetchCricketScore() {
+  try {
+    var ac=new AbortController(); setTimeout(function(){ac.abort();},6000);
+    // Use a free cricket news endpoint via NewsData
+    var r = await fetch(NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&q=cricket+live+score&language=en&size=3',{signal:ac.signal});
+    if(!r.ok) return null;
+    var d = await r.json();
+    return (d.results||[])[0]||null;
+  } catch(e){ return null; }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 17: ELECTION TRACKER
+// ══════════════════════════════════════════════════
+async function openElectionTracker() {
+  showToast('&#128499; Loading election news...');
+  try {
+    var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var r=await fetch(NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&q=india+election+results+2025&language=en&size=8',{signal:ac.signal});
+    if(!r.ok) throw new Error(r.status);
+    var d=await r.json();
+    var cards=(d.results||[]).map(function(a,i){return newsdataToCard(a,'Politics',i);});
+    if(cards.length){ renderFeed(cards); showToast('&#128499; '+cards.length+' election stories loaded'); }
+    else showToast('&#9888; No election news found right now');
+  } catch(e){ showToast('&#9888; Election tracker unavailable: '+e.message); }
+}
+
+// ══════════════════════════════════════════════════
+// FEATURE 1 PULSE: Update pulse after news loads
+// ══════════════════════════════════════════════════
+function updateLastFetchedBadgeAndPulse() {
+  updateLastFetchedBadge();
+  renderPulseDash();
+}
+
+// ══════════════════════════════════════════════════
+// INIT ENHANCEMENTS: call pulse on startup
+// ══════════════════════════════════════════════════
+// Pulse is rendered via updateLastFetchedBadgeAndPulse
 
 init();
 </script>
