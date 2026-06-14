@@ -16,7 +16,11 @@
 
 <br/>
 
-![Bharat News AI Banner](https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200&q=80)
+<img src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" alt="BharatNews.ai" width="420"/>
+
+<br/>
+
+[![🌐 Visit Live Site](https://img.shields.io/badge/🌐%20Visit%20Live%20Site-BharatNews.ai-e91e8c?style=for-the-badge&logo=googlechrome&logoColor=white)](https://kushagra486.github.io/bharat-news-ai/)
 
 </div>
 
