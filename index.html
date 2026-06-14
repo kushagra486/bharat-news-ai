@@ -357,139 +357,22 @@ body.has-infobar .lp{padding-top:36px}
 /* =============================================
    DESKTOP ≥ 1100px — 3 column full layout
    ============================================= */
-@media(min-width:1100px){
-  :root{--sidebar-w:240px;--right-w:320px}
-  .mob-header,.mob-bottom-nav{display:none!important}
-  .sidebar{display:flex}
-  .right-panel{display:block}
-  .feed{padding:20px 24px;max-width:700px}
-  .topbar{padding:10px 24px}
-  .topbar-tabs .tab-btn{padding:6px 13px;font-size:13px}
-}
 
-/* =============================================
-   TABLET 768–1099px — 2 column, slim sidebar
-   ============================================= */
-@media(min-width:768px) and (max-width:1099px){
-  :root{--sidebar-w:64px;--right-w:0px}
-  .mob-header,.mob-bottom-nav{display:none!important}
-  .sidebar{display:flex;width:64px;padding:14px 8px}
-  .logo-text,.nav-item span:not(.nav-icon),.nav-label,.nav-badge{display:none!important}
-  .logo{justify-content:center;padding:8px 0}
-  .logo-icon{margin:0}
-  .nav-item{justify-content:center;padding:11px 0}
-  .right-panel{display:none!important}
-  .main{margin-left:64px}
-  .feed{max-width:100%;padding:16px 20px}
-  .topbar{padding:10px 16px;gap:8px}
-  .search-wrap{width:160px}
-  .topbar-title{font-size:14px}
-  .topbar-tabs .tab-btn{padding:5px 10px;font-size:12px}
-  .related-grid{grid-template-columns:1fr 1fr}
-  .card-img-wrap{height:200px}
-}
+/* ══════════════════════════════════════════════════
+   LAPTOP / DESKTOP  ≥ 1100px  — Full 3-column
+   ══════════════════════════════════════════════════ */
 
-/* =============================================
-   MOBILE < 768px — full-screen app, bottom nav
-   ============================================= */
-@media(max-width:767px){
-  .sidebar,.right-panel,.topbar,.breaking-banner{display:none!important}
-  .mob-header{
-    display:flex!important;
-    position:fixed;top:36px;left:0;right:0;height:50px;z-index:150;
-    background:var(--surface);border-bottom:1px solid var(--border);
-    align-items:center;padding:0 14px;gap:8px;
-  }
-  .mob-header-logo{
-    font-size:16px;font-weight:900;flex:1;
-    background:var(--grad);-webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;background-clip:text;
-  }
-  .mob-header-btn{
-    width:32px;height:32px;border-radius:50%;border:none;
-    background:var(--surface2);color:var(--text2);font-size:16px;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-  }
-  .mob-bottom-nav{
-    display:flex!important;
-    position:fixed;bottom:0;left:0;right:0;height:56px;z-index:150;
-    background:var(--surface);border-top:1px solid var(--border);
-    padding-bottom:env(safe-area-inset-bottom,0);
-  }
-  .mob-nav-btn{
-    flex:1;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;gap:2px;border:none;background:transparent;
-    color:var(--text3);cursor:pointer;font-family:inherit;
-    padding:4px 0;transition:color .15s;
-  }
-  .mob-nav-btn.active{color:var(--accent)}
-  .mob-nav-icon{font-size:19px;line-height:1}
-  .mob-nav-label{font-size:9px;font-weight:600;letter-spacing:.2px}
 
-  /* layout */
-  .app{flex-direction:column}
-  .main{margin-left:0;padding-top:36px}
-  .content{flex-direction:column}
-  .feed{
-    padding:0;
-    padding-top:50px;   /* mob-header */
-    padding-bottom:60px; /* bottom nav */
-    max-width:100%;
-  }
+/* ══════════════════════════════════════════════════
+   TABLET  768px – 1099px  — 2-column icons sidebar
+   ══════════════════════════════════════════════════ */
 
-  /* sector chips */
-  .sector-scroll{
-    position:sticky;top:86px;z-index:120;
-    background:var(--bg);border-bottom:1px solid var(--border);
-    padding:7px 12px;
-  }
-  .sector-chip{font-size:11px;padding:4px 10px}
 
-  /* stories */
-  .stories-row{padding:10px 12px 8px;border-bottom:1px solid var(--border)}
-  .story-ring{width:52px;height:52px}
-  .story-label{font-size:9px;max-width:52px}
+/* ══════════════════════════════════════════════════
+   MOBILE  < 768px  — Full-screen app
+   ══════════════════════════════════════════════════ */
 
-  /* pulse */
-  .pulse-bar{padding:7px 12px}
-  .pulse-chip{font-size:11px;padding:4px 9px}
 
-  /* cards — full bleed */
-  .news-card{border-radius:0;border-left:none;border-right:none;border-top:none;margin-bottom:4px}
-  .news-card:first-child{border-top:1px solid var(--border)}
-  .card-img-wrap{height:195px}
-  .card-body{padding:10px 14px}
-  .card-title{font-size:15px;line-height:1.35}
-  .card-summary{-webkit-line-clamp:2;font-size:13px}
-  .card-header{padding:10px 14px 7px}
-  .card-actions{padding:7px 14px 9px;gap:1px}
-  .action-btn{padding:6px 7px;font-size:11px}
-  .load-more-btn{border-radius:0;margin:0;border-left:none;border-right:none}
-
-  /* modals slide up */
-  .analysis-overlay,.reader-overlay,.ask-overlay,.rl-overlay{
-    align-items:flex-end;padding:0;
-  }
-  .analysis-modal,.reader-modal,.ask-sheet,.rl-sheet{
-    border-radius:20px 20px 0 0;max-height:93vh;
-    width:100%;max-width:100%;margin:0;
-  }
-  .reader-hero{height:180px;border-radius:20px 20px 0 0}
-  .reader-content{padding:16px}
-  .reader-title{font-size:18px}
-  .related-grid{grid-template-columns:1fr 1fr}
-
-  /* info bar on mobile — compact */
-  #infoBar{
-    padding:0 10px;gap:8px;height:36px;
-    justify-content:space-between;
-  }
-  .ib-stocks{gap:8px}
-  .ib-stock-name{display:none}
-  .ib-stock-price{font-size:11px}
-  .ib-stock-chg{font-size:10px;padding:1px 4px}
-  .ib-weather-text{display:none}
-}
 
 /* LP */
 .lp{position:fixed;inset:0;z-index:9999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -575,6 +458,266 @@ body.has-infobar .lp{padding-top:36px}
 .bias-R{background:rgba(239,68,68,.15);color:#ef4444}
 .bias-meter-bar{height:4px;border-radius:2px;background:linear-gradient(90deg,#3b82f6,#10b981,#ef4444);position:relative;margin:6px 0}
 .bias-indicator{width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid var(--bg);position:absolute;top:-2px;transform:translateX(-50%);transition:left .4s}
+
+/* ── DESKTOP CLOCK + WEATHER + MARKETS SIDEBAR ── */
+.desktop-clock{
+  display:none; /* shown only on desktop via media query */
+  flex-direction:column;gap:0;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;margin:8px 12px;overflow:hidden;
+}
+.clock-time-row{
+  padding:12px 14px 8px;
+  background:linear-gradient(135deg,#0a0a14,#140a1e);
+  border-bottom:1px solid rgba(147,51,234,.2);
+}
+.clock-digits{
+  font-size:28px;font-weight:900;color:#fff;
+  font-variant-numeric:tabular-nums;letter-spacing:1px;
+  line-height:1;
+}
+.clock-date{font-size:10px;color:rgba(255,255,255,.5);margin-top:3px;font-weight:500}
+.clock-weather-row{
+  padding:10px 14px;
+  display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--border);
+}
+.clock-weather-icon{font-size:22px}
+.clock-weather-info{}
+.clock-weather-temp{font-size:18px;font-weight:800;color:var(--text)}
+.clock-weather-city{font-size:11px;color:var(--text3);margin-top:1px}
+.clock-weather-desc{font-size:11px;color:var(--text2)}
+.clock-markets-row{padding:8px 14px 10px}
+.clock-markets-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:6px}
+.clock-market-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.clock-market-name{font-size:11px;font-weight:600;color:var(--text2)}
+.clock-market-val{font-size:11px;font-weight:700}
+.clock-market-up{color:#10b981}
+.clock-market-down{color:#ef4444}
+.clock-market-flat{color:var(--text3)}
+.mob-clock-flat{color:rgba(255,255,255,.6)}
+
+/* ════════════════════════════════════════════════════
+   RESPONSIVE LAYOUT — 3 TIERS
+   Desktop ≥1100px | Tablet 768-1099px | Mobile <768px
+════════════════════════════════════════════════════ */
+
+/* ── BASE: hide mobile chrome by default ── */
+.mob-clock-bar,.mob-header,.mob-bottom-nav{display:none}
+
+/* ── DESKTOP ≥ 1100px ── */
+@media(min-width:1100px){
+  :root{--sidebar-w:240px;--right-w:320px}
+  .mob-clock-bar,.mob-header,.mob-bottom-nav{display:none!important}
+  .sidebar{display:flex!important;width:240px;flex-shrink:0}
+  .right-panel{display:flex!important;width:320px;flex-direction:column}
+  .feed{padding:20px 24px;max-width:680px}
+  .topbar{padding:10px 24px}
+  .card-img-wrap{height:240px}
+  .desktop-clock{display:flex!important}
+}
+
+/* ── TABLET 768-1099px ── */
+@media(min-width:768px) and (max-width:1099px){
+  :root{--sidebar-w:64px;--right-w:0px}
+  .mob-clock-bar,.mob-header,.mob-bottom-nav{display:none!important}
+  .sidebar{display:flex!important;width:64px!important;padding:14px 8px!important;flex-shrink:0}
+  .logo img{width:36px!important;height:36px!important;border-radius:50%;object-fit:cover}
+  .logo-text,.nav-item > span:last-child,.nav-label,.nav-badge{display:none!important}
+  .logo{justify-content:center!important;padding:6px 0!important}
+  .nav-item{justify-content:center!important;padding:10px 0!important}
+  .nav-icon{margin:0!important}
+  .right-panel{display:none!important}
+  .main{margin-left:64px}
+  .feed{max-width:100%;padding:16px 20px}
+  .topbar{padding:10px 16px;gap:8px}
+  .search-wrap{width:160px}
+  .topbar-title{font-size:14px}
+  .card-img-wrap{height:200px}
+  .related-grid{grid-template-columns:1fr 1fr}
+  .desktop-clock{display:none!important}
+}
+
+/* ── MOBILE < 768px ── */
+@media(max-width:767px){
+  /* Hide all desktop chrome */
+  .sidebar,.right-panel,.topbar,.breaking-banner,.desktop-clock{display:none!important}
+
+  /* App shell reflow */
+  .app{flex-direction:column}
+  .main{margin-left:0!important}
+  .content{flex-direction:column}
+  .feed{
+    padding:0;
+    padding-top:calc(38px + 50px);
+    padding-bottom:62px;
+    max-width:100%;
+  }
+
+  /* ── Clock bar — always visible strip at top ── */
+  .mob-clock-bar{
+    display:flex!important;
+    position:fixed;top:0;left:0;right:0;height:38px;z-index:300;
+    background:linear-gradient(90deg,#090914,#100818,#091408);
+    border-bottom:1px solid rgba(147,51,234,.25);
+    align-items:center;padding:0 12px;gap:10px;
+    justify-content:space-between;overflow:hidden;
+  }
+  .mcb-time{
+    color:#fff;font-size:13px;font-weight:700;
+    font-variant-numeric:tabular-nums;letter-spacing:.5px;white-space:nowrap;flex-shrink:0;
+  }
+  .mcb-weather{
+    display:flex;align-items:center;gap:4px;
+    color:rgba(255,255,255,.75);font-size:11px;white-space:nowrap;flex-shrink:0;
+  }
+  .mcb-markets{
+    display:flex;align-items:center;gap:8px;
+    font-size:10px;font-weight:600;overflow:hidden;flex:1;justify-content:flex-end;
+  }
+  .mcb-up{color:#10b981}
+  .mcb-dn{color:#ef4444}
+  .mcb-flat{color:rgba(255,255,255,.5)}
+
+  /* ── Mobile header ── */
+  .mob-header{
+    display:flex!important;
+    position:fixed;top:38px;left:0;right:0;height:50px;z-index:200;
+    background:var(--surface);border-bottom:1px solid var(--border);
+    align-items:center;padding:0 14px;gap:8px;
+  }
+  .mob-header-logo{
+    font-size:16px;font-weight:900;flex:1;
+    background:var(--grad);-webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .mob-header-btn{
+    width:32px;height:32px;border-radius:50%;border:none;
+    background:var(--surface2);color:var(--text2);font-size:16px;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ── Bottom nav ── */
+  .mob-bottom-nav{
+    display:flex!important;
+    position:fixed;bottom:0;left:0;right:0;height:56px;z-index:200;
+    background:var(--surface);border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  .mob-nav-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:2px;border:none;background:transparent;
+    color:var(--text3);cursor:pointer;font-family:inherit;
+    padding:4px 0;transition:color .15s;
+  }
+  .mob-nav-btn.active{color:var(--accent)}
+  .mob-nav-icon{font-size:19px;line-height:1}
+  .mob-nav-label{font-size:9px;font-weight:600}
+
+  /* ── Sector chips ── */
+  .sector-scroll{
+    position:sticky;top:88px;z-index:120;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    padding:7px 12px;
+  }
+  .sector-chip{font-size:11px;padding:4px 10px}
+
+  /* ── Stories ── */
+  .stories-row{padding:10px 12px 8px;border-bottom:1px solid var(--border)}
+  .story-ring{width:52px;height:52px}
+  .story-label{font-size:9px;max-width:52px}
+
+  /* ── Cards full-bleed ── */
+  .news-card{border-radius:0;border-left:none;border-right:none;border-top:none;margin-bottom:4px}
+  .news-card:first-child{border-top:1px solid var(--border)}
+  .card-img-wrap{height:200px}
+  .card-body{padding:10px 14px}
+  .card-title{font-size:15px;line-height:1.35}
+  .card-summary{-webkit-line-clamp:2;font-size:13px}
+  .card-header{padding:10px 14px 8px}
+  .card-actions{padding:6px 12px 10px;gap:1px}
+  .action-btn{padding:5px 7px;font-size:11px}
+  .load-more-btn{border-radius:0;margin:0;border-left:none;border-right:none}
+
+  /* ── Modals slide up from bottom ── */
+  .analysis-overlay,.reader-overlay,.ask-overlay,.quiz-overlay,.rl-overlay{
+    align-items:flex-end;padding:0;
+  }
+  .analysis-modal,.reader-modal,.ask-sheet,.quiz-box,.rl-sheet{
+    border-radius:20px 20px 0 0;max-height:92vh;
+    width:100%;max-width:100%;margin:0;
+  }
+  .reader-hero{height:185px;border-radius:20px 20px 0 0}
+  .reader-content{padding:16px}
+  .reader-title{font-size:19px}
+  .related-grid{grid-template-columns:1fr 1fr}
+  .story-headline{font-size:22px}
+  .pulse-bar{padding:8px 12px;gap:6px}
+  .pulse-chip{font-size:11px;padding:4px 9px}
+}
+
+/* ── Desktop clock / weather / markets sidebar widget ── */
+.desktop-clock{
+  display:none;
+  flex-direction:column;
+  margin:12px 8px 0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#0d0d1a,#120d1f);
+  border:1px solid rgba(147,51,234,.2);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.dc-clock-row{
+  display:flex;align-items:baseline;gap:6px;
+  padding:14px 14px 6px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.dc-time{
+  font-size:26px;font-weight:900;color:#fff;
+  font-variant-numeric:tabular-nums;letter-spacing:1px;
+}
+.dc-date{font-size:10px;color:rgba(255,255,255,.4);font-weight:500}
+.dc-weather-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.dc-wicon{font-size:26px;flex-shrink:0}
+.dc-wtemp{font-size:20px;font-weight:800;color:#fff}
+.dc-wcity{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px}
+.dc-wdesc{font-size:10px;color:rgba(255,255,255,.35)}
+.dc-market-row{padding:10px 14px}
+.dc-market-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.3);margin-bottom:7px}
+.dc-market-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);
+  font-size:11px;
+}
+.dc-market-item:last-child{border-bottom:none}
+.dc-mname{color:rgba(255,255,255,.6);font-weight:500}
+.dc-mval{font-weight:700;font-variant-numeric:tabular-nums}
+.dc-up{color:#10b981}
+.dc-dn{color:#ef4444}
+.dc-flat{color:rgba(255,255,255,.4)}
+
+/* ── Right panel live markets table ── */
+.rp-markets-table{width:100%;border-collapse:collapse;font-size:12px}
+.rp-markets-table th{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:4px 6px;border-bottom:1px solid var(--border);text-align:left}
+.rp-markets-table td{padding:6px 6px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text2)}
+.rp-markets-table tr:last-child td{border-bottom:none}
+.rp-up{color:#10b981;font-weight:700}
+.rp-dn{color:#ef4444;font-weight:700}
+.rp-flat{color:var(--text3)}
+
+/* ── Right panel weather ── */
+.rp-weather{background:linear-gradient(135deg,#0d0d20,#0d1a10);border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid rgba(147,51,234,.15)}
+.rp-w-city{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px}
+.rp-w-temp{font-size:32px;font-weight:900;color:#fff;line-height:1}
+.rp-w-desc{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+.rp-forecast{display:flex;gap:6px;margin-top:10px}
+.rp-fc-day{flex:1;text-align:center;background:rgba(255,255,255,.05);border-radius:8px;padding:6px 4px}
+.rp-fc-label{font-size:9px;color:rgba(255,255,255,.4);font-weight:600}
+.rp-fc-icon{font-size:16px;margin:3px 0}
+.rp-fc-temp{font-size:11px;color:#fff;font-weight:700}
 </style>
 </head>
 <body>
@@ -670,29 +813,50 @@ body.has-infobar .lp{padding-top:36px}
 </div>
 
 <!-- ══ MOBILE HEADER ══ -->
-<div class="mob-header" id="mobHeader" style="display:none">
+
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+
+
+
+<!-- MOBILE CLOCK BAR (always on top) -->
+
+
+
+<!-- ══ MOB CLOCK BAR ══ -->
+<div class="mob-clock-bar" id="mobClockBar">
+  <div class="mcb-time" id="mcbTime">--:--</div>
+  <div class="mcb-weather" id="mcbWeather"><span id="mcbWIcon">⛅</span><span id="mcbWText">--</span></div>
+  <div class="mcb-markets" id="mcbMarkets">
+    <span class="mcb-flat" id="mcbSensex">Sensex --</span>
+    <span class="mcb-flat" id="mcbNifty">Nifty --</span>
+  </div>
+</div>
+
+<!-- ══ MOB HEADER ══ -->
+<div class="mob-header" id="mobHeader">
   <div class="mob-header-logo">BharatNews.ai</div>
-  <button class="mob-header-btn" onclick="toggleHindi()" title="Hindi">हिं</button>
   <button class="mob-header-btn" onclick="openAskNews()">💬</button>
+  <button class="mob-header-btn" onclick="toggleTheme()" id="mobThemeBtn">🌙</button>
   <button class="mob-header-btn" onclick="openProfile()">👤</button>
 </div>
 
-<!-- ══ MOBILE BOTTOM NAV ══ -->
-<div class="mob-bottom-nav" id="mobBottomNav" style="display:none">
-  <button class="mob-nav-btn active" id="mbn-feed" onclick="mobNav('feed',this)">
+<!-- ══ MOB BOTTOM NAV ══ -->
+<div class="mob-bottom-nav" id="mobBottomNav">
+  <button class="mob-nav-btn active" id="mbn-feed" onclick="mobSetView('feed',this)">
     <span class="mob-nav-icon">🏠</span><span class="mob-nav-label">Home</span>
   </button>
-  <button class="mob-nav-btn" id="mbn-india" onclick="mobNav('india',this)">
+  <button class="mob-nav-btn" id="mbn-india" onclick="mobSetView('india',this)">
     <span class="mob-nav-icon">🇮🇳</span><span class="mob-nav-label">India</span>
   </button>
-  <button class="mob-nav-btn" id="mbn-stories" onclick="openStory(0)">
-    <span class="mob-nav-icon">▶️</span><span class="mob-nav-label">Stories</span>
+  <button class="mob-nav-btn" id="mbn-quiz" onclick="openQuiz()">
+    <span class="mob-nav-icon">🏆</span><span class="mob-nav-label">Quiz</span>
   </button>
-  <button class="mob-nav-btn" id="mbn-saved" onclick="mobNav('bookmarks',this)">
+  <button class="mob-nav-btn" id="mbn-saved" onclick="mobSetView('bookmarks',this)">
     <span class="mob-nav-icon">🔖</span><span class="mob-nav-label">Saved</span>
   </button>
   <button class="mob-nav-btn" id="mbn-profile" onclick="openProfile()">
-    <span class="mob-nav-icon">👤</span><span class="mob-nav-label">Me</span>
+    <span class="mob-nav-icon">👤</span><span class="mob-nav-label">Profile</span>
   </button>
 </div>
 
@@ -824,6 +988,26 @@ body.has-infobar .lp{padding-top:36px}
     <div class="nav-item" onclick="setSector('Politics')"><span class="nav-icon">🏛️</span><span>Politics</span></div>
     <div class="nav-item" onclick="setSector('Climate')"><span class="nav-icon">🌍</span><span>Climate</span></div>
     <div class="nav-item" onclick="setSector('Sports')"><span class="nav-icon">⚽</span><span>Sports</span></div>
+
+    <!-- DESKTOP CLOCK -->
+    <div class="desktop-clock" id="desktopClock">
+      <div class="dc-clock-row"><div class="dc-time" id="dcTime">--:--:--</div><div class="dc-date" id="dcDate"></div></div>
+      <div class="dc-weather-row" id="dcWeather">
+        <div class="dc-wicon" id="dcWIcon">⛅</div>
+        <div><div class="dc-wtemp" id="dcWTemp">--°C</div><div class="dc-wcity" id="dcWCity">Locating...</div><div class="dc-wdesc" id="dcWDesc"></div></div>
+      </div>
+      <div class="dc-market-row">
+        <div class="dc-market-title">Live Markets</div>
+        <div id="dcMarkets"><div style="font-size:11px;color:rgba(255,255,255,.3);padding:4px 0">Loading...</div></div>
+      </div>
+    </div>
+          <div class="clock-market-item"><span class="clock-market-name">Nifty</span><span class="clock-market-flat" id="dm-nifty">--</span></div>
+          <div class="clock-market-item"><span class="clock-market-name">USD/INR</span><span class="clock-market-flat" id="dm-usd">--</span></div>
+          <div class="clock-market-item"><span class="clock-market-name">Gold</span><span class="clock-market-flat" id="dm-gold">--</span></div>
+        </div>
+      </div>
+    </div>
+
     <div class="sidebar-footer">
       <div class="nav-item" onclick="openAlertModal()" style="position:relative;">
         <span class="nav-icon">🔔</span><span>Alerts</span>
@@ -886,11 +1070,21 @@ body.has-infobar .lp{padding-top:36px}
         </div>
         <div class="divider"></div>
         <div class="panel-section">
-          <div class="panel-title">📊 Markets</div>
-          <div class="market-grid" id="marketGrid"></div>
-          <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:right;">Simulated · <a href="https://finance.yahoo.com" target="_blank" style="color:var(--accent5);text-decoration:none;">Live on Yahoo Finance →</a></div>
-        </div>
-        <div class="divider"></div>
+          <div class="panel-title">🌤️ Weather</div>
+          <div class="rp-weather">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div style="font-size:32px" id="rpWIcon">⛅</div>
+              <div>
+                <div class="rp-wtemp" id="rpWTemp" style="font-size:28px;font-weight:900;color:#fff">--°C</div>
+                <div class="rp-wcity" id="rpWCity" style="font-size:12px;color:rgba(255,255,255,.5)">Locating...</div>
+              </div>
+            </div>
+            <div class="rp-wdesc" id="rpWDesc" style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:10px"></div>
+            <div class="rp-forecast" id="rpForecast"></div>
+          </div>
+          <div class="panel-title" style="margin-top:14px">📈 Live Markets</div>
+          <div id="rpMarketsTable"><div style="font-size:12px;color:var(--text3);padding:8px 0">Loading markets...</div></div>
+        </div><div class="divider"></div>
         <div class="panel-section">
           <div class="panel-title">✨ AI Daily Briefing</div>
           <div class="ai-insight-box">
@@ -2704,29 +2898,7 @@ function refreshWeather() {
   );
 }
 
-async function fetchWeather(lat, lon) {
-  try {
-    // Open-Meteo: free, no API key, CORS enabled
-    var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
-      +'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto';
-    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
-    var r = await fetch(url, {signal:ac.signal});
-    if (!r.ok) throw new Error(r.status);
-    var d = await r.json();
-    var cur = d.current;
-    var temp = Math.round(cur.temperature_2m);
-    var code = cur.weather_code;
-    var icon = weatherIcon(code);
-    var cond = weatherCond(code);
-    document.getElementById('ibWeather').innerHTML =
-      '<span class="ib-weather-icon">'+icon+'</span>'
-      +'<span id="ibWeatherText">'+temp+'°C '+cond+'</span>';
-    // Reverse geocode for city name
-    fetchCityName(lat, lon);
-  } catch(e) {
-    document.getElementById('ibWeatherText').textContent = 'Weather N/A';
-  }
-}
+
 
 async function fetchCityName(lat, lon) {
   try {
@@ -2868,6 +3040,451 @@ document.addEventListener('DOMContentLoaded', function() {
   setInterval(refreshWeather, 600000);
 });
 window.addEventListener('resize', applyLayout);
+
+
+// ══════════════════════════════════════════════════
+// LIVE CLOCK
+// ══════════════════════════════════════════════════
+
+
+// ══════════════════════════════════════════════════
+// LIVE WEATHER (OpenMeteo — free, no key needed)
+// ══════════════════════════════════════════════════
+var weatherIcons = {
+  0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
+  45:'🌫️', 48:'🌫️',
+  51:'🌦️', 53:'🌦️', 55:'🌧️',
+  61:'🌧️', 63:'🌧️', 65:'🌧️',
+  71:'🌨️', 73:'🌨️', 75:'❄️',
+  80:'🌦️', 81:'🌧️', 82:'⛈️',
+  95:'⛈️', 96:'⛈️', 99:'⛈️'
+};
+var weatherDescs = {
+  0:'Clear sky', 1:'Mainly clear', 2:'Partly cloudy', 3:'Overcast',
+  45:'Foggy', 48:'Icy fog',
+  51:'Light drizzle', 53:'Drizzle', 55:'Heavy drizzle',
+  61:'Light rain', 63:'Rain', 65:'Heavy rain',
+  71:'Light snow', 73:'Snow', 75:'Heavy snow',
+  80:'Showers', 81:'Heavy showers', 82:'Violent showers',
+  95:'Thunderstorm', 96:'Thunderstorm+hail', 99:'Heavy thunderstorm'
+};
+
+async 
+
+function setWeatherUI(icon, temp, city, desc) {
+  // Desktop
+  var di = document.getElementById('dWeatherIcon');
+  var dt = document.getElementById('dWeatherTemp');
+  var dc = document.getElementById('dWeatherCity');
+  var dd = document.getElementById('dWeatherDesc');
+  if(di) di.textContent = icon;
+  if(dt) dt.textContent = temp;
+  if(dc) dc.textContent = city;
+  if(dd) dd.textContent = desc;
+  // Mobile bar
+  var mi = document.getElementById('mWeatherIcon');
+  var mt2 = document.getElementById('mWeatherTemp');
+  var mc = document.getElementById('mWeatherCity');
+  if(mi) mi.textContent = icon;
+  if(mt2) mt2.textContent = temp;
+  if(mc) mc.textContent = city;
+}
+
+// ══════════════════════════════════════════════════
+// LIVE MARKETS (Yahoo Finance via allorigins proxy)
+// ══════════════════════════════════════════════════
+var marketSymbols = [
+  {id:'sensex', sym:'^BSESN', label:'Sensex', mobId:'mm-sensex', deskId:'dm-sensex'},
+  {id:'nifty',  sym:'^NSEI',  label:'Nifty',  mobId:'mm-nifty',  deskId:'dm-nifty'},
+  {id:'usd',    sym:'INR=X',  label:'USD/INR', mobId:null,        deskId:'dm-usd'},
+  {id:'gold',   sym:'GC=F',   label:'Gold',   mobId:null,        deskId:'dm-gold'},
+];
+
+async 
+
+async function fetchMarketItem(mk) {
+  try {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+mk.sym+'?interval=1d&range=1d';
+    var r = await fetch(url, {signal:ac.signal});
+    var d = await r.json();
+    var meta = d.chart && d.chart.result && d.chart.result[0] && d.chart.result[0].meta;
+    if (!meta) return;
+    var price = meta.regularMarketPrice;
+    var chgPct = meta.regularMarketChangePercent;
+    var isUp = chgPct >= 0;
+    var arrow = isUp ? '▲' : '▼';
+    var cls = isUp ? 'up' : 'down';
+    // Format
+    var priceStr = price > 1000 ? Math.round(price).toLocaleString('en-IN') : price.toFixed(2);
+    var chgStr = (isUp?'+':'')+chgPct.toFixed(2)+'%';
+    // Update desktop
+    var del = document.getElementById(mk.deskId);
+    if(del) {
+      del.textContent = priceStr+' '+arrow+chgStr;
+      del.className = 'clock-market-'+(isUp?'up':'down');
+    }
+    // Update mobile
+    if(mk.mobId) {
+      var mel = document.getElementById(mk.mobId);
+      if(mel) {
+        mel.textContent = priceStr+' '+arrow;
+        mel.className = isUp ? 'mob-clock-up' : 'mob-clock-down';
+      }
+    }
+  } catch(e) {
+    // silent fail
+  }
+}
+
+// ══════════════════════════════════════════════════
+// MARKETS TABLE (full screen — in right panel)
+// ══════════════════════════════════════════════════
+async function renderLiveMarketsTable() {
+  var el = document.getElementById('marketsPanel');
+  if(!el) return;
+  el.innerHTML = '<div class="market-loading" style="text-align:center;padding:20px;color:var(--text3);font-size:12px;">&#128201; Loading live markets...</div>';
+  var symbols = [
+    {sym:'^BSESN',label:'BSE Sensex',cat:'Index'},
+    {sym:'^NSEI', label:'NSE Nifty 50',cat:'Index'},
+    {sym:'^NSEBANK',label:'Nifty Bank',cat:'Index'},
+    {sym:'INR=X', label:'USD/INR',cat:'Forex'},
+    {sym:'EURINR=X',label:'EUR/INR',cat:'Forex'},
+    {sym:'GC=F',  label:'Gold (USD/oz)',cat:'Commodity'},
+    {sym:'CL=F',  label:'Crude Oil',cat:'Commodity'},
+    {sym:'BTC-USD',label:'Bitcoin',cat:'Crypto'},
+    {sym:'ETH-USD',label:'Ethereum',cat:'Crypto'},
+  ];
+  var results = await Promise.allSettled(symbols.map(function(s){
+    var ac=new AbortController(); setTimeout(function(){ac.abort();},8000);
+    return fetch('https://query1.finance.yahoo.com/v8/finance/chart/'+s.sym+'?interval=1d&range=1d',{signal:ac.signal})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var meta=d.chart&&d.chart.result&&d.chart.result[0]&&d.chart.result[0].meta;
+        return meta?{...s,price:meta.regularMarketPrice,chg:meta.regularMarketChangePercent,prev:meta.chartPreviousClose}:null;
+      });
+  }));
+  var rows = results.map(function(r){return r.status==='fulfilled'?r.value:null;}).filter(Boolean);
+  if(!rows.length){el.innerHTML='<div style="padding:16px;color:var(--text3);font-size:12px;">Markets data unavailable</div>';return;}
+  var cats = ['Index','Forex','Commodity','Crypto'];
+  var html2 = '';
+  cats.forEach(function(cat){
+    var catRows = rows.filter(function(r){return r.cat===cat;});
+    if(!catRows.length) return;
+    html2 += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);padding:10px 14px 5px;">'+cat+'</div>';
+    catRows.forEach(function(row){
+      var isUp=row.chg>=0;
+      var priceStr = row.price>1000 ? Math.round(row.price).toLocaleString('en-IN') : row.price.toFixed(2);
+      var chgStr = (isUp?'+':'')+row.chg.toFixed(2)+'%';
+      var col = isUp?'#10b981':'#ef4444';
+      html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);">'
+        +'<div><div style="font-size:13px;font-weight:600;color:var(--text);">'+row.label+'</div><div style="font-size:10px;color:var(--text3);">'+row.sym+'</div></div>'
+        +'<div style="text-align:right;"><div style="font-size:13px;font-weight:700;color:var(--text);">'+priceStr+'</div><div style="font-size:11px;font-weight:600;color:'+col+';">'+(isUp?'▲':'▼')+' '+chgStr+'</div></div>'
+        +'</div>';
+    });
+  });
+  html2 += '<div style="padding:8px 14px;font-size:9px;color:var(--text3);">&#128201; Live via Yahoo Finance · Updates every 5 min</div>';
+  el.innerHTML = html2;
+}
+
+// ══════════════════════════════════════════════════
+// WEATHER FORECAST PANEL (5-day)
+// ══════════════════════════════════════════════════
+async function renderWeatherForecast() {
+  var el = document.getElementById('weatherForecast');
+  if(!el) return;
+  if(!navigator.geolocation){el.innerHTML='<div style="padding:12px;font-size:12px;color:var(--text3);">Enable location for weather</div>';return;}
+  el.innerHTML='<div style="padding:12px;font-size:12px;color:var(--text3);">&#127777; Loading forecast...</div>';
+  navigator.geolocation.getCurrentPosition(async function(pos){
+    try {
+      var lat=pos.coords.latitude.toFixed(4), lon=pos.coords.longitude.toFixed(4);
+      var r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto&forecast_days=5');
+      var d=await r.json();
+      var daily=d.daily;
+      var days2=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var html3='<div style="padding:10px 14px 5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);">5-Day Forecast</div>';
+      html3+='<div style="display:flex;gap:0;overflow-x:auto;padding:0 14px 12px;">';
+      for(var i=0;i<5;i++){
+        var dt2=new Date(daily.time[i]); var dn=days2[dt2.getDay()];
+        var ic=weatherIcons[daily.weathercode[i]]||'🌡️';
+        var mx=Math.round(daily.temperature_2m_max[i]);
+        var mn=Math.round(daily.temperature_2m_min[i]);
+        var pr=daily.precipitation_sum[i]>0?'&#128167;'+daily.precipitation_sum[i].toFixed(1)+'mm':'';
+        html3+='<div style="flex:1;min-width:52px;text-align:center;padding:8px 4px;">'
+          +'<div style="font-size:10px;font-weight:600;color:var(--text3);margin-bottom:4px;">'+(i===0?'Today':dn)+'</div>'
+          +'<div style="font-size:22px;margin-bottom:4px;">'+ic+'</div>'
+          +'<div style="font-size:12px;font-weight:700;color:var(--text);">'+mx+'°</div>'
+          +'<div style="font-size:10px;color:var(--text3);">'+mn+'°</div>'
+          +(pr?'<div style="font-size:9px;color:#3b82f6;margin-top:2px;">'+pr+'</div>':'')
+          +'</div>';
+      }
+      html3+='</div>';
+      el.innerHTML=html3;
+    } catch(e){el.innerHTML='<div style="padding:12px;font-size:12px;color:var(--text3);">Forecast unavailable</div>';}
+  }, function(){el.innerHTML='<div style="padding:12px;font-size:12px;color:var(--text3);">Allow location for forecast</div>';});
+}
+
+// ══════════════════════════════════════════════════
+// STARTUP — init all live widgets
+// ══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  startClock();
+  // Load cached weather instantly
+  var cached = JSON.parse(localStorage.getItem('bna_weather')||'null');
+  if(cached && Date.now()-cached.ts < 30*60*1000) {
+    setWeatherUI(cached.icon, cached.temp+'°C', cached.city, cached.desc);
+  }
+  // Fetch fresh weather + markets
+  fetchWeather();
+  fetchLiveMarkets();
+  setInterval(fetchLiveMarkets, 5*60*1000); // refresh markets every 5 min
+  setInterval(fetchWeather, 30*60*1000);     // refresh weather every 30 min
+  // Markets table in right panel
+  setTimeout(function(){
+    renderLiveMarketsTable();
+    renderWeatherForecast();
+  }, 2000);
+  setInterval(function(){
+    renderLiveMarketsTable();
+  }, 5*60*1000);
+});
+
+
+// ══════════════════════════════════════════════════
+// CLOCK — ticks every second, updates all surfaces
+// ══════════════════════════════════════════════════
+function startClock() {
+  function tick() {
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2,'0');
+    var mm = String(now.getMinutes()).padStart(2,'0');
+    var ss = String(now.getSeconds()).padStart(2,'0');
+    var timeStr = hh+':'+mm+':'+ss;
+    var mobTime = hh+':'+mm;
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var dateStr = days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+    // Desktop sidebar clock
+    var dcT = document.getElementById('dcTime');
+    var dcD = document.getElementById('dcDate');
+    if (dcT) dcT.textContent = timeStr;
+    if (dcD) dcD.textContent = dateStr;
+    // Mobile clock bar
+    var mcbT = document.getElementById('mcbTime');
+    if (mcbT) mcbT.textContent = mobTime;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ══════════════════════════════════════════════════
+// WEATHER — Open-Meteo (free, no key) + Nominatim
+// ══════════════════════════════════════════════════
+var weatherCache = null;
+var WMO_ICONS = {
+  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+  45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',
+  61:'🌧️',63:'🌧️',65:'🌧️',
+  71:'❄️',73:'❄️',75:'❄️',
+  80:'🌦️',81:'🌧️',82:'⛈️',
+  95:'⛈️',96:'⛈️',99:'⛈️'
+};
+var WMO_DESC = {
+  0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+  45:'Foggy',48:'Foggy',
+  51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+  61:'Light rain',63:'Rain',65:'Heavy rain',
+  71:'Light snow',73:'Snow',75:'Heavy snow',
+  80:'Rain showers',81:'Heavy showers',82:'Violent showers',
+  95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'
+};
+
+async function fetchWeather() {
+  if (weatherCache && (Date.now() - weatherCache.ts) < 30*60*1000) {
+    return applyWeather(weatherCache);
+  }
+  try {
+    var pos = await new Promise(function(resolve, reject) {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {timeout:8000});
+    });
+    var lat = pos.coords.latitude.toFixed(4);
+    var lon = pos.coords.longitude.toFixed(4);
+
+    // City name via Nominatim
+    var geoAc = new AbortController(); setTimeout(function(){geoAc.abort();},6000);
+    var geoR = await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json',{signal:geoAc.signal,headers:{'User-Agent':'BharatNewsAI/1.0'}});
+    var geoD = await geoR.json();
+    var city = geoD.address && (geoD.address.city || geoD.address.town || geoD.address.village || geoD.address.county) || 'Your Location';
+
+    // Weather via Open-Meteo
+    var wAc = new AbortController(); setTimeout(function(){wAc.abort();},8000);
+    var wR = await fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,weathercode,windspeed_10m,relativehumidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=5',{signal:wAc.signal});
+    var wD = await wR.json();
+
+    weatherCache = {
+      ts: Date.now(),
+      city: city,
+      temp: Math.round(wD.current.temperature_2m),
+      code: wD.current.weathercode,
+      wind: Math.round(wD.current.windspeed_10m),
+      humidity: wD.current.relativehumidity_2m,
+      forecast: wD.daily
+    };
+    applyWeather(weatherCache);
+  } catch(e) {
+    // Geolocation denied or failed — show default
+    applyWeather({city:'India', temp:'--', code:1, wind:'--', humidity:'--', forecast:null});
+  }
+}
+
+function applyWeather(w) {
+  var icon = WMO_ICONS[w.code] || '🌡️';
+  var desc = WMO_DESC[w.code] || '';
+  var tempStr = w.temp !== '--' ? w.temp+'°C' : '--';
+
+  // Desktop sidebar
+  var dcWIcon = document.getElementById('dcWIcon');
+  var dcWTemp = document.getElementById('dcWTemp');
+  var dcWCity = document.getElementById('dcWCity');
+  var dcWDesc = document.getElementById('dcWDesc');
+  if (dcWIcon) dcWIcon.textContent = icon;
+  if (dcWTemp) dcWTemp.textContent = tempStr;
+  if (dcWCity) dcWCity.textContent = w.city;
+  if (dcWDesc) dcWDesc.textContent = desc + (w.humidity !== '--' ? ' · '+w.humidity+'% humidity' : '');
+
+  // Right panel
+  var rpWIcon = document.getElementById('rpWIcon');
+  var rpWTemp = document.getElementById('rpWTemp');
+  var rpWCity = document.getElementById('rpWCity');
+  var rpWDesc = document.getElementById('rpWDesc');
+  if (rpWIcon) rpWIcon.textContent = icon;
+  if (rpWTemp) rpWTemp.textContent = tempStr;
+  if (rpWCity) rpWCity.textContent = w.city;
+  if (rpWDesc) rpWDesc.textContent = desc + (w.wind !== '--' ? ' · '+w.wind+' km/h wind' : '');
+
+  // 5-day forecast in right panel
+  var rpFc = document.getElementById('rpForecast');
+  if (rpFc && w.forecast) {
+    var dayLabels = ['Today','Tom','Wed','Thu','Fri','Sat','Sun'];
+    var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    rpFc.innerHTML = (w.forecast.time || []).slice(0,5).map(function(d, i) {
+      var date = new Date(d);
+      var label = i===0 ? 'Today' : i===1 ? 'Tom' : days[date.getDay()];
+      var ico = WMO_ICONS[w.forecast.weathercode[i]] || '🌡️';
+      var hi = Math.round(w.forecast.temperature_2m_max[i]);
+      var lo = Math.round(w.forecast.temperature_2m_min[i]);
+      return '<div class="rp-fc-day"><div class="rp-fc-label">'+label+'</div><div class="rp-fc-icon">'+ico+'</div><div class="rp-fc-temp">'+hi+'°<span style="color:rgba(255,255,255,.4);font-size:9px">'+lo+'°</span></div></div>';
+    }).join('');
+  }
+
+  // Mobile clock bar
+  var mcbWIcon = document.getElementById('mcbWIcon');
+  var mcbWText = document.getElementById('mcbWText');
+  if (mcbWIcon) mcbWIcon.textContent = icon;
+  if (mcbWText) mcbWText.textContent = w.city.split(',')[0].split(' ')[0]+' '+tempStr;
+}
+
+// ══════════════════════════════════════════════════
+// MARKETS — Yahoo Finance, refresh every 5 min
+// ══════════════════════════════════════════════════
+var MARKET_SYMBOLS = [
+  {sym:'^BSESN', name:'Sensex', id:'sensex'},
+  {sym:'^NSEI',  name:'Nifty',  id:'nifty'},
+  {sym:'USDINR=X',name:'USD/INR',id:'usdinr'},
+  {sym:'GOLDINR=X',name:'Gold/INR',id:'gold'},
+  {sym:'^IXIC',  name:'Nasdaq', id:'nasdaq'},
+  {sym:'^DJI',   name:'Dow',    id:'dow'},
+];
+
+async function fetchLiveMarkets() {
+  var results = await Promise.allSettled(MARKET_SYMBOLS.map(function(m) {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+    return fetch('https://query1.finance.yahoo.com/v8/finance/chart/'+m.sym+'?interval=1d&range=1d', {signal:ac.signal})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var meta = d.chart && d.chart.result && d.chart.result[0] && d.chart.result[0].meta;
+        if (!meta) return null;
+        var price = meta.regularMarketPrice;
+        var chg = meta.regularMarketChangePercent;
+        return {name:m.name, id:m.id, price:price, chg:chg};
+      });
+  }));
+
+  var markets = results.map(function(r){ return r.status==='fulfilled' ? r.value : null; }).filter(Boolean);
+  applyMarkets(markets);
+  // re-fetch in 5 min
+  setTimeout(fetchLiveMarkets, 5*60*1000);
+}
+
+function fmt(n, decimals) {
+  if (n === undefined || n === null) return '--';
+  decimals = decimals || 0;
+  if (n >= 1000) return (n/1000).toFixed(1)+'K';
+  return n.toFixed(decimals);
+}
+
+function applyMarkets(markets) {
+  // Desktop sidebar
+  var dcM = document.getElementById('dcMarkets');
+  if (dcM) {
+    dcM.innerHTML = markets.map(function(m) {
+      var cls = m.chg > 0 ? 'dc-up' : m.chg < 0 ? 'dc-dn' : 'dc-flat';
+      var arrow = m.chg > 0 ? '▲' : m.chg < 0 ? '▼' : '—';
+      return '<div class="dc-market-item"><span class="dc-mname">'+m.name+'</span><span class="dc-mval '+cls+'">'+arrow+' '+Math.abs(m.chg).toFixed(2)+'%</span></div>';
+    }).join('');
+  }
+
+  // Right panel full table
+  var rpM = document.getElementById('rpMarketsTable');
+  if (rpM) {
+    rpM.innerHTML = '<table class="rp-markets-table"><thead><tr><th>Index</th><th>Price</th><th>Change</th></tr></thead><tbody>'
+      + markets.map(function(m) {
+          var cls = m.chg > 0 ? 'rp-up' : m.chg < 0 ? 'rp-dn' : 'rp-flat';
+          var arrow = m.chg > 0 ? '▲' : m.chg < 0 ? '▼' : '—';
+          return '<tr><td>'+m.name+'</td><td style="color:var(--text);font-weight:600">'+fmt(m.price,2)+'</td><td class="'+cls+'">'+arrow+' '+Math.abs(m.chg).toFixed(2)+'%</td></tr>';
+        }).join('')
+      + '</tbody></table><div style="font-size:9px;color:var(--text3);margin-top:6px;text-align:right">Yahoo Finance · updates every 5min</div>';
+  }
+
+  // Mobile clock bar — Sensex + Nifty
+  var s = markets.find(function(m){return m.id==='sensex';});
+  var n = markets.find(function(m){return m.id==='nifty';});
+  var mcbS = document.getElementById('mcbSensex');
+  var mcbN = document.getElementById('mcbNifty');
+  if (mcbS && s) {
+    var sCls = s.chg > 0 ? 'mcb-up' : s.chg < 0 ? 'mcb-dn' : 'mcb-flat';
+    mcbS.className = sCls;
+    mcbS.textContent = 'S '+(s.chg>0?'▲':'▼')+Math.abs(s.chg).toFixed(1)+'%';
+  }
+  if (mcbN && n) {
+    var nCls = n.chg > 0 ? 'mcb-up' : n.chg < 0 ? 'mcb-dn' : 'mcb-flat';
+    mcbN.className = nCls;
+    mcbN.textContent = 'N '+(n.chg>0?'▲':'▼')+Math.abs(n.chg).toFixed(1)+'%';
+  }
+}
+
+// ══════════════════════════════════════════════════
+// MOBILE NAV helper
+// ══════════════════════════════════════════════════
+function mobSetView(view, btn) {
+  document.querySelectorAll('.mob-nav-btn').forEach(function(b){b.classList.remove('active');});
+  if (btn) btn.classList.add('active');
+  setView(view);
+}
+
+// ══════════════════════════════════════════════════
+// BOOT — start clock + weather + markets after DOM
+// ══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  startClock();
+  fetchWeather();
+  fetchLiveMarkets();
+  // Sync mobile theme button
+  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  var mb = document.getElementById('mobThemeBtn');
+  if (mb) mb.textContent = isDark ? '🌙' : '☀️';
+});
 
 init();
 </script>
