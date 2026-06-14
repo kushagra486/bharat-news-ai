@@ -6,6 +6,14 @@
 <meta name="theme-color" content="#0a0a0a">
 <meta name="description" content="Bharat News AI — Live AI-powered daily news intelligence">
 <link rel="manifest" href="#" id="manifestLink">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BharatNews.ai">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="BharatNews.ai">
+<meta name="theme-color" content="#0a0a0a">
 <title>Bharat News AI — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1012,9 +1020,9 @@ const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy'
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
 const NEWSDATA_BASE  = 'https://newsdata.io/api/1';
-const WORLDNEWS_KEY  = 'pD3RtjHQnAb8cW5KxYeZ2mLsFvU4gN6T';
+const WORLDNEWS_KEY  = '316c18a5f83e4e169bf7c1a3ba47af42';
 const WORLDNEWS_BASE = 'https://api.worldnewsapi.com';
-const CURRENTS_KEY   = 'AHKjMnl2Vk4Rp9cBtWoYeXd5ZsQgPu8N';
+const CURRENTS_KEY   = 'D8Pxk_yRlN3sQmT6vHbZ9cWjUeA2gFo5';
 const CURRENTS_BASE  = 'https://api.currentsapi.services/v1';
 const GUARDIAN_BASE = 'https://content.guardianapis.com';
 const NEWSAPI_BASE  = 'https://newsapi.org/v2';
@@ -2213,10 +2221,20 @@ function getFallbackNews(sector) {
 // PWA MANIFEST (Feature #15)
 // ══════════════════════════════════════════════════
 function installPWA() {
-  const manifest = {
-    name:'Bharat News AI — Daily Intelligence',short_name:'Bharat News AI',description:'AI-powered daily news with Groq',
-    start_url:'.',display:'standalone',background_color:'#0a0a0a',theme_color:'#0a0a0a',
-    icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="%23e91e8c"/><text x="96" y="140" font-size="110" text-anchor="middle" fill="white" font-weight="900">B</text></svg>',sizes:'192x192',type:'image/svg+xml'}]
+  var manifest = {
+    name:'BharatNews.ai',
+    short_name:'BharatNews',
+    description:'Live AI-Powered News Intelligence for India',
+    start_url:'/',
+    display:'standalone',
+    background_color:'#0a0a0a',
+    theme_color:'#0a0a0a',
+    orientation:'portrait-primary',
+    categories:['news','entertainment'],
+    icons:[
+      {src:'https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png',sizes:'192x192',type:'image/png',purpose:'any maskable'},
+      {src:'https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}
+    ]
   };
   const blob = new Blob([JSON.stringify(manifest)],{type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -2788,154 +2806,152 @@ function toggleAppLanguage() {
 
 // ── Load Hindi news from ALL sources ────────────
 async function loadHindiNews() {
-  showToast('🇮🇳 हिंदी समाचार लोड हो रहे हैं...');
-  var sources = await Promise.allSettled([
+  showToast('\U0001F1EE\U0001F1F3 \u0939\u093f\u0902\u0926\u0940 \u0938\u092e\u093e\u091a\u093e\u0930 \u0932\u094b\u0921 \u0939\u094b \u0930\u0939\u0947 \u0939\u0948\u0902...');
+
+  // Run all sources in parallel with individual error handling
+  var results = await Promise.allSettled([
     fetchHindiNewsData(),
     fetchHindiGNews(),
-    fetchHindiWorldNews(),
-    fetchHindiCurrents(),
     fetchHindiRSS(),
   ]);
+
   var all = [];
-  sources.forEach(function(s) {
-    if (s.status === 'fulfilled' && s.value && s.value.length) {
-      all = all.concat(s.value);
+  results.forEach(function(r) {
+    if (r.status === 'fulfilled' && Array.isArray(r.value)) {
+      all = all.concat(r.value.filter(function(c){ return c && c.title && c.title.trim(); }));
     }
   });
-  // Deduplicate by title
+
+  // Deduplicate
   var seen = {};
   all = all.filter(function(c) {
-    var key = c.title.slice(0,40);
+    var key = c.title.trim().slice(0,50).toLowerCase();
     if (seen[key]) return false;
     seen[key] = true;
     return true;
   });
-  // Sort by time
-  all.sort(function(a,b){ return (b.pubDate||0) > (a.pubDate||0) ? 1 : -1; });
-  if (all.length) {
+
+  if (all.length >= 3) {
     newsData = all;
     renderFeed();
-    showToast('✅ ' + all.length + ' हिंदी समाचार मिले');
+    showToast('\u2705 ' + all.length + ' \u0939\u093f\u0902\u0926\u0940 \u0938\u092e\u093e\u091a\u093e\u0930 \u092e\u093f\u0932\u0947');
   } else {
-    showToast('⚠️ हिंदी समाचार उपलब्ध नहीं — Hindi news unavailable');
-    // Fallback: translate English headlines
-    translateFeedToHindi();
+    // Always fallback to AI translation — never show "unavailable"
+    showToast('\U0001F504 AI \u0905\u0928\u0941\u0935\u093e\u0926 \u0915\u0930 \u0930\u0939\u093e \u0939\u0948...');
+    await translateFeedToHindi();
   }
 }
 
-// ── Source 1: NewsData.io Hindi ─────────────────
 async function fetchHindiNewsData() {
-  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
-  var r = await fetch(NEWSDATA_BASE + '/latest?apikey=' + NEWSDATA_KEY + '&country=in&language=hi&size=10', {signal:ac.signal});
-  if (!r.ok) return [];
-  var d = await r.json();
-  return (d.results||[]).map(function(a,i){ return newsdataToCard(a,'India',i); });
+  try {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},10000);
+    var r = await fetch(
+      NEWSDATA_BASE+'/latest?apikey='+NEWSDATA_KEY+'&country=in&language=hi&size=10',
+      {signal:ac.signal}
+    );
+    if (!r.ok) return [];
+    var d = await r.json();
+    return (d.results||[]).map(function(a,i){ return newsdataToCard(a,'India',i); });
+  } catch(e) { return []; }
 }
 
-// ── Source 2: GNews Hindi ───────────────────────
 async function fetchHindiGNews() {
-  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
-  var r = await fetch(GNEWS_BASE + '/top-headlines?country=in&lang=hi&max=10&apikey=' + GNEWS_KEY, {signal:ac.signal});
-  if (!r.ok) return [];
-  var d = await r.json();
-  return (d.articles||[]).map(function(a,i){ return gnewsToCard(a,'India',i+20); });
-}
-
-// ── Source 3: World News API Hindi ─────────────
-async function fetchHindiWorldNews() {
   try {
-    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
-    var r = await fetch(WORLDNEWS_BASE + '/search-news?language=hi&source-countries=in&number=10&api-key=' + WORLDNEWS_KEY, {signal:ac.signal});
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},10000);
+    var r = await fetch(
+      GNEWS_BASE+'/top-headlines?country=in&lang=hi&max=10&apikey='+GNEWS_KEY,
+      {signal:ac.signal}
+    );
     if (!r.ok) return [];
     var d = await r.json();
-    return (d.news||[]).map(function(a,i){
-      return {
-        id: 'wn-hi-'+i, title: a.title||'', summary: a.text ? a.text.slice(0,200) : '',
-        source: a.source||'World News', sourceIcon:'📡', image: a.image||'',
-        sector:'India', time: a.publish_date ? timeAgo(new Date(a.publish_date)) : '',
-        articleUrl: a.url||'#', apiSource:'WorldNews', tags:['hindi'], breaking:false,
-      };
-    });
+    return (d.articles||[]).map(function(a,i){ return gnewsToCard(a,'India',i+20); });
   } catch(e) { return []; }
 }
 
-// ── Source 4: Currents API Hindi ────────────────
-async function fetchHindiCurrents() {
-  try {
-    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
-    var r = await fetch(CURRENTS_BASE + '/latest-news?language=hi&country=IN&apiKey=' + CURRENTS_KEY, {signal:ac.signal});
-    if (!r.ok) return [];
-    var d = await r.json();
-    return (d.news||[]).map(function(a,i){
-      return {
-        id: 'cu-hi-'+i, title: a.title||'', summary: a.description||'',
-        source: a.author||'Currents', sourceIcon:'📰', image: a.image||'',
-        sector:'India', time: a.published ? timeAgo(new Date(a.published)) : '',
-        articleUrl: a.url||'#', apiSource:'Currents', tags:['hindi'], breaking:false,
-      };
-    });
-  } catch(e) { return []; }
-}
-
-// ── Source 5: Hindi RSS Feeds (Dainik Bhaskar, Amar Ujala, Jagran) ──────
 async function fetchHindiRSS() {
+  // Hindi RSS feeds via rss2json proxy (CORS-open, free)
   var feeds = [
-    {url:'https://feeds.feedburner.com/amarujalahindi',   source:'Amar Ujala',     icon:'📰'},
-    {url:'https://www.jagran.com/rss/news-national.xml',  source:'Jagran',          icon:'📰'},
-    {url:'https://feeds.feedburner.com/ndtv/india-news',  source:'NDTV India',      icon:'📡'},
-    {url:'https://newsonair.gov.in/WriteReadData/NewsOnAir-RSS/national-news-hindi.xml', source:'DD News', icon:'📻'},
+    'https://feeds.feedburner.com/ndtvkhabar',
+    'https://feeds.feedburner.com/amarujalahindi',
+    'https://www.jagran.com/rss/news-national.xml',
+    'https://www.aajtak.in/rss/home.xml',
   ];
-  var allCards = [];
-  // Use rss2json service (free, CORS-open)
-  var RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
-  for (var fi=0; fi<feeds.length; fi++) {
+  var all = [];
+  for (var fi = 0; fi < feeds.length; fi++) {
     try {
-      var f = feeds[fi];
-      var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
-      var r = await fetch(RSS2JSON + encodeURIComponent(f.url), {signal:ac.signal});
+      var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+      var r = await fetch(
+        'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feeds[fi]),
+        {signal:ac.signal}
+      );
       if (!r.ok) continue;
       var d = await r.json();
-      var items = (d.items||[]).slice(0,5);
-      items.forEach(function(item, i) {
-        allCards.push({
+      if (d.status !== 'ok' || !d.items || !d.items.length) continue;
+      d.items.slice(0,5).forEach(function(item,i) {
+        if (!item.title || !item.title.trim()) return;
+        all.push({
           id: 'rss-'+fi+'-'+i,
-          title: item.title||'',
-          summary: (item.description||'').replace(/<[^>]+>/g,'').slice(0,250),
-          source: f.source, sourceIcon: f.icon,
+          title: item.title.trim(),
+          summary: (item.description||item.content||'').replace(/<[^>]+>/g,'').trim().slice(0,250),
+          source: d.feed && d.feed.title ? d.feed.title.slice(0,20) : 'Hindi News',
+          sourceIcon: '\U0001F4F0',
           image: item.enclosure&&item.enclosure.link ? item.enclosure.link : (item.thumbnail||''),
           sector: 'India',
           time: item.pubDate ? timeAgo(new Date(item.pubDate)) : '',
           articleUrl: item.link||'#',
           apiSource: 'RSS',
-          tags: ['hindi', 'rss'],
+          tags: ['hindi'],
           breaking: false,
         });
       });
     } catch(e) { continue; }
   }
-  return allCards;
+  return all;
 }
 
-// ── Fallback: AI translate current English feed ─
+async function fetchHindiWorldNews() { return []; } // stub — WorldNews CORS blocks browser
+async function fetchHindiCurrents()  { return []; } // stub — Currents requires server-side
+
 async function translateFeedToHindi() {
-  var top5 = newsData.slice(0,5);
-  if (!top5.length) return;
-  showToast('🔄 AI हिंदी अनुवाद कर रहा है...');
+  // Get English articles (from cache or current feed)
+  var source = newsData.length ? newsData : getFallbackNews('All');
+  var top8 = source.slice(0,8);
+  if (!top8.length) {
+    showToast('\u26A0\uFE0F \u0905\u0928\u0941\u0935\u093e\u0926 \u0915\u0947 \u0932\u093f\u090F \u0938\u092e\u093E\u091A\u093E\u0930 \u0928\u0939\u0940\u0902 \u092E\u093F\u0932\u0947');
+    return;
+  }
   try {
-    var titles = top5.map(function(c,i){ return (i+1)+'. '+c.title; }).join('\n');
-    var prompt = 'Translate these news headlines to Hindi (Devanagari script). Return only the numbered translations:\n' + titles;
-    var result = await callAI(prompt, 'You are a professional Hindi translator. Translate English news headlines to natural Hindi in Devanagari script. Keep proper nouns as-is.');
-    var lines = result.split('\n').filter(function(l){return l.trim();});
+    var titlesBlock = top8.map(function(c,i){ return (i+1)+'. '+c.title; }).join('\n');
+    var prompt = 'Translate these English news headlines to natural Hindi (Devanagari script only). Return ONLY the numbered translations, nothing else:\n' + titlesBlock;
+    var result = await callAI(prompt,
+      'You are a professional Hindi translator. Translate news headlines to natural conversational Hindi in Devanagari script. Keep proper nouns (names, places) as-is. Return only numbered translations.');
+    var lines = result.trim().split('\n').filter(function(l){ return l.trim(); });
+    var translated = [];
     lines.forEach(function(line, i) {
-      if (top5[i]) {
-        var translated = line.replace(/^\d+\.\s*/,'').trim();
-        if (translated) top5[i].titleHi = translated;
+      var clean = line.replace(/^\d+[\.\)]\s*/,'').trim();
+      if (clean && top8[i]) {
+        var card = Object.assign({}, top8[i], {
+          title: clean,
+          titleHi: clean,
+          id: 'hi-tr-'+i,
+          apiSource: 'AI-Translated',
+          tags: ['hindi','translated'],
+        });
+        translated.push(card);
       }
     });
-    renderFeed();
-    showToast('✅ AI ने ' + lines.length + ' हेडलाइन हिंदी में अनुवाद किए');
+    if (translated.length) {
+      newsData = translated;
+      renderFeed();
+      showToast('\u2705 AI \u0928\u0947 '+translated.length+' \u0938\u092E\u093E\u091A\u093E\u0930 \u0939\u093F\u0902\u0926\u0940 \u092E\u0947\u0902 \u0905\u0928\u0941\u0935\u093E\u0926 \u0915\u093F\u090F');
+    } else {
+      showToast('\u26A0\uFE0F \u0905\u0928\u0941\u0935\u093E\u0926 \u0935\u093F\u092B\u0932 — please retry');
+    }
   } catch(e) {
-    showToast('⚠️ अनुवाद विफल — Translation failed');
+    // Final fallback: show English news with Hindi label
+    newsData = top8.map(function(c,i){ return Object.assign({},c,{id:'hi-en-'+i,tags:['hindi']}); });
+    renderFeed();
+    showToast('\u26A0\uFE0F AI \u0905\u0928\u0941\u0935\u093E\u0926 \u0935\u093F\u092B\u0932 — showing English');
   }
 }
 
