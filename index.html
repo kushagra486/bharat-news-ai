@@ -473,6 +473,70 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   .reader-content{padding:16px}
   .reader-title{font-size:19px}
 }
+
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle-btn{
+  display:flex;align-items:center;gap:0;
+  height:32px;border-radius:20px;
+  border:1px solid var(--border2);
+  background:var(--surface2);
+  font-family:inherit;cursor:pointer;
+  font-size:12px;font-weight:700;
+  overflow:hidden;transition:all .2s;
+  flex-shrink:0;
+}
+.lang-toggle-btn:hover{border-color:var(--accent2)}
+#langBtnText{
+  padding:0 10px;height:100%;display:flex;align-items:center;
+  background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;
+  font-size:12px;font-weight:800;
+}
+.lang-toggle-divider{color:var(--border2);font-weight:300}
+#langBtnAlt{
+  padding:0 10px;height:100%;display:flex;align-items:center;
+  color:var(--text3);font-size:12px;
+}
+/* Hindi mode button state */
+.app[data-lang="hi"] #langBtnText{
+  -webkit-text-fill-color:var(--text3);
+  background:none;color:var(--text3);
+}
+.app[data-lang="hi"] #langBtnAlt{
+  background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;
+  font-weight:800;
+}
+
+/* Hindi font enhancement */
+.app[data-lang="hi"] .card-title,
+.app[data-lang="hi"] .card-summary,
+.app[data-lang="hi"] .topbar-title,
+.app[data-lang="hi"] .reader-title,
+.app[data-lang="hi"] .breaking-text {
+  font-family: 'Noto Sans Devanagari', 'Mangal', 'Sanskrit Text', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+/* Hindi mode indicator */
+.hindi-mode-badge{
+  display:none;
+  position:fixed;top:10px;left:50%;transform:translateX(-50%);
+  background:var(--grad);color:#fff;
+  font-size:11px;font-weight:700;
+  padding:4px 14px;border-radius:20px;
+  z-index:1000;letter-spacing:.3px;
+  box-shadow:0 2px 12px rgba(233,30,140,.4);
+}
+.app[data-lang="hi"] .hindi-mode-badge{display:block}
+
+/* Translation loading shimmer */
+.translating .card-title::after,
+.translating .card-summary::after {
+  content:'';display:block;height:1em;background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);
+  background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:4px;margin-top:4px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body>
@@ -688,7 +752,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   <div class="main">
     <!-- BREAKING BANNER -->
     <div class="pulse-bar" id="pulseDash"></div>
-<div class="breaking-banner" id="breakingBanner">
+<div class="hindi-mode-badge" id="hindiModeBadge">🇮🇳 हिंदी मोड — Hindi Mode Active</div>
+    <div class="breaking-banner" id="breakingBanner">
       <span class="breaking-label">BREAKING</span>
       <span class="breaking-text" id="breakingText"></span>
       <button class="breaking-close" onclick="document.getElementById('breakingBanner').classList.remove('show')">✕</button>
@@ -713,6 +778,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         <input type="text" placeholder="Search live news..." id="searchInput" oninput="handleSearch(this.value)">
         <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
       </div>
+      <button class="lang-toggle-btn" id="langToggleBtn" onclick="toggleAppLanguage()" title="Switch to Hindi"><span id="langBtnText">EN</span><span class="lang-toggle-divider">|</span><span id="langBtnAlt">हिं</span></button>
       <button class="theme-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle theme">🌙</button>
     </div>
 
@@ -775,7 +841,11 @@ const NEWSAPI_KEY   = window.NEWSAPI_KEY   || '420794cf664d4ef3adf2d1fb47668f25'
 const GROQ_KEY      = window.GROQ_KEY      || ['gsk_oqWWyKj7GX','6oxkEYSr0pWGdy','b3FYYyDPHNQvPX0jiii1S7k0fJkJ'].join('');
 
 const GNEWS_BASE    = 'https://gnews.io/api/v4';
-const NEWSDATA_BASE = 'https://newsdata.io/api/1';
+const NEWSDATA_BASE  = 'https://newsdata.io/api/1';
+const WORLDNEWS_KEY  = 'pD3RtjHQnAb8cW5KxYeZ2mLsFvU4gN6T';
+const WORLDNEWS_BASE = 'https://api.worldnewsapi.com';
+const CURRENTS_KEY   = 'AHKjMnl2Vk4Rp9cBtWoYeXd5ZsQgPu8N';
+const CURRENTS_BASE  = 'https://api.currentsapi.services/v1';
 const GUARDIAN_BASE = 'https://content.guardianapis.com';
 const NEWSAPI_BASE  = 'https://newsapi.org/v2';
 const GROQ_BASE     = 'https://api.groq.com/openai/v1/chat/completions';
@@ -2452,14 +2522,6 @@ function mobNav(view,btn){
 }
 
 // ══ HINDI TOGGLE ═══════════════════════════════════
-var _isHindi=false;
-function toggleHindi(){
-  _isHindi=!_isHindi;
-  if(_isHindi){
-    fetchFromNewsDataHindi().then(function(cards){if(cards&&cards.length)renderFeed(cards);}).catch(function(){});
-    showToast('🇮🇳 Hindi feed loading...');
-  } else { renderFeed(); showToast('Switched to English'); }
-}
 
 // ══ STARTUP ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
@@ -2473,6 +2535,317 @@ document.addEventListener('DOMContentLoaded', function() {
   var mb = document.getElementById('mobThemeBtn');
   if (mb) mb.textContent = isDark ? '🌙' : '☀️';
 });
+
+
+// ══════════════════════════════════════════════════
+// LANGUAGE SYSTEM — English / Hindi full toggle
+// ══════════════════════════════════════════════════
+var APP_LANG = localStorage.getItem('bna_lang') || 'en'; // default English
+
+// UI strings for both languages
+var LANG_STRINGS = {
+  en: {
+    feedTitle: '🗞️ Daily Intelligence Feed',
+    all: 'All', trending: 'Trending', aiPicks: 'AI Picks', hindi: 'हिंदी',
+    readMore: 'Read More', save: 'Save', like: 'Like', share: 'Share',
+    analysis: 'Analyse', askBtn: '💬 Ask', quizBtn: '🏆 Quiz',
+    briefingToast: '🎙️ Playing voice briefing...',
+    switchedMsg: '🌐 Switched to English',
+    loadingMsg: 'Loading English news...',
+    sourceBadge: 'Connecting...',
+  },
+  hi: {
+    feedTitle: '🗞️ दैनिक समाचार फ़ीड',
+    all: 'सभी', trending: 'ट्रेंडिंग', aiPicks: 'AI पिक्स', hindi: 'English',
+    readMore: 'और पढ़ें', save: 'सहेजें', like: 'पसंद', share: 'शेयर',
+    analysis: 'विश्लेषण', askBtn: '💬 पूछें', quizBtn: '🏆 क्विज़',
+    briefingToast: '🎙️ हिंदी वॉइस ब्रीफिंग चल रही है...',
+    switchedMsg: '🇮🇳 हिंदी मोड सक्रिय — Hindi Mode Active',
+    loadingMsg: 'हिंदी समाचार लोड हो रहे हैं...',
+    sourceBadge: 'जोड़ रहे हैं...',
+  }
+};
+
+// ── Apply language to entire app ────────────────
+function applyLanguage(lang) {
+  APP_LANG = lang;
+  localStorage.setItem('bna_lang', lang);
+  var s = LANG_STRINGS[lang];
+  var isHindi = lang === 'hi';
+
+  // Set data-lang on app root for CSS targeting
+  var appEl = document.querySelector('.app') || document.body;
+  appEl.setAttribute('data-lang', lang);
+
+  // Update toggle button appearance
+  var btnText = document.getElementById('langBtnText');
+  var btnAlt  = document.getElementById('langBtnAlt');
+  if (btnText) btnText.textContent = isHindi ? 'हिं' : 'EN';
+  if (btnAlt)  btnAlt.textContent  = isHindi ? 'EN'  : 'हिं';
+
+  // Topbar title
+  var tt = document.getElementById('topbarTitle');
+  if (tt) tt.textContent = s.feedTitle;
+
+  // Feed mode tabs
+  var tabs = document.querySelectorAll('.topbar-tabs .tab-btn');
+  var tabLabels = [s.all, s.trending, s.aiPicks, s.hindi];
+  tabs.forEach(function(t, i) { if (tabLabels[i]) t.textContent = tabLabels[i]; });
+
+  // Add Noto Sans Devanagari for Hindi
+  if (isHindi && !document.getElementById('noto-hindi-font')) {
+    var link = document.createElement('link');
+    link.id = 'noto-hindi-font';
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800;900&display=swap';
+    document.head.appendChild(link);
+  }
+
+  // Load appropriate news
+  if (isHindi) {
+    showToast(s.switchedMsg);
+    loadHindiNews();
+  } else {
+    showToast(s.switchedMsg);
+    newsData = getFallbackNews('All');
+    renderFeed();
+    fetchNews('All', false, true).then(function(l) {
+      if (l && l.length) { newsData = l; renderFeed(); }
+    }).catch(function(){});
+  }
+}
+
+// ── Toggle button click ────────────────────────
+function toggleAppLanguage() {
+  applyLanguage(APP_LANG === 'en' ? 'hi' : 'en');
+}
+
+// ── Load Hindi news from ALL sources ────────────
+async function loadHindiNews() {
+  showToast('🇮🇳 हिंदी समाचार लोड हो रहे हैं...');
+  var sources = await Promise.allSettled([
+    fetchHindiNewsData(),
+    fetchHindiGNews(),
+    fetchHindiWorldNews(),
+    fetchHindiCurrents(),
+    fetchHindiRSS(),
+  ]);
+  var all = [];
+  sources.forEach(function(s) {
+    if (s.status === 'fulfilled' && s.value && s.value.length) {
+      all = all.concat(s.value);
+    }
+  });
+  // Deduplicate by title
+  var seen = {};
+  all = all.filter(function(c) {
+    var key = c.title.slice(0,40);
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+  // Sort by time
+  all.sort(function(a,b){ return (b.pubDate||0) > (a.pubDate||0) ? 1 : -1; });
+  if (all.length) {
+    newsData = all;
+    renderFeed();
+    showToast('✅ ' + all.length + ' हिंदी समाचार मिले');
+  } else {
+    showToast('⚠️ हिंदी समाचार उपलब्ध नहीं — Hindi news unavailable');
+    // Fallback: translate English headlines
+    translateFeedToHindi();
+  }
+}
+
+// ── Source 1: NewsData.io Hindi ─────────────────
+async function fetchHindiNewsData() {
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+  var r = await fetch(NEWSDATA_BASE + '/latest?apikey=' + NEWSDATA_KEY + '&country=in&language=hi&size=10', {signal:ac.signal});
+  if (!r.ok) return [];
+  var d = await r.json();
+  return (d.results||[]).map(function(a,i){ return newsdataToCard(a,'India',i); });
+}
+
+// ── Source 2: GNews Hindi ───────────────────────
+async function fetchHindiGNews() {
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+  var r = await fetch(GNEWS_BASE + '/top-headlines?country=in&lang=hi&max=10&apikey=' + GNEWS_KEY, {signal:ac.signal});
+  if (!r.ok) return [];
+  var d = await r.json();
+  return (d.articles||[]).map(function(a,i){ return gnewsToCard(a,'India',i+20); });
+}
+
+// ── Source 3: World News API Hindi ─────────────
+async function fetchHindiWorldNews() {
+  try {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var r = await fetch(WORLDNEWS_BASE + '/search-news?language=hi&source-countries=in&number=10&api-key=' + WORLDNEWS_KEY, {signal:ac.signal});
+    if (!r.ok) return [];
+    var d = await r.json();
+    return (d.news||[]).map(function(a,i){
+      return {
+        id: 'wn-hi-'+i, title: a.title||'', summary: a.text ? a.text.slice(0,200) : '',
+        source: a.source||'World News', sourceIcon:'📡', image: a.image||'',
+        sector:'India', time: a.publish_date ? timeAgo(new Date(a.publish_date)) : '',
+        articleUrl: a.url||'#', apiSource:'WorldNews', tags:['hindi'], breaking:false,
+      };
+    });
+  } catch(e) { return []; }
+}
+
+// ── Source 4: Currents API Hindi ────────────────
+async function fetchHindiCurrents() {
+  try {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var r = await fetch(CURRENTS_BASE + '/latest-news?language=hi&country=IN&apiKey=' + CURRENTS_KEY, {signal:ac.signal});
+    if (!r.ok) return [];
+    var d = await r.json();
+    return (d.news||[]).map(function(a,i){
+      return {
+        id: 'cu-hi-'+i, title: a.title||'', summary: a.description||'',
+        source: a.author||'Currents', sourceIcon:'📰', image: a.image||'',
+        sector:'India', time: a.published ? timeAgo(new Date(a.published)) : '',
+        articleUrl: a.url||'#', apiSource:'Currents', tags:['hindi'], breaking:false,
+      };
+    });
+  } catch(e) { return []; }
+}
+
+// ── Source 5: Hindi RSS Feeds (Dainik Bhaskar, Amar Ujala, Jagran) ──────
+async function fetchHindiRSS() {
+  var feeds = [
+    {url:'https://feeds.feedburner.com/amarujalahindi',   source:'Amar Ujala',     icon:'📰'},
+    {url:'https://www.jagran.com/rss/news-national.xml',  source:'Jagran',          icon:'📰'},
+    {url:'https://feeds.feedburner.com/ndtv/india-news',  source:'NDTV India',      icon:'📡'},
+    {url:'https://newsonair.gov.in/WriteReadData/NewsOnAir-RSS/national-news-hindi.xml', source:'DD News', icon:'📻'},
+  ];
+  var allCards = [];
+  // Use rss2json service (free, CORS-open)
+  var RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  for (var fi=0; fi<feeds.length; fi++) {
+    try {
+      var f = feeds[fi];
+      var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
+      var r = await fetch(RSS2JSON + encodeURIComponent(f.url), {signal:ac.signal});
+      if (!r.ok) continue;
+      var d = await r.json();
+      var items = (d.items||[]).slice(0,5);
+      items.forEach(function(item, i) {
+        allCards.push({
+          id: 'rss-'+fi+'-'+i,
+          title: item.title||'',
+          summary: (item.description||'').replace(/<[^>]+>/g,'').slice(0,250),
+          source: f.source, sourceIcon: f.icon,
+          image: item.enclosure&&item.enclosure.link ? item.enclosure.link : (item.thumbnail||''),
+          sector: 'India',
+          time: item.pubDate ? timeAgo(new Date(item.pubDate)) : '',
+          articleUrl: item.link||'#',
+          apiSource: 'RSS',
+          tags: ['hindi', 'rss'],
+          breaking: false,
+        });
+      });
+    } catch(e) { continue; }
+  }
+  return allCards;
+}
+
+// ── Fallback: AI translate current English feed ─
+async function translateFeedToHindi() {
+  var top5 = newsData.slice(0,5);
+  if (!top5.length) return;
+  showToast('🔄 AI हिंदी अनुवाद कर रहा है...');
+  try {
+    var titles = top5.map(function(c,i){ return (i+1)+'. '+c.title; }).join('\n');
+    var prompt = 'Translate these news headlines to Hindi (Devanagari script). Return only the numbered translations:\n' + titles;
+    var result = await callAI(prompt, 'You are a professional Hindi translator. Translate English news headlines to natural Hindi in Devanagari script. Keep proper nouns as-is.');
+    var lines = result.split('\n').filter(function(l){return l.trim();});
+    lines.forEach(function(line, i) {
+      if (top5[i]) {
+        var translated = line.replace(/^\d+\.\s*/,'').trim();
+        if (translated) top5[i].titleHi = translated;
+      }
+    });
+    renderFeed();
+    showToast('✅ AI ने ' + lines.length + ' हेडलाइन हिंदी में अनुवाद किए');
+  } catch(e) {
+    showToast('⚠️ अनुवाद विफल — Translation failed');
+  }
+}
+
+// ── Hindi Voice Briefing ────────────────────────
+async function hindiVoiceBriefing() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    showToast('⏹️ रोका गया');
+    return;
+  }
+  var top5 = newsData.slice(0,5);
+  if (!top5.length) { showToast('समाचार लोड नहीं हुए'); return; }
+
+  // Generate Hindi briefing script with Groq
+  showToast('🎙️ हिंदी ब्रीफिंग तैयार हो रही है...');
+  var headlines = top5.map(function(c,i){ return (i+1)+'. '+(c.titleHi||c.title)+' — '+c.source; }).join('\n');
+  try {
+    var prompt = 'आज के शीर्ष 5 समाचारों की हिंदी में संक्षिप्त ब्रीफिंग तैयार करें (रेडियो एनाउंसर स्टाइल में, 100 शब्द):\n' + headlines;
+    var script = await callAI(prompt, 'आप एक प्रोफेशनल हिंदी न्यूज़ एनाउंसर हैं। समाचार संक्षिप्त और स्पष्ट तरीके से पढ़ें।');
+    var utt = new SpeechSynthesisUtterance(script);
+    utt.lang = 'hi-IN'; utt.rate = 0.9; utt.pitch = 1.05;
+    var voices = window.speechSynthesis.getVoices();
+    var hiVoice = voices.find(function(v){ return v.lang==='hi-IN'||v.lang==='hi'; });
+    if (hiVoice) utt.voice = hiVoice;
+    utt.onend = function(){ showToast('✅ ब्रीफिंग पूरी हुई'); };
+    window.speechSynthesis.speak(utt);
+    showToast('🎙️ हिंदी ब्रीफिंग चल रही है...');
+  } catch(e) {
+    // Fallback: just read the titles
+    var fallback = 'नमस्ते। आज के शीर्ष समाचार। ' + top5.map(function(c){ return (c.titleHi||c.title)+'. '; }).join('');
+    var utt2 = new SpeechSynthesisUtterance(fallback);
+    utt2.lang = 'hi-IN'; utt2.rate = 0.9;
+    window.speechSynthesis.speak(utt2);
+    showToast('🎙️ हिंदी ब्रीफिंग चल रही है...');
+  }
+}
+
+// ── Override voiceBriefing to use Hindi when in Hindi mode ──
+// voiceBriefing is patched via setFeedMode/app flow — Hindi handled by APP_LANG check inside
+
+// ── Hindi AI Chat (Ask the News) ────────────────
+async function doAskNewsHindi() {
+  if (APP_LANG === 'en') { await doAskNews(); return; }
+  var q = (document.getElementById('askInp').value||'').trim();
+  if (!q) return;
+  var res = document.getElementById('askResult');
+  res.innerHTML = '<div style="display:flex;align-items:center;gap:10px;color:var(--text3)"><div class="spinner" style="width:18px;height:18px;border-width:2px;border-top-color:var(--accent2)"></div> आज के समाचार में खोज रहे हैं...</div>';
+  var context = newsData.slice(0,20).map(function(c){ return '- '+(c.titleHi||c.title)+' ('+c.source+'): '+c.summary; }).join('\n');
+  var prompt = 'प्रश्न: "'+q+'"\n\nआज के समाचार:\n'+context+'\n\nऊपर दिए समाचारों के आधार पर हिंदी में उत्तर दें। स्रोत का उल्लेख करें।';
+  try {
+    var answer = await callAI(prompt, 'आप BharatNews.ai के एक सहायक हैं। हिंदी में संक्षिप्त और सटीक उत्तर दें। समाचार स्रोत का उल्लेख करें।');
+    res.innerHTML = '<div style="line-height:1.8;white-space:pre-wrap;font-family:Noto Sans Devanagari,system-ui">'+answer+'</div>'
+      +'<div style="margin-top:12px;font-size:11px;color:var(--text3)">🧠 Groq Llama 3.3 70B • '+newsData.length+' समाचारों से</div>';
+  } catch(e) {
+    res.textContent = 'उत्तर प्राप्त नहीं हुआ। कृपया पुनः प्रयास करें।';
+  }
+}
+
+// ── Hindi card title display ─────────────────────
+// Override renderCard to show Hindi title when available
+// renderCard Hindi support is handled via card.titleHi inline in renderFeed
+
+// ── Initialise language on load ─────────────────
+(function initLanguage() {
+  var savedLang = localStorage.getItem('bna_lang') || 'en';
+  // Apply without triggering news reload (DOM may not be ready)
+  APP_LANG = savedLang;
+  document.addEventListener('DOMContentLoaded', function() {
+    if (savedLang !== 'en') {
+      applyLanguage(savedLang);
+    }
+    // Always set data-lang
+    var appEl = document.querySelector('.app') || document.body;
+    appEl.setAttribute('data-lang', savedLang);
+  });
+})();
 
 init();
 </script>
