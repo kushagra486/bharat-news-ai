@@ -2248,35 +2248,169 @@ function applyWeather(w) {
 }
 
 // ══ MARKETS ════════════════════════════════════════
-var MKT=[{sym:'^BSESN',name:'Sensex'},{sym:'^NSEI',name:'Nifty'},{sym:'USDINR=X',name:'USD/INR'},{sym:'GOLDINR=X',name:'Gold'},{sym:'^IXIC',name:'Nasdaq'},{sym:'^DJI',name:'Dow Jones'}];
+
+// ══ MARKETS — multi-source, always-on ══════════════
+var _mktCache = {};
+
+// Source 1: NSE India official (Nifty, Sensex via allIndices)
+// Source 2: ExchangeRate.host (USD/INR, free, no key)
+// Source 3: CoinGecko (Bitcoin, free)
+// Source 4: Yahoo Finance (fallback, works if user has Yahoo cookies)
+
 async function fetchLiveMarkets() {
-  var res=await Promise.allSettled(MKT.map(function(m){
-    var ac=new AbortController();setTimeout(function(){ac.abort();},8000);
-    return fetch('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(m.sym)+'?interval=1d&range=1d',{signal:ac.signal})
-      .then(function(r){return r.json();})
-      .then(function(d){var meta=d.chart&&d.chart.result&&d.chart.result[0]&&d.chart.result[0].meta;return meta?{name:m.name,price:meta.regularMarketPrice,chg:meta.regularMarketChangePercent}:null;});
-  }));
-  var data=res.map(function(r){return r.status==='fulfilled'?r.value:null;}).filter(Boolean);
-  applyMarkets(data);
+  // Fetch from multiple sources in parallel
+  var [nseData, fxData, cryptoData] = await Promise.allSettled([
+    fetchNSEData(),
+    fetchFXData(),
+    fetchCryptoData(),
+  ]);
+
+  var markets = [];
+
+  // NSE data
+  if (nseData.status === 'fulfilled' && nseData.value) {
+    markets = markets.concat(nseData.value);
+  }
+  // FX data
+  if (fxData.status === 'fulfilled' && fxData.value) {
+    markets = markets.concat(fxData.value);
+  }
+  // Crypto data
+  if (cryptoData.status === 'fulfilled' && cryptoData.value) {
+    markets = markets.concat(cryptoData.value);
+  }
+
+  // If NSE failed, try Yahoo Finance as fallback
+  if (!markets.find(function(m){return m.name==='Nifty';})) {
+    var yData = await fetchYahooMarkets().catch(function(){return [];});
+    markets = markets.concat(yData);
+  }
+
+  if (markets.length > 0) {
+    applyMarkets(markets);
+    // Cache for display persistence
+    _mktCache = markets;
+  }
 }
-function fmtP(n){if(!n)return'--';if(n>10000)return Math.round(n).toLocaleString('en-IN');if(n>1000)return n.toFixed(0);return n.toFixed(2);}
+
+async function fetchNSEData() {
+  // NSE India official endpoint — returns all major indices
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+  var r = await fetch('https://www.nseindia.com/api/allIndices', {
+    signal: ac.signal,
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Referer': 'https://www.nseindia.com/',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0',
+    },
+    credentials: 'include',
+  });
+  if (!r.ok) throw new Error('NSE ' + r.status);
+  var d = await r.json();
+  var result = [];
+  (d.data || []).forEach(function(idx) {
+    if (idx.indexSymbol === 'NIFTY 50') {
+      result.push({name:'Nifty 50', price:idx.last, chg:idx.percentChange, open:idx.open, high:idx.high, low:idx.low});
+    }
+    if (idx.indexSymbol === 'NIFTY BANK') {
+      result.push({name:'Nifty Bank', price:idx.last, chg:idx.percentChange});
+    }
+    if (idx.indexSymbol === 'S&P BSE SENSEX') {
+      result.push({name:'Sensex', price:idx.last, chg:idx.percentChange});
+    }
+  });
+  return result;
+}
+
+async function fetchFXData() {
+  // Free exchange rate API — no key, open CORS
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
+  var r = await fetch('https://open.er-api.com/v6/latest/USD', {signal:ac.signal});
+  if (!r.ok) throw new Error('FX ' + r.status);
+  var d = await r.json();
+  var inr = d.rates && d.rates.INR;
+  if (!inr) return [];
+  return [{name:'USD/INR', price:inr, chg:null, isForex:true}];
+}
+
+async function fetchCryptoData() {
+  // CoinGecko free API — no key needed
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
+  var r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true', {signal:ac.signal});
+  if (!r.ok) throw new Error('CG ' + r.status);
+  var d = await r.json();
+  var btc = d.bitcoin;
+  if (!btc) return [];
+  return [{name:'Bitcoin', price:btc.usd, chg:btc.usd_24h_change, isCrypto:true}];
+}
+
+async function fetchYahooMarkets() {
+  // Yahoo Finance — works in browser if user has yahoo.com cookies
+  var symbols = ['^NSEI','^BSESN','USDINR=X'];
+  var results = await Promise.allSettled(symbols.map(function(sym) {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
+    return fetch('https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)+'?interval=1d&range=1d', {signal:ac.signal})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var meta = d.chart&&d.chart.result&&d.chart.result[0]&&d.chart.result[0].meta;
+        var names = {'^NSEI':'Nifty','^BSESN':'Sensex','USDINR=X':'USD/INR'};
+        return meta ? {name:names[sym]||sym, price:meta.regularMarketPrice, chg:meta.regularMarketChangePercent} : null;
+      });
+  }));
+  return results.map(function(r){return r.status==='fulfilled'?r.value:null;}).filter(Boolean);
+}
+
+function fmtP(n, isCrypto) {
+  if (n === null || n === undefined) return '--';
+  if (isCrypto) return '$' + Math.round(n).toLocaleString();
+  if (n > 50000) return Math.round(n).toLocaleString('en-IN');
+  if (n > 1000) return Math.round(n).toLocaleString('en-IN');
+  return n.toFixed(2);
+}
+
 function applyMarkets(data) {
+  if (!data || !data.length) return;
+
   // Desktop sidebar
-  var dc=document.getElementById('dcMarkets');
-  if(dc)dc.innerHTML=data.map(function(m){var cls=m.chg>0?'dc-up':m.chg<0?'dc-dn':'dc-flat';return'<div class="dc-mrow"><span class="dc-mname">'+m.name+'</span><span class="dc-mval '+cls+'">'+(m.chg>0?'▲':'▼')+Math.abs(m.chg).toFixed(2)+'%</span></div>';}).join('');
-  // Right panel table
-  var rp=document.getElementById('rpMarkets');
-  if(rp)rp.innerHTML='<table class="rp-mtable"><thead><tr><th>Index</th><th>Price</th><th>Chg%</th></tr></thead><tbody>'
-    +data.map(function(m){var cls=m.chg>0?'rp-m-up':m.chg<0?'rp-m-dn':'rp-m-flat';return'<tr><td class="rp-m-name">'+m.name+'</td><td style="color:var(--text);font-weight:600">'+fmtP(m.price)+'</td><td class="'+cls+'">'+(m.chg>0?'▲':'▼')+Math.abs(m.chg).toFixed(2)+'%</td></tr>';}).join('')
-    +'</tbody></table><div class="rp-m-note">Yahoo Finance · 5min refresh</div>';
-  // Mobile bar — Sensex + Nifty
-  data.slice(0,2).forEach(function(m,i){
-    var el=document.getElementById(i===0?'mcbS':'mcbN');
-    if(!el)return;
-    var cls=m.chg>0?'mcb-up':m.chg<0?'mcb-dn':'mcb-flat';
-    el.className=cls; el.textContent=m.name.substring(0,1)+' '+(m.chg>0?'▲':'▼')+Math.abs(m.chg).toFixed(1)+'%';
+  var dc = document.getElementById('dcMarkets');
+  if (dc) {
+    dc.innerHTML = data.slice(0,5).map(function(m) {
+      var cls = m.chg > 0 ? 'dc-up' : m.chg < 0 ? 'dc-dn' : 'dc-flat';
+      var arrow = m.chg > 0 ? '▲' : m.chg < 0 ? '▼' : '—';
+      var chgStr = m.chg !== null ? arrow + Math.abs(m.chg).toFixed(2) + '%' : fmtP(m.price, m.isCrypto);
+      return '<div class="dc-mrow"><span class="dc-mname">'+m.name+'</span><span class="dc-mval '+cls+'">'+chgStr+'</span></div>';
+    }).join('');
+  }
+
+  // Right panel full table
+  var rp = document.getElementById('rpMarkets');
+  if (rp) {
+    rp.innerHTML = '<table class="rp-mtable"><thead><tr><th>Index</th><th>Price</th><th>Change</th></tr></thead><tbody>'
+      + data.map(function(m) {
+          var cls = m.chg > 0 ? 'rp-m-up' : m.chg < 0 ? 'rp-m-dn' : 'rp-m-flat';
+          var arrow = m.chg !== null ? (m.chg > 0 ? '▲' : '▼') + Math.abs(m.chg).toFixed(2) + '%' : '--';
+          return '<tr>'
+            + '<td class="rp-m-name">'+m.name+'</td>'
+            + '<td style="color:var(--text);font-weight:600;font-variant-numeric:tabular-nums">'+fmtP(m.price, m.isCrypto)+'</td>'
+            + '<td class="'+cls+'">'+arrow+'</td>'
+            + '</tr>';
+        }).join('')
+      + '</tbody></table>'
+      + '<div class="rp-m-note">NSE · ExchangeRate · CoinGecko · refreshes every 5min</div>';
+  }
+
+  // Mobile clock bar — show top 2
+  var mobPairs = data.filter(function(m){return m.chg!==null;}).slice(0,2);
+  mobPairs.forEach(function(m, i) {
+    var el = document.getElementById(i===0 ? 'mcbS' : 'mcbN');
+    if (!el) return;
+    var cls = m.chg > 0 ? 'mcb-up' : m.chg < 0 ? 'mcb-dn' : 'mcb-flat';
+    el.className = cls;
+    el.textContent = m.name.substring(0,3) + ' ' + (m.chg > 0 ? '▲' : '▼') + Math.abs(m.chg).toFixed(1) + '%';
   });
 }
+
 
 // ══ PULSE DASHBOARD ════════════════════════════════
 function renderPulseDash() {
@@ -2332,7 +2466,7 @@ document.addEventListener('DOMContentLoaded', function() {
   startClock();
   fetchWeather();
   fetchLiveMarkets();
-  setInterval(fetchLiveMarkets, 5*60*1000);
+  setInterval(fetchLiveMarkets, 60*1000); // every 60 seconds
   setInterval(fetchWeather, 30*60*1000);
   // Sync mobile theme icon
   var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
