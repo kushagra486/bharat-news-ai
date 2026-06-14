@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0a0a">
-<meta name="description" content="Bharat News AI — Live AI-powered daily news intelligence">
+<meta name="description" content="BharatNews.ai — Live AI-powered daily news intelligence">
 <link rel="manifest" href="#" id="manifestLink">
-<title>Bharat News AI — Daily Intelligence</title>
+<title>BharatNews.ai — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -568,9 +568,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 <div class="app">
   <!-- SIDEBAR -->
   <nav class="sidebar">
-    <div class="logo" onclick="setView('feed')">
-      <div class="logo-icon">B</div>
-      <span class="logo-text">Bharat News AI</span>
+    <div class="logo" onclick="setView('feed')" style="padding:8px;flex-direction:column;align-items:center;gap:0;">
+      <img src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" alt="BharatNews.ai" style="width:180px;height:auto;max-height:60px;object-fit:contain;" onerror="this.outerHTML='<span style=font-size:18px;font-weight:900;>BN.ai</span>'">
     </div>
     <div class="nav-item active" id="nav-feed" onclick="setView('feed')">
       <span class="nav-icon">🏠</span><span>Feed</span>
@@ -934,12 +933,11 @@ function mergeSources(...arrays) {
 // ══════════════════════════════════════════════════
 // COMBINED FETCH
 // ══════════════════════════════════════════════════
-async function fetchNews(sector='All', force=false) {
+async function fetchNews(sector='All', force=false, silent=false) {
   const TTL = 15*60*1000;
   if (!force && newsCache[sector] && (Date.now()-(lastFetch[sector]||0))<TTL) return newsCache[sector];
 
-  showFeedLoader(true);
-  updateSourceBadge('fetching');
+  if (!silent) { showFeedLoader(true); updateSourceBadge('fetching'); }
 
   const [g,nd,gu,na] = await Promise.allSettled([
     fetchFromGNews(sector),
@@ -974,6 +972,7 @@ async function fetchNews(sector='All', force=false) {
 
   newsCache[sector] = merged;
   lastFetch[sector] = Date.now();
+  showFeedLoader(false);
   if (sector==='All') newsData = merged;
 
   // Check alerts
@@ -1110,7 +1109,7 @@ function checkAlerts(articles) {
         localStorage.setItem('pa_alert_shown', JSON.stringify(alreadyShown.slice(-100)));
         showToast(`🔔 Alert: "${kw}" — ${article.title.substring(0,50)}...`);
         if (Notification.permission==='granted') {
-          new Notification(`Bharat News AI Alert: ${kw}`, {body:article.title, icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="%23e91e8c"/><text x="18" y="26" font-size="20" text-anchor="middle" fill="white">B</text></svg>'});
+          new Notification(`BharatNews.ai Alert: ${kw}`, {body:article.title, icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><rect width="36" height="36" rx="10" fill="%23e91e8c"/><text x="18" y="26" font-size="20" text-anchor="middle" fill="white">B</text></svg>'});
         }
       }
     }
@@ -1357,7 +1356,7 @@ async function shareAsImage(card) {
       <div style="font-size:13px;color:#aaa;line-height:1.6;margin-bottom:16px;">${card.summary.substring(0,200)}...</div>
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div style="font-size:12px;color:#666;">${card.source} · ${card.time}</div>
-        <div style="font-size:14px;font-weight:800;background:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Bharat News AI</div>
+        <div style="font-size:14px;font-weight:800;background:linear-gradient(135deg,#e91e8c,#9333ea,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">BharatNews.ai</div>
       </div>
     </div>`;
   document.body.appendChild(div);
@@ -1367,7 +1366,7 @@ async function shareAsImage(card) {
     canvas.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href=url; a.download=`Bharat News AI-${card.sector}-${Date.now()}.png`;
+      a.href=url; a.download=`BharatNews.ai-${card.sector}-${Date.now()}.png`;
       a.click();
       URL.revokeObjectURL(url);
       showToast('✅ Image saved!');
@@ -1956,7 +1955,7 @@ function getFallbackNews(sector) {
 // ══════════════════════════════════════════════════
 function installPWA() {
   const manifest = {
-    name:'Bharat News AI — Daily Intelligence',short_name:'Bharat News AI',description:'AI-powered daily news with Groq',
+    name:'BharatNews.ai — Daily Intelligence',short_name:'BharatNews.ai',description:'AI-powered daily news with Groq',
     start_url:'.',display:'standalone',background_color:'#0a0a0a',theme_color:'#0a0a0a',
     icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="%23e91e8c"/><text x="96" y="140" font-size="110" text-anchor="middle" fill="white" font-weight="900">B</text></svg>',sizes:'192x192',type:'image/svg+xml'}]
   };
@@ -2011,13 +2010,16 @@ async function init() {
   newsData = getFallbackNews('All');
   renderFeed();
 
-  // Live fetch in background
-  fetchNews('All').then(function(live){
+  // Live fetch silently in background (won't replace feed with spinner)
+  fetchNews('All', false, true).then(function(live){
     if(live && live.length){ newsData=live; renderFeed(); updateLastFetchedBadge(); }
   }).catch(function(){});
   fetchAllSectors().then(function(){
     renderFeed(); renderRightPanel(); updateLastFetchedBadge();
   }).catch(function(){});
+
+  // Safety net: never show spinner for more than 12s
+  setTimeout(function(){ showFeedLoader(false); }, 12000);
 
   // Generate AI briefing
   generateDailyBriefing();
