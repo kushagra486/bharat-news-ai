@@ -986,13 +986,12 @@ async function fetchNews(sector='All', force=false, silent=false) {
 
 async function fetchAllSectors() {
   const all = ['Tech','Finance','Health','Science','Politics','Climate','Sports'];
-  await Promise.allSettled(all.map(s=>fetchNews(s)));
+  await Promise.allSettled(all.map(s=>fetchNews(s, false, true)));
   newsData = Object.values(newsCache).flat().slice(0,80);
   updateStoriesFromNews();
 }
 
 async function fetchIndia() {
-  showFeedLoader(true);
   try {
     const {cards} = await fetchFromNewsDataIndia();
     newsCache['India'] = cards;
@@ -1902,13 +1901,8 @@ function toggleTheme() {
 // UI HELPERS
 // ══════════════════════════════════════════════════
 function showFeedLoader(show) {
-  const el=document.getElementById('newsFeed');
-  if(!el) return;
-  if(show&&!el.querySelector('.feed-loader')) {
-    const d=document.createElement('div'); d.className='feed-loader';
-    d.innerHTML=`<div style="text-align:center;padding:48px 20px;color:var(--text3);"><div class="spinner" style="width:36px;height:36px;border-width:3px;margin:0 auto 16px;border-top-color:var(--accent2);"></div><div style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:4px;">Fetching live news...</div><div style="font-size:11px;">GNews · NewsData.io · Guardian · NewsAPI</div></div>`;
-    el.prepend(d);
-  } else if(!show) el.querySelector('.feed-loader')?.remove();
+  // No-op: never block the feed with a spinner
+  // Status shown via updateSourceBadge only
 }
 
 function updateSourceBadge(s, detail='') {
@@ -2029,7 +2023,7 @@ async function init() {
 
   // Auto-refresh every 15 min
   setInterval(async()=>{
-    const r=await fetchNews(state.currentSector,true);
+    const r=await fetchNews(state.currentSector,true,true);
     if(state.currentSector==='All') newsData=r;
     renderFeed();
     renderRightPanel();
