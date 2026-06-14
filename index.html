@@ -320,21 +320,175 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .notif-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:6px;right:6px;animation:breakingPulse 2s infinite}
 
 /* ── MOBILE ── */
-@media(max-width:1100px){.right-panel{display:none}.feed{max-width:100%}}
-@media(max-width:768px){
-  .sidebar{width:60px;padding:16px 8px}
-  .logo-text,.nav-item span:last-child,.nav-label,.nav-badge{display:none}
+
+/* =============================================
+   CLOCK + WEATHER + STOCKS — always visible bar
+   ============================================= */
+#infoBar{
+  position:fixed;top:0;left:0;right:0;height:36px;
+  background:rgba(10,10,10,.97);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;
+  padding:0 16px;gap:16px;z-index:200;
+  font-size:12px;font-family:inherit;
+  backdrop-filter:blur(8px);
+}
+.ib-clock{font-weight:700;color:#f5f5f5;font-size:13px;white-space:nowrap;min-width:130px}
+.ib-weather{display:flex;align-items:center;gap:5px;color:#aaa;white-space:nowrap}
+.ib-weather-icon{font-size:15px}
+.ib-divider{width:1px;height:20px;background:rgba(255,255,255,.1);flex-shrink:0}
+.ib-stocks{display:flex;gap:12px;overflow:hidden;flex:1}
+.ib-stock{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:11px;flex-shrink:0}
+.ib-stock-name{color:#888;font-weight:600}
+.ib-stock-price{color:#f5f5f5;font-weight:700}
+.ib-stock-chg{font-weight:700;padding:1px 5px;border-radius:4px}
+.ib-stock-chg.up{color:#10b981;background:rgba(16,185,129,.12)}
+.ib-stock-chg.dn{color:#ef4444;background:rgba(239,68,68,.12)}
+.ib-stock-chg.flat{color:#888;background:rgba(255,255,255,.06)}
+.ib-loc{color:#9333ea;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.ib-loc:hover{color:var(--accent2)}
+
+/* push all content down by info bar height */
+body.has-infobar .sidebar{top:36px;height:calc(100vh - 36px)}
+body.has-infobar .topbar{top:36px}
+body.has-infobar .main{padding-top:36px}
+body.has-infobar .lp{padding-top:36px}
+
+/* =============================================
+   DESKTOP ≥ 1100px — 3 column full layout
+   ============================================= */
+@media(min-width:1100px){
+  :root{--sidebar-w:240px;--right-w:320px}
+  .mob-header,.mob-bottom-nav{display:none!important}
+  .sidebar{display:flex}
+  .right-panel{display:block}
+  .feed{padding:20px 24px;max-width:700px}
+  .topbar{padding:10px 24px}
+  .topbar-tabs .tab-btn{padding:6px 13px;font-size:13px}
+}
+
+/* =============================================
+   TABLET 768–1099px — 2 column, slim sidebar
+   ============================================= */
+@media(min-width:768px) and (max-width:1099px){
+  :root{--sidebar-w:64px;--right-w:0px}
+  .mob-header,.mob-bottom-nav{display:none!important}
+  .sidebar{display:flex;width:64px;padding:14px 8px}
+  .logo-text,.nav-item span:not(.nav-icon),.nav-label,.nav-badge{display:none!important}
   .logo{justify-content:center;padding:8px 0}
   .logo-icon{margin:0}
-  .nav-item{justify-content:center;padding:10px 0}
-  .nav-icon{width:auto}
-  .main{margin-left:60px}
-  .feed{padding:16px}
-  .topbar{padding:10px 16px;gap:10px}
-  .topbar-tabs{display:none}
-  .search-wrap{width:150px}
-  .topbar-title{font-size:15px}
-  .related-grid{grid-template-columns:1fr}
+  .nav-item{justify-content:center;padding:11px 0}
+  .right-panel{display:none!important}
+  .main{margin-left:64px}
+  .feed{max-width:100%;padding:16px 20px}
+  .topbar{padding:10px 16px;gap:8px}
+  .search-wrap{width:160px}
+  .topbar-title{font-size:14px}
+  .topbar-tabs .tab-btn{padding:5px 10px;font-size:12px}
+  .related-grid{grid-template-columns:1fr 1fr}
+  .card-img-wrap{height:200px}
+}
+
+/* =============================================
+   MOBILE < 768px — full-screen app, bottom nav
+   ============================================= */
+@media(max-width:767px){
+  .sidebar,.right-panel,.topbar,.breaking-banner{display:none!important}
+  .mob-header{
+    display:flex!important;
+    position:fixed;top:36px;left:0;right:0;height:50px;z-index:150;
+    background:var(--surface);border-bottom:1px solid var(--border);
+    align-items:center;padding:0 14px;gap:8px;
+  }
+  .mob-header-logo{
+    font-size:16px;font-weight:900;flex:1;
+    background:var(--grad);-webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .mob-header-btn{
+    width:32px;height:32px;border-radius:50%;border:none;
+    background:var(--surface2);color:var(--text2);font-size:16px;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+  .mob-bottom-nav{
+    display:flex!important;
+    position:fixed;bottom:0;left:0;right:0;height:56px;z-index:150;
+    background:var(--surface);border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  .mob-nav-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:2px;border:none;background:transparent;
+    color:var(--text3);cursor:pointer;font-family:inherit;
+    padding:4px 0;transition:color .15s;
+  }
+  .mob-nav-btn.active{color:var(--accent)}
+  .mob-nav-icon{font-size:19px;line-height:1}
+  .mob-nav-label{font-size:9px;font-weight:600;letter-spacing:.2px}
+
+  /* layout */
+  .app{flex-direction:column}
+  .main{margin-left:0;padding-top:36px}
+  .content{flex-direction:column}
+  .feed{
+    padding:0;
+    padding-top:50px;   /* mob-header */
+    padding-bottom:60px; /* bottom nav */
+    max-width:100%;
+  }
+
+  /* sector chips */
+  .sector-scroll{
+    position:sticky;top:86px;z-index:120;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    padding:7px 12px;
+  }
+  .sector-chip{font-size:11px;padding:4px 10px}
+
+  /* stories */
+  .stories-row{padding:10px 12px 8px;border-bottom:1px solid var(--border)}
+  .story-ring{width:52px;height:52px}
+  .story-label{font-size:9px;max-width:52px}
+
+  /* pulse */
+  .pulse-bar{padding:7px 12px}
+  .pulse-chip{font-size:11px;padding:4px 9px}
+
+  /* cards — full bleed */
+  .news-card{border-radius:0;border-left:none;border-right:none;border-top:none;margin-bottom:4px}
+  .news-card:first-child{border-top:1px solid var(--border)}
+  .card-img-wrap{height:195px}
+  .card-body{padding:10px 14px}
+  .card-title{font-size:15px;line-height:1.35}
+  .card-summary{-webkit-line-clamp:2;font-size:13px}
+  .card-header{padding:10px 14px 7px}
+  .card-actions{padding:7px 14px 9px;gap:1px}
+  .action-btn{padding:6px 7px;font-size:11px}
+  .load-more-btn{border-radius:0;margin:0;border-left:none;border-right:none}
+
+  /* modals slide up */
+  .analysis-overlay,.reader-overlay,.ask-overlay,.rl-overlay{
+    align-items:flex-end;padding:0;
+  }
+  .analysis-modal,.reader-modal,.ask-sheet,.rl-sheet{
+    border-radius:20px 20px 0 0;max-height:93vh;
+    width:100%;max-width:100%;margin:0;
+  }
+  .reader-hero{height:180px;border-radius:20px 20px 0 0}
+  .reader-content{padding:16px}
+  .reader-title{font-size:18px}
+  .related-grid{grid-template-columns:1fr 1fr}
+
+  /* info bar on mobile — compact */
+  #infoBar{
+    padding:0 10px;gap:8px;height:36px;
+    justify-content:space-between;
+  }
+  .ib-stocks{gap:8px}
+  .ib-stock-name{display:none}
+  .ib-stock-price{font-size:11px}
+  .ib-stock-chg{font-size:10px;padding:1px 4px}
+  .ib-weather-text{display:none}
 }
 
 /* LP */
@@ -494,6 +648,54 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
     <div id="rlContent"></div>
   </div>
 </div>
+
+<!-- ══ INFO BAR — clock, weather, stocks ══ -->
+<div id="infoBar">
+  <div class="ib-clock" id="ibClock">--:-- --</div>
+  <div class="ib-divider"></div>
+  <div class="ib-weather" id="ibWeather">
+    <span class="ib-weather-icon">🌡️</span>
+    <span class="ib-weather-text" id="ibWeatherText">Locating...</span>
+  </div>
+  <div class="ib-divider"></div>
+  <div class="ib-loc" id="ibLoc" onclick="refreshWeather()">📍 --</div>
+  <div class="ib-divider"></div>
+  <div class="ib-stocks" id="ibStocks">
+    <div class="ib-stock"><span class="ib-stock-name">SENSEX</span><span class="ib-stock-price" id="st-sensex">--</span><span class="ib-stock-chg flat" id="sc-sensex">--%</span></div>
+    <div class="ib-stock"><span class="ib-stock-name">NIFTY</span><span class="ib-stock-price" id="st-nifty">--</span><span class="ib-stock-chg flat" id="sc-nifty">--%</span></div>
+    <div class="ib-stock"><span class="ib-stock-name">USD/INR</span><span class="ib-stock-price" id="st-usdinr">--</span><span class="ib-stock-chg flat" id="sc-usdinr">--%</span></div>
+    <div class="ib-stock"><span class="ib-stock-name">GOLD</span><span class="ib-stock-price" id="st-gold">--</span><span class="ib-stock-chg flat" id="sc-gold">--%</span></div>
+    <div class="ib-stock"><span class="ib-stock-name">BTC</span><span class="ib-stock-price" id="st-btc">--</span><span class="ib-stock-chg flat" id="sc-btc">--%</span></div>
+  </div>
+</div>
+
+<!-- ══ MOBILE HEADER ══ -->
+<div class="mob-header" id="mobHeader" style="display:none">
+  <div class="mob-header-logo">BharatNews.ai</div>
+  <button class="mob-header-btn" onclick="toggleHindi()" title="Hindi">हिं</button>
+  <button class="mob-header-btn" onclick="openAskNews()">💬</button>
+  <button class="mob-header-btn" onclick="openProfile()">👤</button>
+</div>
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<div class="mob-bottom-nav" id="mobBottomNav" style="display:none">
+  <button class="mob-nav-btn active" id="mbn-feed" onclick="mobNav('feed',this)">
+    <span class="mob-nav-icon">🏠</span><span class="mob-nav-label">Home</span>
+  </button>
+  <button class="mob-nav-btn" id="mbn-india" onclick="mobNav('india',this)">
+    <span class="mob-nav-icon">🇮🇳</span><span class="mob-nav-label">India</span>
+  </button>
+  <button class="mob-nav-btn" id="mbn-stories" onclick="openStory(0)">
+    <span class="mob-nav-icon">▶️</span><span class="mob-nav-label">Stories</span>
+  </button>
+  <button class="mob-nav-btn" id="mbn-saved" onclick="mobNav('bookmarks',this)">
+    <span class="mob-nav-icon">🔖</span><span class="mob-nav-label">Saved</span>
+  </button>
+  <button class="mob-nav-btn" id="mbn-profile" onclick="openProfile()">
+    <span class="mob-nav-icon">👤</span><span class="mob-nav-label">Me</span>
+  </button>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- STORY VIEWER -->
@@ -2460,6 +2662,212 @@ function updateLastFetchedBadgeAndPulse() {
 // INIT ENHANCEMENTS: call pulse on startup
 // ══════════════════════════════════════════════════
 // Pulse is rendered via updateLastFetchedBadgeAndPulse
+
+
+// ══════════════════════════════════════════════════
+// INFO BAR: CLOCK + WEATHER + LIVE STOCKS
+// ══════════════════════════════════════════════════
+
+// ── CLOCK ─────────────────────────────────────────
+function tickClock() {
+  var el = document.getElementById('ibClock');
+  if (!el) return;
+  var now = new Date();
+  var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  var day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][now.getDay()];
+  var date = now.getDate();
+  var mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
+  el.textContent = day+' '+date+' '+mon+' '+pad(h)+':'+pad(m)+':'+pad(s)+' '+ampm;
+}
+function pad(n){ return n<10?'0'+n:n; }
+setInterval(tickClock, 1000);
+tickClock();
+
+// ── WEATHER ───────────────────────────────────────
+var _weatherCity = '';
+function refreshWeather() {
+  if (!navigator.geolocation) { document.getElementById('ibWeatherText').textContent='No geo'; return; }
+  document.getElementById('ibLoc').textContent = '📍 Locating...';
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      var lat = pos.coords.latitude.toFixed(4);
+      var lon = pos.coords.longitude.toFixed(4);
+      fetchWeather(lat, lon);
+    },
+    function(err) {
+      // Fallback to IP location
+      fetchWeatherByIP();
+    },
+    {timeout:8000, enableHighAccuracy:false}
+  );
+}
+
+async function fetchWeather(lat, lon) {
+  try {
+    // Open-Meteo: free, no API key, CORS enabled
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
+      +'&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto';
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+    var r = await fetch(url, {signal:ac.signal});
+    if (!r.ok) throw new Error(r.status);
+    var d = await r.json();
+    var cur = d.current;
+    var temp = Math.round(cur.temperature_2m);
+    var code = cur.weather_code;
+    var icon = weatherIcon(code);
+    var cond = weatherCond(code);
+    document.getElementById('ibWeather').innerHTML =
+      '<span class="ib-weather-icon">'+icon+'</span>'
+      +'<span id="ibWeatherText">'+temp+'°C '+cond+'</span>';
+    // Reverse geocode for city name
+    fetchCityName(lat, lon);
+  } catch(e) {
+    document.getElementById('ibWeatherText').textContent = 'Weather N/A';
+  }
+}
+
+async function fetchCityName(lat, lon) {
+  try {
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
+    var r = await fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json',
+      {signal:ac.signal, headers:{'User-Agent':'BharatNewsAI/1.0'}});
+    if (!r.ok) throw new Error(r.status);
+    var d = await r.json();
+    var city = d.address.city || d.address.town || d.address.village || d.address.county || 'India';
+    _weatherCity = city;
+    document.getElementById('ibLoc').textContent = '📍 '+city;
+  } catch(e) {
+    document.getElementById('ibLoc').textContent = '📍 India';
+  }
+}
+
+async function fetchWeatherByIP() {
+  try {
+    // Use ipapi.co for IP-based location (free, no key)
+    var ac = new AbortController(); setTimeout(function(){ac.abort();},6000);
+    var r = await fetch('https://ipapi.co/json/', {signal:ac.signal});
+    if (!r.ok) throw new Error(r.status);
+    var d = await r.json();
+    var city = d.city || 'India';
+    var lat = d.latitude; var lon = d.longitude;
+    _weatherCity = city;
+    document.getElementById('ibLoc').textContent = '📍 '+city;
+    if (lat && lon) fetchWeather(lat, lon);
+  } catch(e) {
+    document.getElementById('ibLoc').textContent = '📍 India';
+    // Default to Delhi weather
+    fetchWeather('28.6139', '77.2090');
+  }
+}
+
+function weatherIcon(code) {
+  if (code===0) return '☀️';
+  if (code<=2) return '🌤️';
+  if (code<=3) return '☁️';
+  if (code<=49) return '🌫️';
+  if (code<=59) return '🌦️';
+  if (code<=69) return '🌧️';
+  if (code<=79) return '❄️';
+  if (code<=82) return '🌧️';
+  if (code<=99) return '⛈️';
+  return '🌡️';
+}
+function weatherCond(code) {
+  if (code===0) return 'Clear';
+  if (code<=2) return 'Partly Cloudy';
+  if (code<=3) return 'Overcast';
+  if (code<=49) return 'Foggy';
+  if (code<=59) return 'Drizzle';
+  if (code<=69) return 'Rainy';
+  if (code<=79) return 'Snowy';
+  if (code<=82) return 'Showers';
+  if (code<=99) return 'Thunderstorm';
+  return 'Unknown';
+}
+
+// ── LIVE STOCKS ────────────────────────────────────
+var stockSymbols = [
+  {id:'sensex', sym:'^BSESN', label:'SENSEX', fmt:'₹{p}K'},
+  {id:'nifty',  sym:'^NSEI',  label:'NIFTY',  fmt:'₹{p}'},
+  {id:'usdinr', sym:'INR=X',  label:'USD/INR', fmt:'₹{p}'},
+  {id:'gold',   sym:'GC=F',   label:'GOLD',   fmt:'${p}'},
+  {id:'btc',    sym:'BTC-USD',label:'BTC',    fmt:'${p}K'},
+];
+
+async function fetchStockData(sym) {
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+  var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+encodeURIComponent(sym)
+    +'?interval=1d&range=1d&includePrePost=false';
+  var r = await fetch(url, {signal:ac.signal, mode:'cors'});
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+function fmtPrice(val, sym) {
+  if (!val) return '--';
+  if (sym==='^BSESN') return (val/1000).toFixed(1)+'K';
+  if (sym==='^NSEI')  return val.toFixed(0);
+  if (sym==='INR=X')  return val.toFixed(2);
+  if (sym==='GC=F')   return (val/1000).toFixed(1)+'K';
+  if (sym==='BTC-USD')return (val/1000).toFixed(1)+'K';
+  return val.toFixed(2);
+}
+
+async function refreshStocks() {
+  for (var si=0; si<stockSymbols.length; si++) {
+    var s = stockSymbols[si];
+    try {
+      var d = await fetchStockData(s.sym);
+      var meta = d && d.chart && d.chart.result && d.chart.result[0] && d.chart.result[0].meta;
+      if (!meta) continue;
+      var price = meta.regularMarketPrice;
+      var prevClose = meta.previousClose || meta.chartPreviousClose || price;
+      var chgPct = ((price-prevClose)/prevClose*100);
+      var priceEl = document.getElementById('st-'+s.id);
+      var chgEl   = document.getElementById('sc-'+s.id);
+      if (priceEl) priceEl.textContent = fmtPrice(price, s.sym);
+      if (chgEl) {
+        chgEl.textContent = (chgPct>=0?'+':'')+chgPct.toFixed(2)+'%';
+        chgEl.className = 'ib-stock-chg '+(chgPct>0.05?'up':chgPct<-0.05?'dn':'flat');
+      }
+    } catch(e) { /* individual stock failure — keep showing --  */ }
+  }
+}
+
+// ── LAYOUT APPLY ─────────────────────────────────
+function applyLayout() {
+  var isMob = window.innerWidth < 768;
+  var isTab = window.innerWidth >= 768 && window.innerWidth < 1100;
+  var mh = document.getElementById('mobHeader');
+  var mn = document.getElementById('mobBottomNav');
+  // CSS handles display — JS just ensures inline style is removed
+  if (mh) mh.style.display = '';
+  if (mn) mn.style.display = '';
+  // Body class for info bar offset
+  document.body.classList.add('has-infobar');
+  // Sync theme icon in mobile header
+  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+}
+
+function mobNav(view, btn) {
+  document.querySelectorAll('.mob-nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  setView(view);
+}
+
+// ── STARTUP ───────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  applyLayout();
+  refreshWeather();
+  refreshStocks();
+  // Refresh stocks every 60s
+  setInterval(refreshStocks, 60000);
+  // Re-refresh weather every 10min
+  setInterval(refreshWeather, 600000);
+});
+window.addEventListener('resize', applyLayout);
 
 init();
 </script>
