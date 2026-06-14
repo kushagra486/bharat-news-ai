@@ -1587,84 +1587,93 @@ async function renderFeed(overrideCards=null) {
   document.getElementById('loadMoreBtn').style.display = 'flex';
 }
 
-function renderCluster(cluster, cards) {
-  return `<div class="cluster-card fade-in">
-    <div class="cluster-label">🗂️ Story Cluster · AI Grouped <span class="ai-badge">AI</span></div>
-    <div class="cluster-headline">${cluster.cluster}</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">${cluster.summary||''}</div>
-    <div class="cluster-articles">
-      ${cards.map(c=>`
-        <div class="cluster-item" onclick="openReader(${JSON.stringify(c).replace(/"/g,'&quot;')})">
-          <img class="cluster-item-img" src="${c.image}" alt="" onerror="this.style.display='none'">
-          <div>
-            <div class="cluster-item-title">${c.title.substring(0,90)}${c.title.length>90?'...':''}</div>
-            <div class="cluster-item-source">${c.source} · ${c.time} · <span style="color:${c.apiSource==='Guardian'?'#10b981':c.apiSource==='GNews'?'#3b82f6':'#e91e8c'}">${c.apiSource}</span></div>
-          </div>
-        </div>`).join('')}
-    </div>
-  </div>`;
-}
-
 function renderCard(card) {
-  const isLiked      = likes.includes(card.id);
-  const isBookmarked = bookmarks.includes(card.id);
-  const isRead       = readItems.includes(card.id);
-  const sectorColor  = SECTOR_COLORS[card.sector]||'#9333ea';
-  const rt           = prefs.readTime!==false ? readingTime(card.summary) : '';
-  const sourceColor  = card.apiSource==='GNews'?'#3b82f6':card.apiSource==='NewsData'?'#e91e8c':card.apiSource==='Guardian'?'#10b981':'#ef4444';
-  const sourceBg     = card.apiSource==='GNews'?'rgba(59,130,246,.15)':card.apiSource==='NewsData'?'rgba(233,30,140,.15)':card.apiSource==='Guardian'?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)';
+  var isLiked      = likes.includes(card.id);
+  var isBookmarked = bookmarks.includes(card.id);
+  var isRead       = readItems.includes(card.id);
+  var sectorColor  = SECTOR_COLORS[card.sector] || '#9333ea';
+  var icon         = SECTOR_EMOJIS[card.sector] || '📰';
+  var apiSrc       = card.apiSource || 'News';
+  var rt           = prefs.readTime !== false ? readingTime(card.summary) : '';
+  var safeCard     = JSON.stringify(card).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-  return `<div class="news-card fade-in ${isRead?'':''}">
-    <div class="card-header">
-      <div class="source-avatar">${card.sourceIcon||'📰'}</div>
-      <div class="source-info">
-        <div class="source-name">${card.source} <span class="verified">✓</span></div>
-        <div class="source-meta">
-          <span>${card.time}</span>
-          <span>•</span>
-          ${rt ? `<span class="reading-time">📖 ${rt}</span>` : ''}
-          <span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:${sourceBg};color:${sourceColor};">${card.apiSource}</span>
-          ${isRead?'<span style="font-size:10px;color:var(--text3);">✓ Read</span>':''}
-        </div>
-      </div>
-    </div>
+  var srcColor = apiSrc==='GNews' ? '#3b82f6' : apiSrc==='NewsData' ? '#e91e8c' : apiSrc==='Guardian' ? '#10b981' : '#ef4444';
+  var srcBg    = apiSrc==='GNews' ? 'rgba(59,130,246,.15)' : apiSrc==='NewsData' ? 'rgba(233,30,140,.15)' : apiSrc==='Guardian' ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.15)';
 
-    <div class="card-img-wrap" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
-      <img class="card-img" src="${card.image}" alt="${card.imageAlt||card.title}" loading="lazy"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-      <div class="card-img-fallback" style="display:none;background:${card.color}22;">${SECTOR_EMOJIS[card.sector]||'📰'}</div>
-      <div class="card-img-overlay"></div>
-      <div class="card-img-sector" style="color:${sectorColor};">${SECTOR_EMOJIS[card.sector]} ${card.sector}</div>
-      ${card.breaking?'<div class="card-img-breaking">🔴 BREAKING</div>':''}
-    </div>
+  var tagsHtml  = (card.tags||[]).slice(0,3).map(function(t){ return '<span class="tag">#'+t+'</span>'; }).join('');
+  var rtHtml    = rt ? '<span class="reading-time">📖 '+rt+'</span>' : '';
+  var readHtml  = isRead ? '<span style="font-size:10px;color:var(--text3);">✓ Read</span>' : '';
+  var breakHtml = card.breaking ? '<div class="card-img-breaking">🔴 BREAKING</div>' : '';
 
-    <div class="card-body" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
-      <div class="card-title" style="${isRead?'opacity:.7':''};">${card.title}</div>
-      <div class="card-summary">${card.summary}</div>
-      <div class="card-tags">
-        ${(card.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('')}
-      </div>
-    </div>
-
-    <div class="card-actions">
-      <button class="action-btn ${isLiked?'liked':''}" onclick="toggleLike('${card.id}')">
-        <span>${isLiked?'❤️':'🤍'}</span>${isLiked?'Liked':'Like'}
-      </button>
-      <button class="action-btn" onclick="openReader(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
-        <span>📖</span>Read
-      </button>
-      <button class="action-btn" onclick="analyzeNews(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
-        <span>🧠</span>Analyse
-      </button>
-      <button class="action-btn" onclick="shareAsImage(${JSON.stringify(card).replace(/"/g,'&quot;').replace(/'/g,'&#39;')})">
-        <span>📸</span>Share
-      </button>
-      <button class="action-btn ${isBookmarked?'bookmarked':''} action-sep" onclick="toggleBookmark('${card.id}')">
-        <span>${isBookmarked?'🔖':'📌'}</span>
-      </button>
-    </div>
-  </div>`;
+  return (
+    '<div class="news-card fade-in">' +
+      '<div class="card-header">' +
+        '<div class="source-avatar">' + (card.sourceIcon||'📰') + '</div>' +
+        '<div class="source-info">' +
+          '<div class="source-name">' + (card.source||'News') + ' <span class="verified">✓</span></div>' +
+          '<div class="source-meta">' +
+            '<span>' + (card.time||'') + '</span><span>•</span>' +
+            rtHtml +
+            '<span style="padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;background:'+srcBg+';color:'+srcColor+';">' + apiSrc + '</span>' +
+            readHtml +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-img-wrap" onclick="openReader(' + safeCard + ')">' +
+        '<img class="card-img" src="' + (card.image||'') + '" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">' +
+        '<div class="card-img-fallback" style="display:none;background:' + sectorColor + '22;">' + icon + '</div>' +
+        '<div class="card-img-overlay"></div>' +
+        '<div class="card-img-sector" style="color:' + sectorColor + ';">' + icon + ' ' + (card.sector||'') + '</div>' +
+        breakHtml +
+      '</div>' +
+      '<div class="card-body" onclick="openReader(' + safeCard + ')">' +
+        '<div class="card-title" style="' + (isRead?'opacity:.7':'') + '">' + (card.title||'No title') + '</div>' +
+        '<div class="card-summary">' + (card.summary||'') + '</div>' +
+        '<div class="card-tags">' + tagsHtml + '</div>' +
+      '</div>' +
+      '<div class="card-actions">' +
+        '<button class="action-btn ' + (isLiked?'liked':'') + '" onclick="toggleLike('' + card.id + '')">' +
+          '<span>' + (isLiked?'❤️':'🤍') + '</span>' + (isLiked?'Liked':'Like') +
+        '</button>' +
+        '<button class="action-btn" onclick="openReader(' + safeCard + ')">' +
+          '<span>📖</span>Read' +
+        '</button>' +
+        '<button class="action-btn" onclick="analyzeNews(' + safeCard + ')">' +
+          '<span>🧠</span>Analyse' +
+        '</button>' +
+        '<button class="action-btn" onclick="shareAsImage(' + safeCard + ')">' +
+          '<span>📸</span>Share' +
+        '</button>' +
+        '<button class="action-btn ' + (isBookmarked?'bookmarked':'') + ' action-sep" onclick="toggleBookmark('' + card.id + '')">' +
+          '<span>' + (isBookmarked?'🔖':'📌') + '</span>' +
+        '</button>' +
+      '</div>' +
+    '</div>'
+  );
 }
+
+
+function renderCluster(cluster, cards) {
+  var itemsHtml = cards.map(function(c) {
+    var safe = JSON.stringify(c).replace(/"/g,'&quot;');
+    var img  = c.image || '';
+    var title = (c.title||'').substring(0,90)+(c.title&&c.title.length>90?'...':'');
+    return '<div class="cluster-item" onclick="openReader('+safe+')">' +
+      '<img class="cluster-item-img" src="'+img+'" alt="" onerror="this.style.display='none'">' +
+      '<div>' +
+        '<div class="cluster-item-title">'+title+'</div>' +
+        '<div class="cluster-item-source">'+(c.source||'')+' · '+(c.time||'')+'</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  return '<div class="cluster-card fade-in">' +
+    '<div class="cluster-label">🗂️ Story Cluster · AI Grouped <span class="ai-badge">AI</span></div>' +
+    '<div class="cluster-headline">'+(cluster.cluster||'')+'</div>' +
+    '<div style="font-size:12px;color:var(--text2);margin-bottom:10px;">'+(cluster.summary||'')+'</div>' +
+    '<div class="cluster-articles">'+itemsHtml+'</div>' +
+  '</div>';
+}
+
 
 function renderRightPanel() {
   // Trending — live from fetched data
