@@ -2632,6 +2632,20 @@ async function init() {
   if (alertKws.length) document.getElementById('notifDot').style.display='block';
 
   newsData=getFallbackNews('All'); renderFeed();
+  // Pre-populate stories from fallback so they show immediately
+  (function(){
+    var sects=['Tech','Finance','Health','Science','Sports','Politics','Climate','India'];
+    sects.forEach(function(s){
+      var cards=getFallbackNews(s);
+      if(cards&&cards[0]){
+        var a=cards[0];
+        storiesData.push({sector:s,icon:SECTOR_EMOJIS[s],source:a.source||s,time:a.time||'Now',
+          headline:a.title,snippet:(a.summary||'Latest '+s+' news').substring(0,100)+'...',
+          color:SECTOR_COLORS[s],image:a.image||SECTOR_FALLBACK_IMAGES[s]});
+      }
+    });
+    if(storiesData.length) renderStories();
+  })();
   fetchNews('All',false,true).then(function(l){if(l&&l.length){newsData=l;renderFeed();updateLastFetchedBadge();}}).catch(function(){});
   // Fetch all sectors after a 2s delay so initial feed renders first
   setTimeout(function(){
@@ -2689,31 +2703,8 @@ function lpTab(t) {
   // Clear errors on tab switch
   ['lp-in-err','lp-up-err'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=''; });
 }
-function lpLogin() {
-  var n = (document.getElementById('lp-in-name').value || '').trim();
-  var e = document.getElementById('lp-in-err');
-  if (!n) { e.textContent = 'Please enter your name.'; return; }
-  e.textContent = '';
-  var k = 'bna_u_' + n.toLowerCase().replace(/\s+/g, '_');
-  var x = JSON.parse(localStorage.getItem(k) || 'null');
-  currentUser = x || { name:n, handle:k, profession:'', avatar_initials:n[0].toUpperCase(), joined:new Date().toISOString(), isGuest:false };
-  localStorage.setItem('bna_user', JSON.stringify(currentUser));
-  lpHide();
-  showToast('Welcome, ' + n.split(' ')[0] + '!');
-}
-function lpSignup() {
-  var n = (document.getElementById('lp-up-name').value || '').trim();
-  var p = (document.getElementById('lp-up-prof').value || '').trim();
-  var e = document.getElementById('lp-up-err');
-  if (!n) { e.textContent = 'Please enter your name.'; return; }
-  e.textContent = '';
-  var k = 'bna_u_' + n.toLowerCase().replace(/\s+/g, '_');
-  currentUser = { name:n, handle:k, profession:p, avatar_initials:n[0].toUpperCase(), joined:new Date().toISOString(), isGuest:false };
-  localStorage.setItem(k, JSON.stringify(currentUser));
-  localStorage.setItem('bna_user', JSON.stringify(currentUser));
-  lpHide();
-  showToast('Welcome to BharatNews.ai, ' + n.split(' ')[0] + '!');
-}
+
+
 function lpGuest() {
   currentUser = {
     name: 'Guest', handle: 'guest',
@@ -4112,7 +4103,22 @@ async function onSupaAuthSuccess(user, session) {
   lpHide();
   showToast('👋 Welcome, ' + currentUser.name.split(' ')[0] + '!');
 }
-async function syncFromCloud(){var sb=getSupabase();if(!sb||!currentUser||!currentUser.id)return;try{var bm=await sb.from('bookmarks').select('article_id').eq('user_id',currentUser.id);if(bm.data)bm.data.forEach(function(r){if(!bookmarks.includes(r.article_id))bookmarks.push(r.article_id);});var lk=await sb.from('likes').select('article_id').eq('user_id',currentUser.id);if(lk.data)lk.data.forEach(function(r){if(!likes.includes(r.article_id))likes.push(r.article_id);});var al=await sb.from('alerts').select('keyword').eq('user_id',currentUser.id);if(al.data)al.data.forEach(function(r){if(!alertKws.includes(r.keyword))alertKws.push(r.keyword);});localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));localStorage.setItem('pa_likes',JSON.stringify(likes));localStorage.setItem('pa_alerts',JSON.stringify(alertKws));updateBookmarkCount();}catch(e){}}
+async function syncFromCloud() {
+  var sb = getSupabase();
+  if (!sb || !currentUser || !currentUser.id || !currentUser.isCloud) return;
+  try {
+    var bm = await sb.from('bookmarks').select('article_id').eq('user_id', currentUser.id);
+    if (bm.data) bm.data.forEach(function(r){ if(!bookmarks.includes(r.article_id)) bookmarks.push(r.article_id); });
+    var lk = await sb.from('likes').select('article_id').eq('user_id', currentUser.id);
+    if (lk.data) lk.data.forEach(function(r){ if(!likes.includes(r.article_id)) likes.push(r.article_id); });
+    var al = await sb.from('alerts').select('keyword').eq('user_id', currentUser.id);
+    if (al.data) al.data.forEach(function(r){ if(!alertKws.includes(r.keyword)) alertKws.push(r.keyword); });
+    localStorage.setItem('pa_bookmarks', JSON.stringify(bookmarks));
+    localStorage.setItem('pa_likes', JSON.stringify(likes));
+    localStorage.setItem('pa_alerts', JSON.stringify(alertKws));
+    updateBookmarkCount();
+  } catch(e) { /* silent fail — don't break app if DB unreachable */ }
+}
 async function restoreSupabaseSession() {
   var sb = getSupabase();
   if (!sb) return false;
