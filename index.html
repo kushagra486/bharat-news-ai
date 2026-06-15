@@ -681,9 +681,6 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 }
 .mob-search-inp:focus{border-color:var(--accent2)}
 
-.lp-mode-row{display:flex;gap:4px;background:#1a1a1a;border-radius:10px;padding:3px;margin-bottom:18px}
-.lp-mode-btn{flex:1;padding:8px;border:none;background:transparent;color:#555;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;border-radius:8px;transition:all .2s}
-.lp-mode-btn.active{background:#0a0a0a;color:#f5f5f5;box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .lp-btn:disabled{opacity:.6;cursor:not-allowed}
 </style>
 </head>
@@ -752,68 +749,61 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
  <div class="lp-box">
   <div class="lp-logo"><img src="https://raw.githubusercontent.com/kushagra486/bharat-news-ai/main/logo.png" onerror="this.outerHTML='<div style=font-size:22px;font-weight:900;color:#e91e8c>BharatNews.ai</div>'"></div>
   <div class="lp-tag">🇮🇳 Live AI-Powered News for India</div>
-  <div class="lp-mode-row">
-   <button class="lp-mode-btn active" id="lpm-cloud" onclick="lpMode('cloud')">☁️ Cloud Account</button>
-   <button class="lp-mode-btn" id="lpm-local" onclick="lpMode('local')">📱 Local Only</button>
+  <div class="lp-tabs">
+   <button class="lp-tab active" id="lt-in" onclick="lpTab('in')">Sign In</button>
+   <button class="lp-tab" id="lt-up" onclick="lpTab('up')">Create Account</button>
   </div>
 
-  <div id="lp-cloud">
-   <div class="lp-tabs">
-    <button class="lp-tab active" id="lt-in" onclick="lpTab('in')">Sign In</button>
-    <button class="lp-tab" id="lt-up" onclick="lpTab('up')">Sign Up</button>
+  <!-- SIGN IN -->
+  <div id="lp-in">
+   <div class="lp-err" id="lp-in-err"></div>
+   <label class="lp-lbl">Gmail / Email</label>
+   <input class="lp-inp" id="lp-in-email" type="email" placeholder="you@gmail.com" autocomplete="email">
+   <label class="lp-lbl">Password</label>
+   <div style="position:relative">
+    <input class="lp-inp" id="lp-in-pass" type="password" placeholder="Your password" autocomplete="current-password" style="padding-right:44px">
+    <button onclick="togglePassVis('lp-in-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:15px">👁</button>
    </div>
-   <div id="lp-in">
-    <div class="lp-err" id="lp-in-err"></div>
-    <label class="lp-lbl">Email</label>
-    <input class="lp-inp" id="lp-in-email" type="email" placeholder="you@email.com" autocomplete="email">
-    <label class="lp-lbl">Password</label>
-    <div style="position:relative">
-     <input class="lp-inp" id="lp-in-pass" type="password" placeholder="Your password" autocomplete="current-password" style="padding-right:44px">
-     <button onclick="togglePassVis('lp-in-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:15px">👁</button>
-    </div>
-    <button class="lp-btn" onclick="supaLogin()" id="lp-in-btn">🚀 Sign In</button>
-    <button onclick="supaForgot()" style="display:block;width:100%;border:none;background:transparent;color:var(--text3);font-size:12px;cursor:pointer;margin-bottom:8px;font-family:inherit">Forgot password?</button>
-    <div class="lp-or">or</div>
-    <button class="lp-ghost" onclick="supaGoogleLogin()"><b style="font-size:15px">G</b>&nbsp; Continue with Google</button>
-   </div>
-   <div id="lp-up" style="display:none">
-    <div class="lp-err" id="lp-up-err"></div>
-    <label class="lp-lbl">Full Name</label>
-    <input class="lp-inp" id="lp-up-name" placeholder="Your full name" autocomplete="name">
-    <label class="lp-lbl">Email</label>
-    <input class="lp-inp" id="lp-up-email" type="email" placeholder="you@email.com" autocomplete="email">
-    <label class="lp-lbl">Password</label>
-    <div style="position:relative">
-     <input class="lp-inp" id="lp-up-pass" type="password" placeholder="Min 6 characters" autocomplete="new-password" style="padding-right:44px">
-     <button onclick="togglePassVis('lp-up-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:15px">👁</button>
-    </div>
-    <button class="lp-btn" onclick="supaSignup()" id="lp-up-btn">✨ Create Account</button>
-    <div class="lp-or">or</div>
-    <button class="lp-ghost" onclick="supaGoogleLogin()"><b style="font-size:15px">G</b>&nbsp; Continue with Google</button>
-   </div>
-   <div id="lp-otp" style="display:none">
-    <div class="lp-err" id="lp-otp-err"></div>
-    <div style="text-align:center;margin-bottom:16px"><div style="font-size:36px;margin-bottom:8px">📧</div>
-    <div style="font-size:15px;font-weight:700;color:var(--text)">Check your email</div>
-    <div style="font-size:12px;color:var(--text3);margin-top:6px" id="lp-otp-msg">We sent a confirmation link</div></div>
-    <label class="lp-lbl">Enter OTP (if prompted)</label>
-    <input class="lp-inp" id="lp-otp-code" placeholder="6-digit code" maxlength="6" inputmode="numeric">
-    <button class="lp-btn" onclick="supaVerifyOTP()">✅ Verify Code</button>
-    <button class="lp-ghost" style="margin-top:8px" onclick="lpShowPanel('lp-in')">← Back to Sign In</button>
-   </div>
-  </div>
-
-  <div id="lp-local" style="display:none">
-   <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#f59e0b">⚠️ Data stays on this device only. No sync across devices.</div>
-   <div class="lp-err" id="lp-loc-err"></div>
-   <label class="lp-lbl">Your Name</label>
-   <input class="lp-inp" id="lp-in-name" placeholder="Enter your name" autocomplete="name">
-   <button class="lp-btn" onclick="lpLogin()">📱 Continue Locally</button>
+   <button class="lp-btn" onclick="supaLogin()" id="lp-in-btn">🚀 Sign In</button>
+   <button onclick="supaForgot()" style="display:block;width:100%;border:none;background:transparent;color:var(--text3);font-size:12px;cursor:pointer;margin-bottom:10px;font-family:inherit;text-align:center">Forgot password?</button>
    <div class="lp-or">or</div>
-   <button class="lp-ghost" onclick="lpGuest()">👤 Guest Mode</button>
+   <button class="lp-ghost" onclick="lpGuest()">👤 Continue as Guest</button>
   </div>
 
-  <div class="lp-foot">🔒 Cloud accounts encrypted · No spam · Free forever</div>
+  <!-- SIGN UP -->
+  <div id="lp-up" style="display:none">
+   <div class="lp-err" id="lp-up-err"></div>
+   <label class="lp-lbl">Full Name</label>
+   <input class="lp-inp" id="lp-up-name" placeholder="Your full name" autocomplete="name">
+   <label class="lp-lbl">Profession <span style="color:var(--text3);font-weight:400;text-transform:none">(optional)</span></label>
+   <input class="lp-inp" id="lp-up-prof" placeholder="e.g. Student, Engineer, Journalist...">
+   <label class="lp-lbl">Gmail / Email</label>
+   <input class="lp-inp" id="lp-up-email" type="email" placeholder="you@gmail.com" autocomplete="email">
+   <label class="lp-lbl">Password</label>
+   <div style="position:relative">
+    <input class="lp-inp" id="lp-up-pass" type="password" placeholder="Min 6 characters" autocomplete="new-password" style="padding-right:44px">
+    <button onclick="togglePassVis('lp-up-pass',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:15px">👁</button>
+   </div>
+   <button class="lp-btn" onclick="supaSignup()" id="lp-up-btn">✨ Create Account</button>
+   <div class="lp-or">or</div>
+   <button class="lp-ghost" onclick="lpGuest()">👤 Continue as Guest</button>
+  </div>
+
+  <!-- EMAIL CONFIRM -->
+  <div id="lp-otp" style="display:none">
+   <div class="lp-err" id="lp-otp-err"></div>
+   <div style="text-align:center;margin-bottom:18px">
+    <div style="font-size:40px;margin-bottom:10px">📧</div>
+    <div style="font-size:15px;font-weight:700;color:var(--text)">Check your inbox</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5" id="lp-otp-msg">We sent a confirmation link to your email. Click it to activate your account.</div>
+   </div>
+   <label class="lp-lbl">Enter OTP Code <span style="color:var(--text3);font-weight:400;text-transform:none">(if prompted)</span></label>
+   <input class="lp-inp" id="lp-otp-code" placeholder="6-digit code" maxlength="6" inputmode="numeric">
+   <button class="lp-btn" onclick="supaVerifyOTP()">✅ Verify Code</button>
+   <button class="lp-ghost" style="margin-top:8px" onclick="lpShowPanel('lp-in')">← Back to Sign In</button>
+  </div>
+
+  <div class="lp-foot">🔒 Secured by Supabase · No spam · Free forever</div>
  </div>
 </div>
 <div class="toast-container" id="toastContainer"></div>
@@ -3628,15 +3618,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function getSupabase(){if(!_supaClient){if(typeof supabase==='undefined'){console.warn('Supabase SDK not loaded');return null;}_supaClient=supabase.createClient(SUPA_URL,SUPA_ANON);}return _supaClient;}
-function lpMode(m){document.getElementById('lp-cloud').style.display=m==='cloud'?'block':'none';document.getElementById('lp-local').style.display=m==='local'?'block':'none';document.getElementById('lpm-cloud').classList.toggle('active',m==='cloud');document.getElementById('lpm-local').classList.toggle('active',m==='local');}
+function lpMode(m){}
 function lpShowPanel(id){['lp-in','lp-up','lp-otp'].forEach(function(p){var e=document.getElementById(p);if(e)e.style.display='none';});var el=document.getElementById(id);if(el)el.style.display='block';}
 function togglePassVis(inputId,btn){var inp=document.getElementById(inputId);if(!inp)return;inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁':'🙈';}
 async function supaLogin(){var email=(document.getElementById('lp-in-email').value||'').trim();var pass=(document.getElementById('lp-in-pass').value||'');var err=document.getElementById('lp-in-err');var btn=document.getElementById('lp-in-btn');if(!email){err.textContent='Please enter your email.';return;}if(!pass){err.textContent='Please enter your password.';return;}err.textContent='';btn.disabled=true;btn.textContent='⏳ Signing in...';try{var sb=getSupabase();if(!sb)throw new Error('Auth unavailable');var r=await sb.auth.signInWithPassword({email:email,password:pass});if(r.error)throw r.error;await onSupaAuthSuccess(r.data.user,r.data.session);}catch(e){err.textContent=e.message||'Sign in failed.';btn.disabled=false;btn.textContent='🚀 Sign In';}}
-async function supaSignup(){var name=(document.getElementById('lp-up-name').value||'').trim();var email=(document.getElementById('lp-up-email').value||'').trim();var pass=(document.getElementById('lp-up-pass').value||'');var err=document.getElementById('lp-up-err');var btn=document.getElementById('lp-up-btn');if(!name){err.textContent='Please enter your name.';return;}if(!email){err.textContent='Please enter your email.';return;}if(pass.length<6){err.textContent='Password min 6 characters.';return;}err.textContent='';btn.disabled=true;btn.textContent='⏳ Creating...';try{var sb=getSupabase();if(!sb)throw new Error('Auth unavailable');var r=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}});if(r.error)throw r.error;window._pendingEmail=email;document.getElementById('lp-otp-msg').textContent='Confirmation sent to '+email;lpShowPanel('lp-otp');showToast('📧 Check your email!');}catch(e){err.textContent=e.message||'Sign up failed.';btn.disabled=false;btn.textContent='✨ Create Account';}}
+async function supaSignup(){var name=(document.getElementById('lp-up-name').value||'').trim();var prof=(document.getElementById('lp-up-prof').value||'').trim();var email=(document.getElementById('lp-up-email').value||'').trim();var pass=(document.getElementById('lp-up-pass').value||'');var err=document.getElementById('lp-up-err');var btn=document.getElementById('lp-up-btn');if(!name){err.textContent='Please enter your name.';return;}if(!email){err.textContent='Please enter your email.';return;}if(pass.length<6){err.textContent='Password must be at least 6 characters.';return;}err.textContent='';btn.disabled=true;btn.textContent='⏳ Creating account...';try{var sb=getSupabase();if(!sb)throw new Error('Auth unavailable');var r=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name,profession:prof}}});if(r.error)throw r.error;window._pendingEmail=email;window._pendingName=name;window._pendingProf=prof;document.getElementById('lp-otp-msg').textContent='Confirmation sent to '+email+'. Click the link in your inbox to activate your account.';lpShowPanel('lp-otp');showToast('📧 Check your email for confirmation!');}catch(e){err.textContent=e.message||'Sign up failed. Please try again.';btn.disabled=false;btn.textContent='✨ Create Account';}}
 async function supaVerifyOTP(){var code=(document.getElementById('lp-otp-code').value||'').trim();var err=document.getElementById('lp-otp-err');if(code.length<6){err.textContent='Enter 6-digit code.';return;}err.textContent='⏳ Verifying...';try{var sb=getSupabase();var r=await sb.auth.verifyOtp({email:window._pendingEmail||'',token:code,type:'signup'});if(r.error)throw r.error;await onSupaAuthSuccess(r.data.user,r.data.session);}catch(e){err.textContent=e.message||'Verification failed.';}}
-async function supaGoogleLogin(){try{var sb=getSupabase();if(!sb)throw new Error('Auth unavailable');var r=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});if(r.error)throw r.error;}catch(e){showToast('⚠️ Google sign-in: '+e.message);}}
 async function supaForgot(){var email=(document.getElementById('lp-in-email').value||'').trim();if(!email){document.getElementById('lp-in-err').textContent='Enter your email first.';return;}try{var sb=getSupabase();await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});showToast('📧 Password reset sent to '+email);}catch(e){showToast('⚠️ '+(e.message||'Could not send reset email'));}}
-async function onSupaAuthSuccess(user,session){if(!user)return;localStorage.setItem('bna_supa_session',JSON.stringify({access_token:session.access_token,refresh_token:session.refresh_token,expires_at:session.expires_at,user_id:user.id}));var sb=getSupabase();var prof=await sb.from('profiles').select('*').eq('id',user.id).single();var pd=prof.data||{};currentUser={id:user.id,email:user.email,name:pd.name||(user.user_metadata&&user.user_metadata.name)||user.email.split('@')[0],handle:pd.handle||user.email.split('@')[0],profession:pd.profession||'',avatar_url:pd.avatar_url||(user.user_metadata&&user.user_metadata.avatar_url)||'',avatar_initials:pd.avatar_initials||((pd.name||user.email)[0].toUpperCase()),preferred_language:pd.preferred_language||'en',joined:pd.joined_at||user.created_at,isGuest:false,isCloud:true};localStorage.setItem('bna_user',JSON.stringify(currentUser));syncFromCloud();lpHide();showToast('👋 Welcome, '+currentUser.name.split(' ')[0]+'!');}
+async function onSupaAuthSuccess(user,session){if(!user)return;localStorage.setItem('bna_supa_session',JSON.stringify({access_token:session.access_token,refresh_token:session.refresh_token,expires_at:session.expires_at,user_id:user.id}));var sb=getSupabase();var prof=await sb.from('profiles').select('*').eq('id',user.id).single();var pd=prof.data||{};currentUser={id:user.id,email:user.email,name:pd.name||(user.user_metadata&&user.user_metadata.name)||user.email.split('@')[0],handle:pd.handle||user.email.split('@')[0],profession:pd.profession||(user.user_metadata&&user.user_metadata.profession)||'',avatar_url:pd.avatar_url||(user.user_metadata&&user.user_metadata.avatar_url)||'',avatar_initials:pd.avatar_initials||((pd.name||user.email)[0].toUpperCase()),preferred_language:pd.preferred_language||'en',joined:pd.joined_at||user.created_at,isGuest:false,isCloud:true};localStorage.setItem('bna_user',JSON.stringify(currentUser));syncFromCloud();lpHide();showToast('👋 Welcome, '+currentUser.name.split(' ')[0]+'!');}
 async function syncFromCloud(){var sb=getSupabase();if(!sb||!currentUser||!currentUser.id)return;try{var bm=await sb.from('bookmarks').select('article_id').eq('user_id',currentUser.id);if(bm.data)bm.data.forEach(function(r){if(!bookmarks.includes(r.article_id))bookmarks.push(r.article_id);});var lk=await sb.from('likes').select('article_id').eq('user_id',currentUser.id);if(lk.data)lk.data.forEach(function(r){if(!likes.includes(r.article_id))likes.push(r.article_id);});var al=await sb.from('alerts').select('keyword').eq('user_id',currentUser.id);if(al.data)al.data.forEach(function(r){if(!alertKws.includes(r.keyword))alertKws.push(r.keyword);});localStorage.setItem('pa_bookmarks',JSON.stringify(bookmarks));localStorage.setItem('pa_likes',JSON.stringify(likes));localStorage.setItem('pa_alerts',JSON.stringify(alertKws));updateBookmarkCount();}catch(e){}}
 async function restoreSupabaseSession(){var sb=getSupabase();if(!sb)return false;try{var stored=JSON.parse(localStorage.getItem('bna_supa_session')||'null');if(!stored)return false;var r=await sb.auth.setSession({access_token:stored.access_token,refresh_token:stored.refresh_token});if(r.error||!r.data||!r.data.user)return false;await onSupaAuthSuccess(r.data.user,r.data.session);return true;}catch(e){localStorage.removeItem('bna_supa_session');return false;}}
 var _origTBk=toggleBookmark;toggleBookmark=async function(id,card){_origTBk(id,card);if(!currentUser||!currentUser.isCloud)return;var sb=getSupabase();if(!sb)return;if(bookmarks.includes(id)){await sb.from('bookmarks').upsert({user_id:currentUser.id,article_id:id,article_title:card&&card.title||'',article_url:card&&card.articleUrl||'',article_source:card&&card.source||'',article_image:card&&card.image||'',article_sector:card&&card.sector||''}).catch(function(){});}else{await sb.from('bookmarks').delete().eq('user_id',currentUser.id).eq('article_id',id).catch(function(){});}}
