@@ -16,8 +16,8 @@
 <meta name="theme-color" content="#0a0a0a">
 <title>Bharat News AI — Daily Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <style>
 :root {
   --bg:#0a0a0a;--surface:#111;--surface2:#1a1a1a;--surface3:#222;
@@ -683,6 +683,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 
 .lp-btn:disabled{opacity:.6;cursor:not-allowed}
 </style>
+  <!-- Performance hints -->
+  <link rel="dns-prefetch" href="https://api.groq.com">
+  <link rel="dns-prefetch" href="https://newsdata.io">
+  <link rel="dns-prefetch" href="https://gnews.io">
+  <link rel="dns-prefetch" href="https://hrfubpludaeicffjmuok.supabase.co">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta name="description" content="Live AI-Powered News for India — Hindi, Cricket Scores, Markets">
 </head>
 <body>
 
@@ -1074,7 +1081,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
           <div class="panel-title">✨ AI Daily Briefing</div>
           <div class="ai-insight-box">
             <div class="ai-insight-title">🧠 Today's Intelligence</div>
-            <div class="ai-insight-text" id="dailyBriefing">⏳ Generating briefing with Groq Llama 3.3 70B...</div>
+            <div class="ai-insight-text" id="dailyBriefing" onclick="if(!this.dataset.loaded){this.dataset.loaded=1;generateDailyBriefing();}" style="cursor:pointer" title="Click to generate AI briefing">⏳ Generating briefing with Groq Llama 3.3 70B...</div>
           </div>
         </div>
         <div class="divider"></div>
@@ -2367,10 +2374,12 @@ async function init() {
 
   newsData=getFallbackNews('All'); renderFeed();
   fetchNews('All',false,true).then(function(l){if(l&&l.length){newsData=l;renderFeed();updateLastFetchedBadge();}}).catch(function(){});
-  fetchAllSectors().then(function(){renderFeed();renderRightPanel();updateLastFetchedBadge();}).catch(function(){});
+  // Fetch all sectors after a 2s delay so initial feed renders first
+  setTimeout(function(){
+    fetchAllSectors().then(function(){renderFeed();renderRightPanel();updateLastFetchedBadge();}).catch(function(){});
+  }, 2000);
 
-  // Generate AI briefing
-  generateDailyBriefing();
+  // AI briefing generated on demand (not on load)
 
   // Auto-story if pref set
   if (prefs.autoStory && storiesData.length) setTimeout(()=>openStory(0), 2000);
@@ -2791,15 +2800,54 @@ function voiceBriefing(){
 
 // ══ STARTUP ════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
+  // ── Clock & weather & markets ──
   startClock();
-  fetchWeather();
-  fetchLiveMarkets();
-  setInterval(fetchLiveMarkets, 60*1000); // every 60 seconds
+  // Stagger API calls to avoid network congestion on load
+  setTimeout(fetchWeather, 500);
+  setTimeout(fetchLiveMarkets, 1000);
+  setInterval(fetchLiveMarkets, 60*1000);
   setInterval(fetchWeather, 30*60*1000);
-  // Sync mobile theme icon
+
+  // ── Mobile theme icon sync ──
   var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   var mb = document.getElementById('mobThemeBtn');
   if (mb) mb.textContent = isDark ? '🌙' : '☀️';
+
+  // ── Mobile clock bar tap ──
+  ['mcbWeather','mcbMarkets','mcbTime'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.cursor = 'pointer'; el.onclick = openMobInfo; }
+  });
+
+  // ── Tablet FAB ──
+  updateFABVisibility();
+  window.addEventListener('resize', updateFABVisibility);
+
+  // ── Keyboard shortcuts ──
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMobSearch();
+  });
+
+  // ── Supabase session restore (only if user was cloud-logged-in) ──
+  if (localStorage.getItem('bna_supa_session')) {
+    // Defer Supabase init to after render
+    setTimeout(function() {
+      var sb = getSupabase();
+      if (!sb) return;
+      sb.auth.onAuthStateChange(async function(event, session) {
+        if ((event==='SIGNED_IN'||event==='TOKEN_REFRESHED') && session && !currentUser) {
+          await onSupaAuthSuccess(session.user, session);
+        }
+      });
+      restoreSupabaseSession();
+    }, 1500);
+  }
+
+  // ── Language init ──
+  var savedLang = localStorage.getItem('bna_lang') || 'en';
+  var appEl = document.querySelector('.app') || document.body;
+  appEl.setAttribute('data-lang', savedLang);
+  if (savedLang !== 'en') applyLanguage(savedLang);
 });
 
 
@@ -3101,15 +3149,7 @@ async function doAskNewsHindi() {
   var savedLang = localStorage.getItem('bna_lang') || 'en';
   // Apply without triggering news reload (DOM may not be ready)
   APP_LANG = savedLang;
-  document.addEventListener('DOMContentLoaded', function() {
-    if (savedLang !== 'en') {
-      applyLanguage(savedLang);
-    }
-    // Always set data-lang
-    var appEl = document.querySelector('.app') || document.body;
-    appEl.setAttribute('data-lang', savedLang);
-  });
-})();
+  })();
 
 
 
@@ -3600,21 +3640,7 @@ function updateFABVisibility() {
 }
 
 // Wire up clock bar tap on mobile
-document.addEventListener('DOMContentLoaded', function() {
-  var mcbW = document.getElementById('mcbWeather');
-  var mcbM = document.getElementById('mcbMarkets');
-  var mcbT = document.getElementById('mcbTime');
-  [mcbW, mcbM, mcbT].forEach(function(el) {
-    if (el) el.style.cursor = 'pointer';
-    if (el) el.onclick = openMobInfo;
-  });
-  updateFABVisibility();
-  window.addEventListener('resize', updateFABVisibility);
-  // Keyboard close search
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeMobSearch();
-  });
-});
+
 
 
 function getSupabase(){if(!_supaClient){if(typeof supabase==='undefined'){console.warn('Supabase SDK not loaded');return null;}_supaClient=supabase.createClient(SUPA_URL,SUPA_ANON);}return _supaClient;}
@@ -3631,7 +3657,7 @@ async function restoreSupabaseSession(){var sb=getSupabase();if(!sb)return false
 var _origTBk=toggleBookmark;toggleBookmark=async function(id,card){_origTBk(id,card);if(!currentUser||!currentUser.isCloud)return;var sb=getSupabase();if(!sb)return;if(bookmarks.includes(id)){await sb.from('bookmarks').upsert({user_id:currentUser.id,article_id:id,article_title:card&&card.title||'',article_url:card&&card.articleUrl||'',article_source:card&&card.source||'',article_image:card&&card.image||'',article_sector:card&&card.sector||''}).catch(function(){});}else{await sb.from('bookmarks').delete().eq('user_id',currentUser.id).eq('article_id',id).catch(function(){});}}
 var _origTLk=toggleLike;toggleLike=async function(id){_origTLk(id);if(!currentUser||!currentUser.isCloud)return;var sb=getSupabase();if(!sb)return;if(likes.includes(id)){await sb.from('likes').upsert({user_id:currentUser.id,article_id:id}).catch(function(){});}else{await sb.from('likes').delete().eq('user_id',currentUser.id).eq('article_id',id).catch(function(){});}}
 var _origLo=logout;logout=async function(){var sb=getSupabase();if(sb&&currentUser&&currentUser.isCloud)await sb.auth.signOut().catch(function(){});localStorage.removeItem('bna_supa_session');_origLo();}
-document.addEventListener('DOMContentLoaded',function(){var sb=getSupabase();if(!sb)return;sb.auth.onAuthStateChange(async function(event,session){if((event==='SIGNED_IN'||event==='TOKEN_REFRESHED')&&session&&!currentUser){await onSupaAuthSuccess(session.user,session);}});restoreSupabaseSession();});
+
 
 init();
 </script>
