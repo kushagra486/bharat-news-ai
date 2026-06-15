@@ -682,6 +682,199 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .mob-search-inp:focus{border-color:var(--accent2)}
 
 .lp-btn:disabled{opacity:.6;cursor:not-allowed}
+
+/* ══ CHATBOT OVERLAY ══════════════════════════════ */
+.chat-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.chat-overlay.open{display:flex}
+.chat-sheet{
+  width:100%;max-width:680px;
+  height:90vh;
+  background:var(--surface);
+  border-radius:24px 24px 0 0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 -20px 60px rgba(0,0,0,.5);
+}
+.chat-header{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px 12px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.chat-avatar{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#e91e8c,#9333ea);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.chat-title{font-size:15px;font-weight:800;color:var(--text);flex:1}
+.chat-subtitle{font-size:11px;color:var(--text3);margin-top:1px}
+.chat-mode-row{
+  display:flex;gap:4px;
+  padding:8px 12px;
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;scrollbar-width:none;flex-shrink:0;
+}
+.chat-mode-row::-webkit-scrollbar{display:none}
+.chat-mode-btn{
+  padding:5px 12px;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--text3);font-size:11px;font-weight:600;
+  font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;
+}
+.chat-mode-btn.active{
+  background:var(--grad);border-color:transparent;color:#fff;
+}
+.chat-messages{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  scroll-behavior:smooth;
+}
+.chat-msg{display:flex;gap:10px;max-width:100%;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg.user{flex-direction:row-reverse}
+.chat-msg-avatar{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.chat-msg.bot .chat-msg-avatar{background:linear-gradient(135deg,#e91e8c,#9333ea)}
+.chat-msg.user .chat-msg-avatar{background:var(--surface2);border:1px solid var(--border)}
+.chat-msg-bubble{
+  max-width:80%;padding:10px 14px;border-radius:16px;
+  font-size:13px;line-height:1.55;
+}
+.chat-msg.bot .chat-msg-bubble{
+  background:var(--surface2);border:1px solid var(--border);
+  border-bottom-left-radius:4px;color:var(--text);
+}
+.chat-msg.user .chat-msg-bubble{
+  background:linear-gradient(135deg,#e91e8c,#9333ea);
+  color:#fff;border-bottom-right-radius:4px;
+}
+.chat-msg-time{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* News card inside chat */
+.chat-news-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;margin:4px 0;cursor:pointer;
+  transition:border-color .15s;
+}
+.chat-news-card:hover{border-color:var(--accent)}
+.chat-news-img{width:100%;height:120px;object-fit:cover;display:block}
+.chat-news-body{padding:10px 12px}
+.chat-news-source{
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  color:var(--accent);letter-spacing:.4px;margin-bottom:4px;
+}
+.chat-news-title{
+  font-size:13px;font-weight:600;color:var(--text);
+  line-height:1.35;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.chat-news-summary{
+  font-size:11px;color:var(--text3);margin-top:4px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.chat-news-meta{
+  font-size:10px;color:var(--text3);
+  margin-top:6px;display:flex;gap:8px;align-items:center;
+}
+
+/* Typing indicator */
+.chat-typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.chat-typing span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:typing-bounce .8s infinite;
+}
+.chat-typing span:nth-child(2){animation-delay:.15s}
+.chat-typing span:nth-child(3){animation-delay:.3s}
+@keyframes typing-bounce{
+  0%,60%,100%{transform:translateY(0);opacity:.4}
+  30%{transform:translateY(-6px);opacity:1}
+}
+
+/* Suggestions chips */
+.chat-suggestions{
+  display:flex;gap:6px;flex-wrap:wrap;padding:0 0 4px;
+}
+.chat-suggestion{
+  padding:5px 12px;border-radius:20px;
+  border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text2);font-size:12px;cursor:pointer;
+  font-family:inherit;transition:all .15s;white-space:nowrap;
+}
+.chat-suggestion:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Input bar */
+.chat-input-bar{
+  display:flex;gap:8px;padding:12px 16px;
+  border-top:1px solid var(--border);flex-shrink:0;
+  background:var(--surface);
+}
+.chat-input{
+  flex:1;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:24px;color:var(--text);font-family:inherit;
+  font-size:14px;padding:10px 16px;outline:none;
+  transition:border-color .2s;
+  resize:none;max-height:100px;overflow-y:auto;
+}
+.chat-input:focus{border-color:var(--accent2)}
+.chat-send-btn{
+  width:42px;height:42px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#e91e8c,#9333ea);
+  color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:opacity .15s;
+}
+.chat-send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* AI Search upgrade */
+.search-ai-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(233,30,140,.15),rgba(147,51,234,.15));
+  color:var(--accent);border:1px solid rgba(147,51,234,.2);
+  margin-bottom:8px;
+}
+.search-ai-answer{
+  background:linear-gradient(135deg,rgba(233,30,140,.05),rgba(147,51,234,.05));
+  border:1px solid rgba(147,51,234,.15);border-radius:12px;
+  padding:12px 14px;margin-bottom:12px;
+  font-size:13px;line-height:1.6;color:var(--text);
+}
+.search-ai-answer strong{color:var(--accent)}
+
+/* Chat FAB */
+.chat-fab{
+  position:fixed;bottom:72px;right:16px;z-index:190;
+  width:52px;height:52px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#e91e8c,#9333ea);
+  color:#fff;font-size:22px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(233,30,140,.45);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s;
+}
+.chat-fab:hover{transform:scale(1.1)}
+.chat-fab-badge{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#10b981;border:2px solid var(--bg);
+  font-size:8px;font-weight:700;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+@media(min-width:1100px){
+  .chat-fab{bottom:20px}
+  .chat-sheet{max-width:480px;height:85vh}
+}
+@media(max-width:767px){
+  .chat-sheet{height:95vh}
+  .chat-fab{bottom:68px;right:12px;width:46px;height:46px;font-size:20px}
+}
 </style>
   <!-- Performance hints -->
   <link rel="dns-prefetch" href="https://api.groq.com">
@@ -813,6 +1006,49 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   <div class="lp-foot">🔒 Secured by Supabase · No spam · Free forever</div>
  </div>
 </div>
+
+<!-- ══ CHATBOT OVERLAY ══════════════════════════ -->
+<div class="chat-overlay" id="chatOverlay" onclick="if(event.target===this)closeChat()">
+ <div class="chat-sheet">
+
+  <!-- Header -->
+  <div class="chat-header">
+   <div class="chat-avatar">🤖</div>
+   <div style="flex:1">
+    <div class="chat-title">BharatNews Assistant</div>
+    <div class="chat-subtitle" id="chatStatusLine">● Online · Groq Llama 3.3 70B</div>
+   </div>
+   <button onclick="closeChat()" style="border:none;background:transparent;color:var(--text3);font-size:22px;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%">✕</button>
+  </div>
+
+  <!-- Mode tabs -->
+  <div class="chat-mode-row">
+   <button class="chat-mode-btn active" id="cmode-news" onclick="setChatMode('news',this)">📰 News Search</button>
+   <button class="chat-mode-btn" id="cmode-chat" onclick="setChatMode('chat',this)">💬 General Chat</button>
+   <button class="chat-mode-btn" id="cmode-gk" onclick="setChatMode('gk',this)">🧠 GK & Facts</button>
+   <button class="chat-mode-btn" id="cmode-translate" onclick="setChatMode('translate',this)">🌐 Translate</button>
+   <button class="chat-mode-btn" id="cmode-quiz" onclick="setChatMode('quiz',this)">🏆 Quiz Me</button>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <!-- Input -->
+  <div class="chat-input-bar">
+   <textarea class="chat-input" id="chatInput" placeholder="Ask anything..." rows="1"
+     onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"
+     oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+   <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMsg()">➤</button>
+  </div>
+
+ </div>
+</div>
+
+<!-- Chat FAB -->
+<button class="chat-fab" id="chatFab" onclick="openChat()" title="Open AI Assistant">
+ 💬
+ <span class="chat-fab-badge">AI</span>
+</button>
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- STORY VIEWER -->
@@ -3658,6 +3894,390 @@ var _origTBk=toggleBookmark;toggleBookmark=async function(id,card){_origTBk(id,c
 var _origTLk=toggleLike;toggleLike=async function(id){_origTLk(id);if(!currentUser||!currentUser.isCloud)return;var sb=getSupabase();if(!sb)return;if(likes.includes(id)){await sb.from('likes').upsert({user_id:currentUser.id,article_id:id}).catch(function(){});}else{await sb.from('likes').delete().eq('user_id',currentUser.id).eq('article_id',id).catch(function(){});}}
 var _origLo=logout;logout=async function(){var sb=getSupabase();if(sb&&currentUser&&currentUser.isCloud)await sb.auth.signOut().catch(function(){});localStorage.removeItem('bna_supa_session');_origLo();}
 
+
+
+// ══════════════════════════════════════════════════
+// CHATBOT + AI SEARCH SYSTEM
+// ══════════════════════════════════════════════════
+var _chatMode    = 'news';
+var _chatHistory = [];   // {role, content} pairs for multi-turn
+var _chatTyping  = false;
+
+var CHAT_SUGGESTIONS = {
+  news:      ['Top news today','Cricket score update','Stock market today','What happened in India?','Tech news this week'],
+  chat:      ['Tell me a joke','What is the weather like?','Recommend a movie','Explain quantum computing','India history facts'],
+  gk:        ['Capital of India','Who invented radio?','Largest country by area?','Father of the nation','Solar system facts'],
+  translate: ['Translate "Good Morning" to Hindi','Translate "News" to Tamil','How do you say Thank You in Telugu?','Translate to Marathi: "I am reading news"'],
+  quiz:      ['Quiz me on Indian history','Science quiz','Sports quiz','Current affairs quiz','Geography quiz'],
+};
+
+var CHAT_SYSTEM_PROMPTS = {
+  news: 'You are BharatNews AI, an intelligent news assistant for India. When the user asks about news, first search your knowledge for recent events, then provide a structured answer. Format key topics in **bold**. Always mention if information may be outdated and suggest checking live sources. Keep responses focused and use bullet points for clarity.',
+  chat: 'You are a friendly, witty AI assistant called BharatNews AI. You help with general questions, recommendations, jokes, and everyday queries. Be conversational, warm, and helpful. Keep responses concise but complete.',
+  gk:   'You are a GK (General Knowledge) expert specializing in India and world affairs. Provide accurate, well-structured facts. Use numbered lists for multiple facts. Include interesting context and memory tips when helpful.',
+  translate: 'You are a multilingual translation expert specializing in Indian languages (Hindi, Tamil, Telugu, Marathi, Bengali, Kannada, Malayalam, Gujarati, Punjabi, Odia) and English. Provide the translation clearly, explain pronunciation if helpful, and note any cultural context. Format: Original → Translation (Language)',
+  quiz: 'You are a quiz master. Ask one question at a time. After the user answers, tell them if they are correct or wrong, give the right answer with explanation, then ask another question. Keep it fun and educational. Focus on Indian history, culture, sports, science, and current affairs.',
+};
+
+// ── Open / Close ──────────────────────────────────
+function openChat() {
+  var ov = document.getElementById('chatOverlay');
+  if (ov) ov.classList.add('open');
+  if (!_chatHistory.length) initChatWelcome();
+  setTimeout(function(){
+    var inp = document.getElementById('chatInput');
+    if (inp) inp.focus();
+  }, 300);
+}
+function closeChat() {
+  var ov = document.getElementById('chatOverlay');
+  if (ov) ov.classList.remove('open');
+}
+
+// ── Mode switcher ─────────────────────────────────
+function setChatMode(mode, btn) {
+  _chatMode = mode;
+  document.querySelectorAll('.chat-mode-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  // Update placeholder
+  var placeholders = {
+    news: 'Search for any news topic...',
+    chat: 'Ask me anything...',
+    gk: 'Ask a GK question...',
+    translate: 'Type text to translate...',
+    quiz: 'Say "start" to begin quiz...',
+  };
+  var inp = document.getElementById('chatInput');
+  if (inp) inp.placeholder = placeholders[mode] || 'Ask anything...';
+  // Show mode-specific suggestions
+  showSuggestions(mode);
+}
+
+// ── Welcome message ───────────────────────────────
+function initChatWelcome() {
+  var welcomes = {
+    news: '👋 Hi! I\'m your **BharatNews AI Assistant**.\n\nI can:\n• 📰 Search and summarize news from the web\n• 🏏 Tell you live scores and match updates\n• 📈 Explain market trends\n• 🌐 Translate between EN/Hindi/regional languages\n• 🧠 Answer GK questions and quiz you\n\nWhat would you like to know?',
+  };
+  appendBotMsg(welcomes.news || 'Hello! How can I help you today?', true);
+  showSuggestions('news');
+}
+
+// ── Suggestions chips ─────────────────────────────
+function showSuggestions(mode) {
+  var msgs = document.getElementById('chatMessages');
+  if (!msgs) return;
+  var old = msgs.querySelector('.chat-suggestions');
+  if (old) old.remove();
+  var chips = CHAT_SUGGESTIONS[mode] || [];
+  if (!chips.length) return;
+  var div = document.createElement('div');
+  div.className = 'chat-suggestions';
+  chips.forEach(function(c) {
+    var btn = document.createElement('button');
+    btn.className = 'chat-suggestion';
+    btn.textContent = c;
+    btn.onclick = function() {
+      document.getElementById('chatInput').value = c;
+      sendChatMsg();
+    };
+    div.appendChild(btn);
+  });
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── Send message ──────────────────────────────────
+async function sendChatMsg() {
+  var inp = document.getElementById('chatInput');
+  var q = (inp.value || '').trim();
+  if (!q || _chatTyping) return;
+  inp.value = '';
+  inp.style.height = 'auto';
+  // Remove suggestions
+  var msgs = document.getElementById('chatMessages');
+  var sug = msgs && msgs.querySelector('.chat-suggestions');
+  if (sug) sug.remove();
+
+  appendUserMsg(q);
+  _chatHistory.push({ role: 'user', content: q });
+
+  _chatTyping = true;
+  var sendBtn = document.getElementById('chatSendBtn');
+  if (sendBtn) sendBtn.disabled = true;
+
+  var typingEl = appendTypingIndicator();
+
+  try {
+    var response;
+    if (_chatMode === 'news') {
+      response = await handleNewsChat(q);
+    } else {
+      response = await handleGeneralChat(q);
+    }
+    if (typingEl) typingEl.remove();
+    if (response) {
+      var botText = typeof response === 'string' ? response : response.text;
+      var newsCards = typeof response === 'object' ? response.cards : null;
+      appendBotMsg(botText, false, newsCards);
+      _chatHistory.push({ role: 'assistant', content: botText });
+      // Keep history to last 10 turns
+      if (_chatHistory.length > 20) _chatHistory = _chatHistory.slice(-20);
+    }
+  } catch(e) {
+    if (typingEl) typingEl.remove();
+    appendBotMsg('Sorry, I encountered an error. Please try again.', false);
+    console.error('Chat error:', e);
+  }
+
+  _chatTyping = false;
+  if (sendBtn) sendBtn.disabled = false;
+  if (inp) inp.focus();
+}
+
+// ── News mode handler ─────────────────────────────
+async function handleNewsChat(q) {
+  // 1. Search live news
+  var newsCards = [];
+  var searchResults = await Promise.allSettled([
+    searchNewsAPI(q),
+    searchGNews(q),
+  ]);
+  searchResults.forEach(function(r) {
+    if (r.status === 'fulfilled' && r.value) newsCards = newsCards.concat(r.value);
+  });
+
+  // Dedup
+  var seen = {};
+  newsCards = newsCards.filter(function(c) {
+    var k = c.title.slice(0,40).toLowerCase();
+    if (seen[k]) return false; seen[k] = 1; return true;
+  }).slice(0, 5);
+
+  // 2. Use Groq compound-beta for web search + answer
+  var context = newsCards.length
+    ? 'Found articles:\n' + newsCards.map(function(c, i) {
+        return (i+1) + '. ' + c.title + ' (' + c.source + '): ' + (c.summary || '').slice(0, 150);
+      }).join('\n')
+    : '';
+
+  var prompt = 'User is searching for: "' + q + '"\n\n'
+    + (context ? context + '\n\n' : '')
+    + 'Provide a clear, concise news summary answering their query. '
+    + 'Use the articles above as context. '
+    + 'If it is a recent event, note it may not be fully updated. '
+    + 'Format with **bold** for key terms. '
+    + 'End with a one-line "📍 Key Takeaway:"';
+
+  var answer = await callAIWithWebSearch(prompt, CHAT_SYSTEM_PROMPTS.news);
+
+  return {
+    text: answer || ('Here are the latest results for "' + q + '":'),
+    cards: newsCards.length ? newsCards : null,
+  };
+}
+
+// ── General / GK / Translate / Quiz handler ───────
+async function handleGeneralChat(q) {
+  var system = CHAT_SYSTEM_PROMPTS[_chatMode] || CHAT_SYSTEM_PROMPTS.chat;
+  // Include chat history for context
+  var messages = [{ role: 'system', content: system }]
+    .concat(_chatHistory.slice(-8))  // last 4 exchanges
+    .concat([{ role: 'user', content: q }]);
+
+  var answer = await callAIMultiTurn(messages);
+  return answer || 'I couldn\'t process that. Please try again.';
+}
+
+// ── Groq API with web search (compound-beta model) ─
+async function callAIWithWebSearch(prompt, system) {
+  try {
+    var ac = new AbortController();
+    setTimeout(function(){ ac.abort(); }, 15000);
+    var r = await fetch(GROQ_BASE, {
+      method: 'POST',
+      signal: ac.signal,
+      headers: { 'Authorization': 'Bearer ' + GROQ_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'compound-beta',   // Groq's web-search enabled model
+        messages: [
+          { role: 'system', content: system || 'You are a helpful news assistant.' },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 1200,
+        temperature: 0.5,
+      })
+    });
+    if (!r.ok) {
+      // Fallback to regular model if compound-beta fails
+      return await callAI(prompt, system);
+    }
+    var d = await r.json();
+    return d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || null;
+  } catch(e) {
+    return await callAI(prompt, system);
+  }
+}
+
+// ── Groq multi-turn (with full history) ───────────
+async function callAIMultiTurn(messages) {
+  try {
+    var ac = new AbortController();
+    setTimeout(function(){ ac.abort(); }, 15000);
+    var r = await fetch(GROQ_BASE, {
+      method: 'POST',
+      signal: ac.signal,
+      headers: { 'Authorization': 'Bearer ' + GROQ_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: messages,
+        max_tokens: 1000,
+        temperature: 0.7,
+      })
+    });
+    if (!r.ok) return null;
+    var d = await r.json();
+    return d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || null;
+  } catch(e) { return null; }
+}
+
+// ── DOM helpers ───────────────────────────────────
+function appendUserMsg(text) {
+  var msgs = document.getElementById('chatMessages');
+  if (!msgs) return;
+  var now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  var div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.innerHTML = '<div class="chat-msg-avatar">👤</div>'
+    + '<div><div class="chat-msg-bubble">' + escapeHtml(text) + '</div>'
+    + '<div class="chat-msg-time" style="text-align:right">' + now + '</div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendBotMsg(text, isFirst, newsCards) {
+  var msgs = document.getElementById('chatMessages');
+  if (!msgs) return;
+  var now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  // Format markdown-ish text
+  var formatted = text
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n•/g, '<br>•')
+    .replace(/\n\d+\./g, function(m){ return '<br>' + m.trim(); })
+    .replace(/\n/g, '<br>');
+
+  var cardsHtml = '';
+  if (newsCards && newsCards.length) {
+    cardsHtml = '<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">'
+      + newsCards.map(function(c) {
+          return '<div class="chat-news-card" onclick="window.open(\'' + (c.articleUrl||'#') + '\',\'_blank\')">'
+            + (c.image ? '<img class="chat-news-img" src="' + c.image + '" loading="lazy" onerror="this.style.display=\'none\'">' : '')
+            + '<div class="chat-news-body">'
+              + '<div class="chat-news-source">' + (c.source||'News') + '</div>'
+              + '<div class="chat-news-title">' + escapeHtml(c.title) + '</div>'
+              + (c.summary ? '<div class="chat-news-summary">' + escapeHtml((c.summary||'').slice(0,120)) + '</div>' : '')
+              + '<div class="chat-news-meta"><span>' + (c.time||'') + '</span><span style="margin-left:auto;color:var(--accent);font-size:10px">Read →</span></div>'
+            + '</div></div>';
+        }).join('')
+      + '</div>';
+  }
+
+  var div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerHTML = '<div class="chat-msg-avatar">🤖</div>'
+    + '<div style="flex:1;min-width:0"><div class="chat-msg-bubble">'
+    + formatted + cardsHtml
+    + '</div>'
+    + '<div class="chat-msg-time">' + now + ' · BharatNews AI</div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function appendTypingIndicator() {
+  var msgs = document.getElementById('chatMessages');
+  if (!msgs) return null;
+  var div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.innerHTML = '<div class="chat-msg-avatar">🤖</div>'
+    + '<div class="chat-msg-bubble" style="padding:12px 16px">'
+    + '<div class="chat-typing"><span></span><span></span><span></span></div>'
+    + '</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function escapeHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════
+// AI-POWERED SEARCH (upgrades existing handleSearch)
+// ══════════════════════════════════════════════════
+var _origHandleSearch = handleSearch;
+handleSearch = function(val) {
+  // Still run original search for live filtering
+  _origHandleSearch(val);
+  // Also trigger AI answer for queries > 3 chars
+  clearTimeout(window._aiSearchTimer);
+  if (!val || val.trim().length < 4) {
+    removeAISearchBanner();
+    return;
+  }
+  window._aiSearchTimer = setTimeout(function() {
+    runAISearch(val.trim());
+  }, 900);
+};
+
+async function runAISearch(q) {
+  showAISearchBanner(q, null); // show loading state
+  try {
+    var prompt = 'Give a brief, factual answer to: "' + q + '"\n'
+      + 'This is a news app search. Keep it to 2-3 sentences max.\n'
+      + 'If it is a news topic, summarize the latest situation.\n'
+      + 'If it is a GK query, answer directly with the fact.\n'
+      + 'No preamble, no "Based on..." — just the answer directly.';
+    var answer = await callAIWithWebSearch(prompt, 'You are a concise news search assistant. Answer in 2-3 sentences max. Be direct and factual.');
+    showAISearchBanner(q, answer);
+  } catch(e) {
+    removeAISearchBanner();
+  }
+}
+
+function showAISearchBanner(q, answer) {
+  removeAISearchBanner();
+  var feed = document.getElementById('newsFeed');
+  if (!feed) return;
+  var banner = document.createElement('div');
+  banner.id = 'aiSearchBanner';
+  banner.style.cssText = 'padding:12px 16px;border-bottom:1px solid var(--border)';
+  banner.innerHTML = '<div class="search-ai-badge">🤖 AI Answer</div>'
+    + '<div class="search-ai-answer">'
+    + (answer
+        ? answer.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+        : '<div style="display:flex;align-items:center;gap:8px;color:var(--text3)"><div class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:var(--accent2)"></div>Searching with AI...</div>')
+    + '</div>';
+  feed.parentNode.insertBefore(banner, feed);
+}
+
+function removeAISearchBanner() {
+  var b = document.getElementById('aiSearchBanner');
+  if (b) b.remove();
+}
+
+// Clear AI banner when search is cleared
+var _origClearSearch = clearSearch;
+clearSearch = function() {
+  _origClearSearch();
+  removeAISearchBanner();
+};
+
+// ── Add chat button to mobile feature bar ─────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Wire up openChat to the Ask button in feature bar
+  var askBtn = document.querySelector('.mob-feat-btn[onclick="openAskNews()"]');
+  if (askBtn) askBtn.onclick = openChat;
+});
 
 init();
 </script>
