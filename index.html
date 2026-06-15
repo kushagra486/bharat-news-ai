@@ -452,8 +452,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   .app{flex-direction:column}
   .main{margin-left:0!important}
   .content{flex-direction:column}
-  .feed{padding:0;padding-top:calc(38px + 50px);padding-bottom:62px;max-width:100%}
+  .feed{padding:0;padding-top:calc(38px + 50px + 38px);padding-bottom:62px;max-width:100%}
   .mob-clock-bar{display:flex!important}
+  .mob-feat-bar{display:flex!important}
   .mob-header{display:flex!important;position:fixed;top:38px;left:0;right:0;height:50px;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);align-items:center;padding:0 14px;gap:8px}
   .mob-header-logo{font-size:16px;font-weight:900;flex:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
   .mob-header-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface2);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -462,7 +463,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
   .mob-nav-btn.active{color:var(--accent)}
   .mob-nav-icon{font-size:19px;line-height:1}
   .mob-nav-label{font-size:9px;font-weight:600}
-  .sector-scroll{position:sticky;top:88px;z-index:120;background:var(--bg);border-bottom:1px solid var(--border);padding:7px 12px}
+  .sector-scroll{position:sticky;top:126px;z-index:120;background:var(--bg);border-bottom:1px solid var(--border);padding:7px 12px}
   .sector-chip{font-size:11px;padding:4px 10px}
   .stories-row{padding:10px 12px 8px;border-bottom:1px solid var(--border)}
   .story-ring{width:52px;height:52px}
@@ -966,7 +967,50 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
         <div class="stories-row" id="storiesRow"></div>
         <div class="sector-scroll" id="sectorChips"></div>
         <div id="newsFeed"></div>
-        <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()" style="display:none;">
+        
+<!-- SCORES PANEL -->
+<div id="scoresPanel" style="display:none;flex-direction:column;width:100%">
+  <div class="scores-header">
+    <div style="display:flex;align-items:center;gap:8px"><span style="font-size:15px;font-weight:800">🏆 Live Scores</span><div class="scores-live-dot"></div></div>
+    <button onclick="refreshScores()" style="border:none;background:var(--surface2);color:var(--text2);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;cursor:pointer;font-family:inherit">↻ Refresh</button>
+  </div>
+  <div class="scores-tabs" id="scoresTabs">
+    <button class="scores-tab active" onclick="filterScores('all',this)">All Sports</button>
+    <button class="scores-tab" onclick="filterScores('cricket',this)">🏏 Cricket</button>
+    <button class="scores-tab" onclick="filterScores('football',this)">⚽ Football</button>
+    <button class="scores-tab" onclick="filterScores('tennis',this)">🎾 Tennis</button>
+    <button class="scores-tab" onclick="filterScores('badminton',this)">🏸 Badminton</button>
+  </div>
+  <div class="scores-content" id="scoresContent"><div class="scores-loading">⏳ Loading scores...</div></div>
+</div>
+
+<!-- STOCKS PANEL -->
+<div id="stocksPanel" style="display:none;flex-direction:column;width:100%">
+  <div class="scores-header">
+    <span style="font-size:15px;font-weight:800">📊 Stock Market News</span>
+    <button onclick="refreshStockNews()" style="border:none;background:var(--surface2);color:var(--text2);font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;cursor:pointer;font-family:inherit">↻ Refresh</button>
+  </div>
+  <div class="stock-ticker-bar"><div class="ticker-track" id="tickerTrack"><div class="ticker-item"><span class="ticker-name">Loading</span><span class="ticker-price">markets...</span></div><div class="ticker-item"><span class="ticker-name">Please</span><span class="ticker-price">wait...</span></div></div></div>
+  <div class="scores-tabs" id="stocksTabs">
+    <button class="scores-tab active" onclick="filterStockNews('all',this)">All</button>
+    <button class="scores-tab" onclick="filterStockNews('sensex',this)">📈 Sensex</button>
+    <button class="scores-tab" onclick="filterStockNews('nifty',this)">📊 Nifty</button>
+    <button class="scores-tab" onclick="filterStockNews('ipo',this)">🚀 IPO</button>
+    <button class="scores-tab" onclick="filterStockNews('results',this)">📋 Results</button>
+    <button class="scores-tab" onclick="filterStockNews('crypto',this)">₿ Crypto</button>
+  </div>
+  <div id="stockNewsContent"><div class="scores-loading">⏳ Loading stock news...</div></div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div id="mobSearchOv" style="display:none;position:fixed;inset:0;z-index:500;background:var(--bg);padding:16px;flex-direction:column;gap:12px">
+  <div style="display:flex;align-items:center;gap:10px">
+    <button onclick="closeMobSearch()" style="border:none;background:transparent;color:var(--text2);font-size:22px;cursor:pointer;padding:0;flex-shrink:0">←</button>
+    <input style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:inherit;font-size:16px;padding:12px 16px;outline:none" id="mobSearchInp" placeholder="Search news..." oninput="handleSearch(this.value)">
+  </div>
+  <div style="font-size:12px;color:var(--text3)">Results appear in the feed below</div>
+</div>
+<button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()" style="display:none;">
           <span class="spinner" style="display:none;" id="loadMoreSpinner"></span>
           <span id="loadMoreText">⬇️ Load More Articles</span>
         </button>
@@ -3388,6 +3432,151 @@ setView = function(v) {
     if(el)el.classList.toggle('active',v===n);
   });
 };
+
+
+// ══ MISSING MOBILE FUNCTIONS ══════════════════════
+
+function openMobSearch() {
+  var ov = document.getElementById('mobSearchOv');
+  if (!ov) return;
+  ov.style.display = 'flex';
+  var inp = document.getElementById('mobSearchInp');
+  if (inp) setTimeout(function(){ inp.focus(); }, 100);
+}
+function closeMobSearch() {
+  var ov = document.getElementById('mobSearchOv');
+  if (ov) ov.style.display = 'none';
+  handleSearch('');
+}
+
+function mobFeedTab(mode, btn) {
+  document.querySelectorAll('.mob-feat-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  setFeedMode(mode, null);
+}
+
+function openMobInfo() {
+  var el = document.getElementById('mobInfoSheet');
+  if (!el) return;
+  el.style.display = 'block';
+  // Copy weather data
+  var fields = [['dcWIco','mibWIcon'],['dcWTemp','mibWTemp'],['dcWCity','mibWCity'],['dcWDesc','mibWDesc']];
+  fields.forEach(function(p) {
+    var src = document.getElementById(p[0]);
+    var dst = document.getElementById(p[1]);
+    if (src && dst) dst.textContent = src.textContent;
+  });
+  var fc = document.getElementById('rpForecast');
+  var mfc = document.getElementById('mibForecast');
+  if (fc && mfc) mfc.innerHTML = fc.innerHTML;
+  if (_mktCache && _mktCache.length) {
+    var mibM = document.getElementById('mibMarkets');
+    if (mibM) {
+      mibM.innerHTML = _mktCache.slice(0,4).map(function(m) {
+        var cls = m.chg > 0 ? 'color:#10b981' : m.chg < 0 ? 'color:#ef4444' : 'color:#666';
+        var arr = m.chg > 0 ? '▲' : '▼';
+        return '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px">'
+          + '<span style="color:var(--text2)">' + m.name + '</span>'
+          + '<span style="' + cls + ';font-weight:700">' + arr + Math.abs(m.chg||0).toFixed(1) + '%</span>'
+          + '</div>';
+      }).join('');
+    }
+  }
+}
+function closeMobInfo() {
+  var el = document.getElementById('mobInfoSheet');
+  if (el) el.style.display = 'none';
+}
+
+function openQuiz() {
+  var ov = document.getElementById('quizOverlay');
+  if (ov) ov.classList.add('open');
+}
+
+function openAskNews() {
+  var ov = document.getElementById('askOverlay');
+  if (ov) ov.classList.add('open');
+}
+
+function closeAskNews() {
+  var ov = document.getElementById('askOverlay');
+  if (ov) ov.classList.remove('open');
+}
+
+function openTimeCapsule() {
+  var today = new Date();
+  var lastYear = new Date(today.getFullYear()-1, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+  showToast('⏰ Loading news from ' + lastYear + '...');
+  var ac = new AbortController(); setTimeout(function(){ac.abort();},8000);
+  fetch(GUARDIAN_BASE+'/search?api-key='+GUARDIAN_KEY+'&from-date='+lastYear+'&to-date='+lastYear+'&show-fields=thumbnail,trailText&page-size=10&order-by=relevance', {signal:ac.signal})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var cards = (d.response.results||[]).map(function(a,i) {
+        return {id:'tc-'+i, title:a.webTitle, summary:a.fields&&a.fields.trailText||'',
+          source:'The Guardian', sourceIcon:'📰', image:a.fields&&a.fields.thumbnail||'',
+          sector:'All', time:'1 year ago', articleUrl:a.webUrl, apiSource:'Guardian',
+          tags:['timecapsule'], breaking:false};
+      });
+      if (cards.length) { renderFeed(cards); showToast('⏰ Showing news from ' + lastYear + '! (' + cards.length + ' articles)'); }
+      else showToast('⚠️ No articles found for this date last year');
+    }).catch(function(){ showToast('⚠️ Time capsule unavailable'); });
+}
+
+function toggleTabletPanel() {
+  var drawer = document.getElementById('tabDrawer');
+  var fab = document.getElementById('tabFab');
+  if (!drawer) return;
+  var isOpen = drawer.style.display !== 'none';
+  drawer.style.display = isOpen ? 'none' : 'block';
+  if (fab) fab.textContent = isOpen ? '📊' : '✕';
+  if (!isOpen) {
+    var content = document.getElementById('tabDrawerContent');
+    if (content) {
+      var wIcon = document.getElementById('rpWIco') ? document.getElementById('rpWIco').textContent : '⛅';
+      var wTemp = document.getElementById('rpWTemp') ? document.getElementById('rpWTemp').textContent : '--°C';
+      var wCity = document.getElementById('rpWCity') ? document.getElementById('rpWCity').textContent : '';
+      var wDesc = document.getElementById('rpWDesc') ? document.getElementById('rpWDesc').textContent : '';
+      var fcHtml = document.getElementById('rpForecast') ? document.getElementById('rpForecast').innerHTML : '';
+      var mktsHtml = document.getElementById('rpMarkets') ? document.getElementById('rpMarkets').outerHTML : '';
+      content.innerHTML = '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:10px">🌤️ Weather</div>'
+        + '<div style="background:linear-gradient(135deg,#0d0d20,#0d1a10);border-radius:12px;padding:14px;margin-bottom:16px;">'
+          + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'
+            + '<span style="font-size:28px">' + wIcon + '</span>'
+            + '<div><div style="font-size:22px;font-weight:900;color:#fff">' + wTemp + '</div>'
+            + '<div style="font-size:11px;color:rgba(255,255,255,.5)">' + wCity + '</div></div>'
+          + '</div>'
+          + '<div style="font-size:10px;color:rgba(255,255,255,.4);margin-bottom:10px">' + wDesc + '</div>'
+          + '<div style="display:flex;gap:4px">' + fcHtml + '</div>'
+        + '</div>'
+        + '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:8px">📈 Live Markets</div>'
+        + mktsHtml;
+    }
+  }
+}
+
+function updateFABVisibility() {
+  var fab = document.getElementById('tabFab');
+  if (!fab) return;
+  var w = window.innerWidth;
+  fab.style.display = (w >= 768 && w < 1100) ? 'flex' : 'none';
+}
+
+// Wire up clock bar tap on mobile
+document.addEventListener('DOMContentLoaded', function() {
+  var mcbW = document.getElementById('mcbWeather');
+  var mcbM = document.getElementById('mcbMarkets');
+  var mcbT = document.getElementById('mcbTime');
+  [mcbW, mcbM, mcbT].forEach(function(el) {
+    if (el) el.style.cursor = 'pointer';
+    if (el) el.onclick = openMobInfo;
+  });
+  updateFABVisibility();
+  window.addEventListener('resize', updateFABVisibility);
+  // Keyboard close search
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMobSearch();
+  });
+});
 
 init();
 </script>
